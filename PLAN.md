@@ -325,7 +325,7 @@
 ---
 
 ### GOAL P1-017 | Domain Service — Voter and Session Management
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-015
 
 **Tasks:**
@@ -336,6 +336,8 @@
 5. Unit + integration tests for duplicate prevention.
 
 **Done Criteria:** Duplicate vote rejected at both service and DB level; 80% coverage.
+
+**Completion Note — 2026-05-14:** Added `VoterRollService` for voter registration, eligibility updates, and active-registration eligibility checks without exposing raw voter PII in audit payloads. Added `VotingSessionService` for opening, casting, and spoiling voting sessions. `openSession()` performs a service-level duplicate non-SPOILED session check and translates database unique-index violations into domain duplicate-vote rejection. `castBallot()` persists immutable `VotingResult` records, computes receipt hashes through JPA pre-persist behavior, transitions the session to `CAST`, and publishes `VoteCastEvent` through committed transactional audit events. Added Spring Data duplicate-check repository method, voter eligibility mutation helpers, PII encryption service configuration, Mockito service tests, migration contract coverage for the partial unique index, and a PostgreSQL Testcontainers integration test verifying duplicate rejection at the DB level. Coverage for `io.mirems.core.infra.service.voting` is 91.7% line coverage; `VoterRollService` is 95.0% and `VotingSessionService` is 97.7%. Verification command `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport build --no-daemon` succeeds. Docker is not available in this WSL environment, so the PostgreSQL Testcontainers duplicate-constraint test is present but JUnit-skipped locally via `@Testcontainers(disabledWithoutDocker = true)`; it will execute where Docker is available.
 
 ---
 

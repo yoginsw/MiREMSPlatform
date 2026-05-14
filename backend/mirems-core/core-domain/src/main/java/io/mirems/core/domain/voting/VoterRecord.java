@@ -100,6 +100,15 @@ public class VoterRecord {
         return eligibleElections;
     }
 
+    public void updateEligibility(Set<UUID> eligibleElections) {
+        this.eligibleElections = validateEligibleElections(eligibleElections);
+    }
+
+    public boolean isEligibleFor(UUID electionId) {
+        return registrationStatus == RegistrationStatus.ACTIVE
+                && eligibleElections.contains(Objects.requireNonNull(electionId, "electionId is required"));
+    }
+
     public RegistrationStatus getRegistrationStatus() {
         return registrationStatus;
     }

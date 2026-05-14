@@ -12,4 +12,7 @@ public interface SpringDataVotingSessionRepository extends JpaRepository<VotingS
     List<VotingSession> findByElectionId(UUID electionId);
 
     List<VotingSession> findBySessionStatus(SessionStatus sessionStatus);
+
+    boolean existsByVoterRecordIdAndElectionIdAndSessionStatusNot(
+            UUID voterRecordId, UUID electionId, SessionStatus sessionStatus);
 }

@@ -35,6 +35,16 @@ class MigrationResourceContractTest {
         assertThat(sql).contains("idx_audit_events_aggregate_id_occurred_at");
     }
 
+    @Test
+    void votingSessionDuplicateVotePartialUniqueIndexIsDeclared() throws IOException {
+        String voterMigration = readResource("db/migration/V3__create_voter_tables.sql");
+
+        assertThat(voterMigration)
+                .contains("uq_voting_sessions_non_spoiled_per_election")
+                .contains("ON voting_sessions (voter_record_id, election_id)")
+                .contains("WHERE session_status <> 'SPOILED'");
+    }
+
     private static String readResource(String path) {
         try (var input = Thread.currentThread().getContextClassLoader().getResourceAsStream(path)) {
             if (input == null) {
