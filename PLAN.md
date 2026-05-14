@@ -218,7 +218,7 @@
 ---
 
 ### GOAL P1-011 | Ballot and BallotStyle Entities
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-010
 
 **Tasks:**
@@ -229,6 +229,8 @@
 5. Unit tests for all constraints.
 
 **Done Criteria:** 90% coverage on ballot domain.
+
+**Completion Note — 2026-05-14:** Added pure domain `Ballot`, `BallotStyle`, and `BallotContest` entities with `AccessibilityFeature` and `BallotValidationException`. Implemented version auto-increment on ballot changes, activation rule requiring at least one contest, ISO 639-1 ballot style language validation, presentation ordering, immutable collection exposure, and field validation. Followed TDD with compile-time RED for missing ballot domain classes. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: ballot package line coverage 100.0%.
 
 ---
 
