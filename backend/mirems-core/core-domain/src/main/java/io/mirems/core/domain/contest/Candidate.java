@@ -2,6 +2,16 @@ package io.mirems.core.domain.contest;
 
 import io.mirems.core.domain.contest.event.CandidateApprovedEvent;
 import io.mirems.core.domain.contest.event.CandidateWithdrawnEvent;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +19,33 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Entity representing a candidate or option in a contest. */
+@Entity
+@Table(name = "candidates")
 public class Candidate {
-    private final UUID id;
-    private final Contest contest;
-    private final String name;
-    private final String partyAffiliation;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "contest_id", nullable = false)
+    private Contest contest;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "party_affiliation", nullable = false)
+    private String partyAffiliation;
+
+    @Transient
     private final List<Object> domainEvents = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "candidate_status", nullable = false)
     private CandidateStatus candidateStatus;
+
+    protected Candidate() {
+        // JPA constructor.
+    }
 
     private Candidate(UUID id, Contest contest, String name, String partyAffiliation) {
         this.id = Objects.requireNonNull(id, "id is required");

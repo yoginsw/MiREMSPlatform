@@ -1,20 +1,53 @@
 package io.mirems.core.domain.contest;
 
 import io.mirems.core.domain.election.Election;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Entity representing a single race or question within an election. */
+@Entity
+@Table(name = "contests")
 public class Contest {
-    private final UUID id;
-    private final Election election;
-    private final ContestType contestType;
-    private final String name;
-    private final int seats;
-    private final int voteLimit;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "election_id", nullable = false)
+    private Election election;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "contest_type", nullable = false)
+    private ContestType contestType;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "seats", nullable = false)
+    private int seats;
+
+    @Column(name = "vote_limit", nullable = false)
+    private int voteLimit;
+
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Candidate> candidates = new ArrayList<>();
+
+    protected Contest() {
+        // JPA constructor.
+    }
 
     private Contest(UUID id, Election election, ContestType contestType, String name, int seats, int voteLimit) {
         this.id = Objects.requireNonNull(id, "id is required");

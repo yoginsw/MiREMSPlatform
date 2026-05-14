@@ -1,20 +1,49 @@
 package io.mirems.core.domain.ballot;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /** Entity representing a jurisdiction/language/accessibility-specific ballot presentation. */
+@Entity
+@Table(name = "ballot_styles")
 public class BallotStyle {
     private static final Set<String> ISO_639_1_LANGUAGES = Set.of(Locale.getISOLanguages());
 
-    private final UUID id;
-    private final Ballot ballot;
-    private final String styleCode;
-    private final String district;
-    private final String language;
-    private final Set<AccessibilityFeature> accessibilityFeatures;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ballot_id", nullable = false)
+    private Ballot ballot;
+
+    @Column(name = "style_code", nullable = false, unique = true)
+    private String styleCode;
+
+    @Column(name = "district", nullable = false)
+    private String district;
+
+    @Column(name = "language", nullable = false, length = 2)
+    private String language;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "accessibility_features", nullable = false, columnDefinition = "jsonb")
+    private Set<AccessibilityFeature> accessibilityFeatures;
+
+    protected BallotStyle() {
+        // JPA constructor.
+    }
 
     private BallotStyle(
             UUID id,

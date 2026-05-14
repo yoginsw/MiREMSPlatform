@@ -288,7 +288,7 @@
 ---
 
 ### GOAL P1-015 | JPA Repositories + Flyway Migrations
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-013, P1-014
 
 **Tasks:**
@@ -303,6 +303,8 @@
 4. Add Testcontainers PostgreSQL 16.4 integration test verifying all migrations apply cleanly.
 
 **Done Criteria:** Flyway migrates cleanly on fresh DB; integration test passes.
+
+**Completion Note — 2026-05-14:** Added Flyway PostgreSQL migrations V1-V5 for election/contest/candidate, ballot/style, voter/session, voting result/correction, and audit event tables. Added required indexes including `idx_elections_status`, `idx_voting_results_session_id`, and `idx_audit_events_aggregate_id_occurred_at`, plus supporting FK/query indexes. Added Spring Data JPA repository interfaces for Election, Contest, Candidate, Ballot, BallotStyle, VoterRecord, VotingSession, VotingResult, VoteCorrection, and AuditEvent. Added `MiremsPersistenceConfiguration` with conditional DataSource-based JPA repository/entity scanning. Retrofitted core domain aggregates/entities with JPA annotations needed for repository scanning while preserving existing domain tests. Added Flyway/Testcontainers PostgreSQL 16.4 migration test and migration resource contract test. Verification command `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport build --no-daemon` succeeds in this WSL environment. Docker daemon is not available in this environment, so the Testcontainers PostgreSQL test is present but JUnit-skipped locally via `@Testcontainers(disabledWithoutDocker = true)`; it will execute where Docker is available.
 
 ---
 

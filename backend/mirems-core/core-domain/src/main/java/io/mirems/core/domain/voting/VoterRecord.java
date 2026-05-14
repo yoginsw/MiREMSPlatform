@@ -4,23 +4,49 @@ import io.mirems.core.domain.ballot.BallotStyle;
 import io.mirems.core.domain.election.Election;
 import io.mirems.core.domain.voting.encryption.Encrypted;
 import io.mirems.core.domain.voting.encryption.PiiEncryptionService;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /** Entity representing a voter eligible for one or more elections. */
+@Entity
+@Table(name = "voter_records")
 public class VoterRecord {
-    private final UUID id;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
 
     @Encrypted
-    private final String encryptedExternalVoterId;
+    @Column(name = "encrypted_external_voter_id", nullable = false)
+    private String encryptedExternalVoterId;
 
-    private final Set<UUID> eligibleElections;
-    private final RegistrationStatus registrationStatus;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "eligible_elections", nullable = false, columnDefinition = "jsonb")
+    private Set<UUID> eligibleElections;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "registration_status", nullable = false)
+    private RegistrationStatus registrationStatus;
+
+    @OneToMany(mappedBy = "voterRecord", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<VotingSession> votingSessions = new ArrayList<>();
+
+    protected VoterRecord() {
+        // JPA constructor.
+    }
 
     private VoterRecord(
             UUID id,

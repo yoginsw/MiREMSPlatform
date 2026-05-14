@@ -4,6 +4,13 @@ import io.mirems.core.domain.election.event.ElectionCertifiedEvent;
 import io.mirems.core.domain.election.event.ElectionClosedEvent;
 import io.mirems.core.domain.election.event.ElectionCreatedEvent;
 import io.mirems.core.domain.election.event.ElectionPublishedEvent;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -13,17 +20,42 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Aggregate root for a single election event. */
+@Entity
+@Table(name = "elections")
 public class Election {
-    private final UUID id;
-    private final String name;
-    private final ElectionType electionType;
-    private final String jurisdiction;
-    private final LocalDate scheduledDate;
-    private final String countryCode;
-    private final String extensionPackId;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "election_type", nullable = false)
+    private ElectionType electionType;
+
+    @Column(name = "jurisdiction", nullable = false)
+    private String jurisdiction;
+
+    @Column(name = "scheduled_date", nullable = false)
+    private LocalDate scheduledDate;
+
+    @Column(name = "country_code", nullable = false, length = 2)
+    private String countryCode;
+
+    @Column(name = "extension_pack_id", nullable = false)
+    private String extensionPackId;
+
+    @Transient
     private final List<Object> domainEvents = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "election_status", nullable = false)
     private ElectionStatus electionStatus;
+
+    protected Election() {
+        // JPA constructor.
+    }
 
     private Election(
             UUID id,

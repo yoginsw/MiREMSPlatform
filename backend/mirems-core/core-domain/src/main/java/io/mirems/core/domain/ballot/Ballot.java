@@ -2,6 +2,16 @@ package io.mirems.core.domain.ballot;
 
 import io.mirems.core.domain.contest.Contest;
 import io.mirems.core.domain.election.Election;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,14 +19,32 @@ import java.util.Set;
 import java.util.UUID;
 
 /** Entity representing the versioned ballot definition for an election. */
+@Entity
+@Table(name = "ballots")
 public class Ballot {
-    private final UUID id;
-    private final Election election;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "election_id", nullable = false)
+    private Election election;
+
+    @Transient
     private final List<BallotContest> ballotContests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ballot", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BallotStyle> ballotStyles = new ArrayList<>();
 
+    @Column(name = "ballot_version", nullable = false)
     private int ballotVersion;
+
+    @Column(name = "active", nullable = false)
     private boolean active;
+
+    protected Ballot() {
+        // JPA constructor.
+    }
 
     private Ballot(UUID id, Election election) {
         this.id = Objects.requireNonNull(id, "id is required");

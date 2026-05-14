@@ -2,21 +2,55 @@ package io.mirems.core.domain.voting;
 
 import io.mirems.core.domain.ballot.BallotStyle;
 import io.mirems.core.domain.election.Election;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Entity representing a voter interaction with a ballot style for one election. */
+@Entity
+@Table(name = "voting_sessions")
 public class VotingSession {
-    private final UUID id;
-    private final VoterRecord voterRecord;
-    private final Election election;
-    private final BallotStyle ballotStyle;
-    private final OffsetDateTime startedAt;
-    private final String deviceId;
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "voter_record_id", nullable = false)
+    private VoterRecord voterRecord;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "election_id", nullable = false)
+    private Election election;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ballot_style_id", nullable = false)
+    private BallotStyle ballotStyle;
+
+    @Column(name = "started_at", nullable = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime startedAt;
+
+    @Column(name = "device_id", nullable = false)
+    private String deviceId;
+
+    @Column(name = "completed_at", columnDefinition = "timestamp with time zone")
     private OffsetDateTime completedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "session_status", nullable = false)
     private SessionStatus sessionStatus;
+
+    protected VotingSession() {
+        // JPA constructor.
+    }
 
     private VotingSession(
             UUID id,
