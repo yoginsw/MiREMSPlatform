@@ -179,6 +179,61 @@ class ElectionManagementServiceTest {
     }
 
     @Test
+    void listGetAndUpdateContestUseRepositoryAndAuditOnlyUpdates() {
+        Election election = draftElection();
+        Contest contest = Contest.create(CONTEST_ID, election, ContestType.CANDIDATE_CHOICE, "Mayor", 1, 1);
+        when(contestRepository.findByElectionId(ELECTION_ID)).thenReturn(List.of(contest));
+        when(contestRepository.findById(CONTEST_ID)).thenReturn(Optional.of(contest));
+        when(contestRepository.save(any(Contest.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(service.listContests(ELECTION_ID)).containsExactly(contest);
+        assertThat(service.getContest(ELECTION_ID, CONTEST_ID)).contains(contest);
+
+        Contest updated = service.updateContest(new ElectionManagementService.UpdateContestCommand(
+                ELECTION_ID,
+                CONTEST_ID,
+                ContestType.RANKED_CHOICE,
+                "Mayor Ranked Choice",
+                3,
+                3,
+                "admin-006",
+                "10.0.0.6"));
+
+        assertThat(updated.getContestType()).isEqualTo(ContestType.RANKED_CHOICE);
+        assertThat(updated.getName()).isEqualTo("Mayor Ranked Choice");
+        assertThat(updated.getSeats()).isEqualTo(3);
+        verify(contestRepository).save(contest);
+        TransactionalAuditEvent event = capturePublishedEvent();
+        assertThat(event.eventType()).isEqualTo("ContestUpdated");
+        assertThat(event.payload())
+                .containsEntry("contestType", "RANKED_CHOICE")
+                .containsEntry("name", "Mayor Ranked Choice");
+    }
+
+    @Test
+    void listGetAndWithdrawCandidateUseRepositoryAndAuditOnlyWithdrawal() {
+        Election election = draftElection();
+        Contest contest = Contest.create(CONTEST_ID, election, ContestType.CANDIDATE_CHOICE, "Mayor", 1, 1);
+        Candidate candidate = contest.addCandidate(CANDIDATE_ID, "Kim Candidate", "Independent");
+        when(candidateRepository.findByContestId(CONTEST_ID)).thenReturn(List.of(candidate));
+        when(candidateRepository.findById(CANDIDATE_ID)).thenReturn(Optional.of(candidate));
+        when(candidateRepository.save(any(Candidate.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(service.listCandidates(ELECTION_ID, CONTEST_ID)).containsExactly(candidate);
+        assertThat(service.getCandidate(ELECTION_ID, CONTEST_ID, CANDIDATE_ID)).contains(candidate);
+
+        Candidate withdrawn = service.withdrawCandidate(CANDIDATE_ID, "officer-001", "10.0.0.7");
+
+        assertThat(withdrawn.getCandidateStatus()).isEqualTo(io.mirems.core.domain.contest.CandidateStatus.WITHDRAWN);
+        verify(candidateRepository).save(candidate);
+        TransactionalAuditEvent event = capturePublishedEvent();
+        assertThat(event.eventType()).isEqualTo("CandidateWithdrawn");
+        assertThat(event.payload())
+                .containsEntry("candidateStatus", "WITHDRAWN")
+                .containsEntry("contestId", CONTEST_ID.toString());
+    }
+
+    @Test
     void publishElectionDelegatesToWorkflowSavesPublishedElectionAndEmitsAuditEvent() {
         Election election = draftElection();
         when(electionRepository.findById(ELECTION_ID)).thenReturn(Optional.of(election));

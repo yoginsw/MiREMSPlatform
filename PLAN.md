@@ -589,7 +589,7 @@
 ---
 
 ### GOAL P3-031 | Contest and Candidate Controllers
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-030
 
 **Tasks:**
@@ -599,6 +599,8 @@
 4. Integration tests including BPMN process trigger verification.
 
 **Done Criteria:** 80% coverage; BPMN trigger tested.
+
+**Completion Note:** Implemented generated-stub-backed `ContestController` and `CandidateController` for contest create/list/get/update and candidate registration/list/get/withdrawal under election/contest routes. Registration now persists the candidate through `ElectionManagementService` and triggers `CandidateRegistrationProcessService.register(...)`, with RestAssured integration tests verifying the BPMN trigger payload. Added authenticated-read and role-gated write security rules (`ELECTION_ADMIN` for contest writes, `ELECTION_OFFICER` for candidate registration/withdrawal), RFC 7807 not-found/service-unavailable handling, service read/update/withdraw methods, repository-backed unit coverage, audit events for contest updates and candidate withdrawals, and domain support for contest detail updates. Aligned OpenAPI `ContestType` enum with the existing domain model and regenerated the TypeScript Axios client.
 
 ---
 

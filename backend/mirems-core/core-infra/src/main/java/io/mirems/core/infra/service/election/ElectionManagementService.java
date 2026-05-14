@@ -115,6 +115,36 @@ public class ElectionManagementService {
         return saved;
     }
 
+    @Transactional(readOnly = true)
+    public List<Contest> listContests(UUID electionId) {
+        return contestRepository.findByElectionId(electionId);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<Contest> getContest(UUID electionId, UUID contestId) {
+        return contestRepository.findById(contestId)
+                .filter(contest -> contest.getElection().getId().equals(electionId));
+    }
+
+    public Contest updateContest(UpdateContestCommand command) {
+        Contest contest = getContest(command.electionId(), command.contestId())
+                .orElseThrow(() -> new EntityNotFoundException("Contest not found: " + command.contestId()));
+        contest.updateDetails(command.contestType(), command.name(), command.seats(), command.voteLimit());
+        Contest saved = contestRepository.save(contest);
+        publishAuditEvent(
+                "ContestUpdated",
+                saved.getId(),
+                Map.of(
+                        "electionId", command.electionId().toString(),
+                        "contestType", saved.getContestType().name(),
+                        "name", saved.getName(),
+                        "seats", saved.getSeats(),
+                        "voteLimit", saved.getVoteLimit()),
+                command.actorId(),
+                command.sourceIp());
+        return saved;
+    }
+
     public Candidate addCandidate(AddCandidateCommand command) {
         Contest contest = contestRepository
                 .findById(command.contestId())
@@ -132,6 +162,38 @@ public class ElectionManagementService {
                         "candidateStatus", saved.getCandidateStatus().name()),
                 command.actorId(),
                 command.sourceIp());
+        return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Candidate> listCandidates(UUID electionId, UUID contestId) {
+        return candidateRepository.findByContestId(contestId).stream()
+                .filter(candidate -> candidate.getContest().getElection().getId().equals(electionId))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<Candidate> getCandidate(UUID electionId, UUID contestId, UUID candidateId) {
+        return candidateRepository.findById(candidateId)
+                .filter(candidate -> candidate.getContest().getId().equals(contestId))
+                .filter(candidate -> candidate.getContest().getElection().getId().equals(electionId));
+    }
+
+    public Candidate withdrawCandidate(UUID candidateId, String actorId, String sourceIp) {
+        Candidate candidate = candidateRepository
+                .findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate not found: " + candidateId));
+        candidate.withdraw();
+        Candidate saved = candidateRepository.save(candidate);
+        publishAuditEvent(
+                "CandidateWithdrawn",
+                saved.getId(),
+                Map.of(
+                        "candidateStatus", saved.getCandidateStatus().name(),
+                        "contestId", saved.getContest().getId().toString(),
+                        "electionId", saved.getContest().getElection().getId().toString()),
+                actorId,
+                sourceIp);
         return saved;
     }
 
@@ -186,6 +248,16 @@ public class ElectionManagementService {
 
     public record AddContestCommand(
             UUID electionId,
+            ContestType contestType,
+            String name,
+            int seats,
+            int voteLimit,
+            String actorId,
+            String sourceIp) {}
+
+    public record UpdateContestCommand(
+            UUID electionId,
+            UUID contestId,
             ContestType contestType,
             String name,
             int seats,

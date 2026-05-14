@@ -48,9 +48,23 @@ public class ActuatorSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/elections").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections/*/contests").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections/*/contests/*/candidates")
+                        .hasRole("ELECTION_OFFICER")
+                        .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*/candidates/*/withdraw")
+                        .hasRole("ELECTION_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/publish", "/elections/*/close")
                         .hasRole("ELECTION_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/elections", "/elections/*").authenticated()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/elections",
+                                "/elections/*",
+                                "/elections/*/contests",
+                                "/elections/*/contests/*",
+                                "/elections/*/contests/*/candidates",
+                                "/elections/*/contests/*/candidates/*")
+                        .authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .build();

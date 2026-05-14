@@ -75,6 +75,14 @@ public class Contest {
         return candidate;
     }
 
+    public void updateDetails(ContestType contestType, String name, int seats, int voteLimit) {
+        this.contestType = Objects.requireNonNull(contestType, "contestType is required");
+        this.name = requireText(name, "name");
+        validateSeatConfiguration(seats, voteLimit);
+        this.seats = seats;
+        this.voteLimit = voteLimit;
+    }
+
     public UUID getId() {
         return id;
     }

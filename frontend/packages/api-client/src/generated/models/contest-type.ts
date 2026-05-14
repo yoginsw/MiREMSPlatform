@@ -21,9 +21,9 @@
  */
 
 export const ContestType = {
-    SingleWinner: 'SINGLE_WINNER',
-    MultiWinner: 'MULTI_WINNER',
-    Referendum: 'REFERENDUM'
+    CandidateChoice: 'CANDIDATE_CHOICE',
+    BallotMeasure: 'BALLOT_MEASURE',
+    RankedChoice: 'RANKED_CHOICE'
 } as const;
 
 export type ContestType = typeof ContestType[keyof typeof ContestType];

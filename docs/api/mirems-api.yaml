@@ -800,7 +800,7 @@ components:
           type: string
     ContestType:
       type: string
-      enum: [SINGLE_WINNER, MULTI_WINNER, REFERENDUM]
+      enum: [CANDIDATE_CHOICE, BALLOT_MEASURE, RANKED_CHOICE]
     ContestRequest:
       type: object
       required: [title, type, seats]
