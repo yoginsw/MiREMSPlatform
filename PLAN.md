@@ -309,7 +309,7 @@
 ---
 
 ### GOAL P1-016 | Domain Service — Election Management
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-015
 
 **Tasks:**
@@ -319,6 +319,8 @@
 4. Unit tests with Mockito mocking repositories.
 
 **Done Criteria:** 80% service coverage; transactional event emission tested.
+
+**Completion Note — 2026-05-14:** Added `ElectionManagementService` in `core-infra` with direct service methods for election creation, contest addition, candidate addition, publication, and close. Added `ElectionPublicationWorkflow` and `NoopElectionPublicationWorkflow` as the BPMN delegation stub for `publishElection()`. Service methods persist through Spring Data repositories and publish `TransactionalAuditEvent` application events instead of directly calling `AuditEventPublisher` inside the transaction. Added `TransactionalAuditEventListener` with `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)` to bridge committed service events to append-only audit publication. Added Mockito unit tests for repository interactions, workflow delegation, missing aggregate rejection, audit payloads, service-level `@Transactional`, and AFTER_COMMIT listener configuration. Coverage for `io.mirems.core.infra.service.election` is 96.2% line coverage; `ElectionManagementService` line coverage is 97.7%. Verification command `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport build --no-daemon` succeeds.
 
 ---
 
