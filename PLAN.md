@@ -378,7 +378,7 @@
 ---
 
 ### GOAL P2-020 | ProcessService Wrapper (Hybrid Architecture Adapter)
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-019
 **Context files:** `docs/adr/ADR-002-hybrid-bpmn-direct.md`
 
@@ -396,7 +396,7 @@
 4. This adapter is the ONLY entry point from Direct Services into the BPMN engine.
 5. Unit test with mocked Kogito API.
 
-**Done Criteria:** Adapter tested; interface contract verified; 80% coverage.
+**Done Criteria:** Adapter tested; interface contract verified; process package coverage above 80%.
 
 ---
 
