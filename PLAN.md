@@ -605,7 +605,7 @@
 ---
 
 ### GOAL P3-032 | Ballot and BallotStyle Controllers
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-031
 
 **Tasks:**
@@ -615,6 +615,8 @@
 4. Integration tests.
 
 **Done Criteria:** 80% coverage.
+
+**Completion Note:** Implemented generated-stub-backed ballot endpoints for create/list/version/preview and ballot style create/list/update/delete under election routes. Added `BallotManagementService` with repository-backed create/version/style CRUD, audit events, election/contest ownership checks, and preview retrieval. Added domain support for ballot style detail updates. Secured ballot and ballot-style writes with `ELECTION_ADMIN` while keeping ballot/style reads authenticated. Added RFC 7807 handling for not-found, validation, domain validation, and service-unavailable failures. Aligned OpenAPI ballot schemas with the existing domain model (`contestIds`, nested contest/style responses, accessibility features, active/version fields) and regenerated the TypeScript Axios client. Added RestAssured integration tests plus service unit tests; backend and frontend builds pass.
 
 ---
 

@@ -13,6 +13,12 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { BallotContestResponse } from './ballot-contest-response';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { BallotStyleResponse } from './ballot-style-response';
 
 /**
  *
@@ -34,20 +40,26 @@ export interface BallotResponse {
     'electionId': string;
     /**
      *
-     * @type {string}
-     * @memberof BallotResponse
-     */
-    'styleId': string;
-    /**
-     *
      * @type {number}
      * @memberof BallotResponse
      */
-    'version': number;
+    'ballotVersion': number;
     /**
      *
-     * @type {Array<string>}
+     * @type {boolean}
      * @memberof BallotResponse
      */
-    'contestIds': Array<string>;
+    'active': boolean;
+    /**
+     *
+     * @type {Array<BallotContestResponse>}
+     * @memberof BallotResponse
+     */
+    'contests': Array<BallotContestResponse>;
+    /**
+     *
+     * @type {Array<BallotStyleResponse>}
+     * @memberof BallotResponse
+     */
+    'styles': Array<BallotStyleResponse>;
 }

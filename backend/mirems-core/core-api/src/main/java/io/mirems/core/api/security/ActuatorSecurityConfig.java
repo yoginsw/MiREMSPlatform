@@ -50,6 +50,14 @@ public class ActuatorSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/elections").hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/contests").hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections/*/ballots", "/elections/*/ballots/*/versions")
+                        .hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections/*/ballot-styles")
+                        .hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/elections/*/ballot-styles/*")
+                        .hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/elections/*/ballot-styles/*")
+                        .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/contests/*/candidates")
                         .hasRole("ELECTION_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*/candidates/*/withdraw")
@@ -63,7 +71,10 @@ public class ActuatorSecurityConfig {
                                 "/elections/*/contests",
                                 "/elections/*/contests/*",
                                 "/elections/*/contests/*/candidates",
-                                "/elections/*/contests/*/candidates/*")
+                                "/elections/*/contests/*/candidates/*",
+                                "/elections/*/ballots",
+                                "/elections/*/ballots/*/preview",
+                                "/elections/*/ballot-styles")
                         .authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())

@@ -13,6 +13,9 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { AccessibilityFeature } from './accessibility-feature';
 
 /**
  *
@@ -25,17 +28,29 @@ export interface BallotStyleRequest {
      * @type {string}
      * @memberof BallotStyleRequest
      */
-    'name': string;
+    'ballotId': string;
     /**
      *
-     * @type {Array<string>}
+     * @type {string}
      * @memberof BallotStyleRequest
      */
-    'precinctIds': Array<string>;
+    'styleCode': string;
     /**
      *
-     * @type {Array<string>}
+     * @type {string}
      * @memberof BallotStyleRequest
      */
-    'languageCodes': Array<string>;
+    'district': string;
+    /**
+     *
+     * @type {string}
+     * @memberof BallotStyleRequest
+     */
+    'language': string;
+    /**
+     *
+     * @type {Array<AccessibilityFeature>}
+     * @memberof BallotStyleRequest
+     */
+    'accessibilityFeatures': Array<AccessibilityFeature>;
 }

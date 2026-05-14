@@ -17,13 +17,25 @@
 /**
  *
  * @export
- * @interface BallotRequest
+ * @interface BallotContestResponse
  */
-export interface BallotRequest {
+export interface BallotContestResponse {
     /**
      *
-     * @type {Array<string>}
-     * @memberof BallotRequest
+     * @type {string}
+     * @memberof BallotContestResponse
      */
-    'contestIds': Array<string>;
+    'contestId': string;
+    /**
+     *
+     * @type {number}
+     * @memberof BallotContestResponse
+     */
+    'displayOrder': number;
+    /**
+     *
+     * @type {string}
+     * @memberof BallotContestResponse
+     */
+    'presentationTitle': string;
 }

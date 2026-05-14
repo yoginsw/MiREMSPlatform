@@ -1,3 +1,5 @@
+export * from './accessibility-feature';
+export * from './ballot-contest-response';
 export * from './ballot-preview-response';
 export * from './ballot-request';
 export * from './ballot-response';

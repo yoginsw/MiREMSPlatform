@@ -92,6 +92,19 @@ public class BallotStyle {
         return language;
     }
 
+    public void updateDetails(
+            String styleCode,
+            String district,
+            String language,
+            Set<AccessibilityFeature> accessibilityFeatures) {
+        this.styleCode = Ballot.requireText(styleCode, "styleCode");
+        this.district = Ballot.requireText(district, "district");
+        this.language = validateLanguage(language);
+        this.accessibilityFeatures = Set.copyOf(Objects.requireNonNull(
+                accessibilityFeatures,
+                "accessibilityFeatures is required"));
+    }
+
     public Set<AccessibilityFeature> getAccessibilityFeatures() {
         return accessibilityFeatures;
     }

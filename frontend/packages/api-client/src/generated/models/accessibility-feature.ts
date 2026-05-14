@@ -17,13 +17,15 @@
 /**
  *
  * @export
- * @interface BallotRequest
+ * @enum {string}
  */
-export interface BallotRequest {
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof BallotRequest
-     */
-    'contestIds': Array<string>;
-}
+
+export const AccessibilityFeature = {
+    Audio: 'AUDIO',
+    HighContrast: 'HIGH_CONTRAST',
+    LargeText: 'LARGE_TEXT',
+    ScreenReader: 'SCREEN_READER',
+    TactileInterface: 'TACTILE_INTERFACE'
+} as const;
+
+export type AccessibilityFeature = typeof AccessibilityFeature[keyof typeof AccessibilityFeature];
