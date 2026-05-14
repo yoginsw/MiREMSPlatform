@@ -270,7 +270,7 @@
 ---
 
 ### GOAL P1-014 | Audit Log — Append-Only Domain Events
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-009
 **Context files:** `docs/adr/ADR-006-audit-log-design.md`
 
@@ -282,6 +282,8 @@
 5. Test: verify `@AuditAction` emits events and that saving twice with same ID is rejected.
 
 **Done Criteria:** AOP annotation emits events; Kafka publish verified with embedded Kafka in test; 80% coverage.
+
+**Completion Note — 2026-05-14:** Added append-only `AuditEvent` JPA entity with Hibernate `@Immutable`, non-updatable persisted columns, JSONB payload, actor/source/timestamp fields, immutable payload exposure, and validation. Added `AuditEventRepository` contract exposing only `save()` and `findBy*()` read methods. Added infra audit components: `InMemoryAuditEventRepository` with duplicate-ID rejection, `DuplicateAuditEventException`, `AuditEventPublisher` that persists then publishes JSON to Kafka topic `mirems.audit.events`, `@AuditAction`, `AuditActionAspect` that emits only after successful service return, and `AuditEventPublisherConfiguration` with conditional Spring bean wiring. Added Embedded Kafka test verifying AOP emission, repository persistence, Kafka record publication, and no emission on service exception. Verified duplicate save with same ID is rejected. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: audit domain package line coverage 91.7%; audit infra package line coverage 83.8%.
 
 ---
 
