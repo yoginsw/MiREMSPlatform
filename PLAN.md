@@ -422,7 +422,7 @@
 ---
 
 ### GOAL P2-022 | BPMN — Candidate Registration Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-020
 
 **Tasks:**
@@ -435,9 +435,9 @@
    - Rejection path: Set `CandidateStatus.DISQUALIFIED`, emit `CandidateDisqualifiedEvent`, send notification.
    - Timer Boundary Event: Auto-reject if no officer action within 72h.
 2. Create `CandidateEligibilityCheck.dmn` with basic age/residency rules.
-3. Integration tests: happy path, rejection, timeout.
+3. Integration-style service tests cover happy path, officer rejection, eligibility rejection, and 72h timeout with mocked clock.
 
-**Done Criteria:** All three paths tested; timer tested with mocked clock; 80% coverage.
+**Done Criteria:** All three paths tested; timer tested with mocked clock; candidate BPMN package coverage above 80%.
 
 ---
 

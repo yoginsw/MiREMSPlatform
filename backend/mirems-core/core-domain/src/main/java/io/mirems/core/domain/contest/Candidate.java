@@ -1,6 +1,7 @@
 package io.mirems.core.domain.contest;
 
 import io.mirems.core.domain.contest.event.CandidateApprovedEvent;
+import io.mirems.core.domain.contest.event.CandidateDisqualifiedEvent;
 import io.mirems.core.domain.contest.event.CandidateWithdrawnEvent;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,7 +79,17 @@ public class Candidate {
     }
 
     public void disqualify() {
+        disqualify(List.of());
+    }
+
+    public void disqualify(List<String> reasons) {
         transitionTo(CandidateStatus.DISQUALIFIED);
+        record(new CandidateDisqualifiedEvent(
+                id,
+                contest.getId(),
+                contest.getElection().getId(),
+                reasons,
+                OffsetDateTime.now()));
     }
 
     public List<Object> pullDomainEvents() {

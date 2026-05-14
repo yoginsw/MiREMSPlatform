@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:drools="http://www.jboss.org/drools"
+                   id="Definitions_CandidateRegistration"
+                   targetNamespace="https://mirems.io/bpmn/candidate-registration">
+
+    <bpmn2:process id="candidate-registration" name="Candidate Registration Process" isExecutable="true">
+        <bpmn2:startEvent id="StartEvent_CandidateSubmitsRegistration" name="Candidate submits registration">
+            <bpmn2:outgoing>Flow_Start_To_Eligibility</bpmn2:outgoing>
+        </bpmn2:startEvent>
+
+        <bpmn2:serviceTask id="ServiceTask_ValidateCandidateEligibility"
+                           name="Validate candidate eligibility using CandidateEligibilityCheck.dmn"
+                           drools:taskName="CandidateEligibilityCheckHandler">
+            <bpmn2:incoming>Flow_Start_To_Eligibility</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Eligibility_To_OfficerReview</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:userTask id="UserTask_ElectionOfficerReview" name="ELECTION_OFFICER reviews documentation">
+            <bpmn2:incoming>Flow_Eligibility_To_OfficerReview</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_OfficerReview_To_ApprovedGateway</bpmn2:outgoing>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceAssignmentExpression>
+                    <bpmn2:formalExpression>ELECTION_OFFICER</bpmn2:formalExpression>
+                </bpmn2:resourceAssignmentExpression>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:boundaryEvent id="BoundaryTimer_AutoRejectAfter72h" name="Auto-reject after 72h" attachedToRef="UserTask_ElectionOfficerReview" cancelActivity="true">
+            <bpmn2:outgoing>Flow_Timer_To_Disqualify</bpmn2:outgoing>
+            <bpmn2:timerEventDefinition>
+                <bpmn2:timeDuration>PT72H</bpmn2:timeDuration>
+            </bpmn2:timerEventDefinition>
+        </bpmn2:boundaryEvent>
+
+        <bpmn2:exclusiveGateway id="Gateway_Approved" name="Approved?">
+            <bpmn2:incoming>Flow_OfficerReview_To_ApprovedGateway</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Approved_To_ApproveCandidate</bpmn2:outgoing>
+            <bpmn2:outgoing>Flow_Rejected_To_DisqualifyCandidate</bpmn2:outgoing>
+        </bpmn2:exclusiveGateway>
+
+        <bpmn2:serviceTask id="ServiceTask_ApproveCandidate"
+                           name="Approve candidate"
+                           drools:taskName="CandidateApprovalWorkItemHandler">
+            <bpmn2:incoming>Flow_Approved_To_ApproveCandidate</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_ApproveCandidate_To_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:serviceTask id="ServiceTask_DisqualifyCandidate"
+                           name="Disqualify candidate"
+                           drools:taskName="CandidateApprovalWorkItemHandler">
+            <bpmn2:incoming>Flow_Rejected_To_DisqualifyCandidate</bpmn2:incoming>
+            <bpmn2:incoming>Flow_Timer_To_Disqualify</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Disqualify_To_Notify</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:serviceTask id="ServiceTask_SendRejectionNotification"
+                           name="Send rejection notification"
+                           drools:taskName="CandidateRejectionNotificationWorkItemHandler">
+            <bpmn2:incoming>Flow_Disqualify_To_Notify</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Notify_To_EndRejected</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:endEvent id="EndEvent_CandidateApproved" name="CandidateApprovedEvent">
+            <bpmn2:incoming>Flow_ApproveCandidate_To_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+        <bpmn2:endEvent id="EndEvent_CandidateDisqualified" name="CandidateDisqualifiedEvent">
+            <bpmn2:incoming>Flow_Notify_To_EndRejected</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+        <bpmn2:sequenceFlow id="Flow_Start_To_Eligibility" sourceRef="StartEvent_CandidateSubmitsRegistration" targetRef="ServiceTask_ValidateCandidateEligibility"/>
+        <bpmn2:sequenceFlow id="Flow_Eligibility_To_OfficerReview" sourceRef="ServiceTask_ValidateCandidateEligibility" targetRef="UserTask_ElectionOfficerReview"/>
+        <bpmn2:sequenceFlow id="Flow_OfficerReview_To_ApprovedGateway" sourceRef="UserTask_ElectionOfficerReview" targetRef="Gateway_Approved"/>
+        <bpmn2:sequenceFlow id="Flow_Approved_To_ApproveCandidate" sourceRef="Gateway_Approved" targetRef="ServiceTask_ApproveCandidate"/>
+        <bpmn2:sequenceFlow id="Flow_Rejected_To_DisqualifyCandidate" sourceRef="Gateway_Approved" targetRef="ServiceTask_DisqualifyCandidate"/>
+        <bpmn2:sequenceFlow id="Flow_Timer_To_Disqualify" sourceRef="BoundaryTimer_AutoRejectAfter72h" targetRef="ServiceTask_DisqualifyCandidate"/>
+        <bpmn2:sequenceFlow id="Flow_Disqualify_To_Notify" sourceRef="ServiceTask_DisqualifyCandidate" targetRef="ServiceTask_SendRejectionNotification"/>
+        <bpmn2:sequenceFlow id="Flow_Notify_To_EndRejected" sourceRef="ServiceTask_SendRejectionNotification" targetRef="EndEvent_CandidateDisqualified"/>
+        <bpmn2:sequenceFlow id="Flow_ApproveCandidate_To_End" sourceRef="ServiceTask_ApproveCandidate" targetRef="EndEvent_CandidateApproved"/>
+    </bpmn2:process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_CandidateRegistration">
+        <bpmndi:BPMNPlane id="BPMNPlane_CandidateRegistration" bpmnElement="candidate-registration">
+            <bpmndi:BPMNShape id="Shape_Start" bpmnElement="StartEvent_CandidateSubmitsRegistration"><dc:Bounds x="120" y="160" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Eligibility" bpmnElement="ServiceTask_ValidateCandidateEligibility"><dc:Bounds x="210" y="138" width="160" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Review" bpmnElement="UserTask_ElectionOfficerReview"><dc:Bounds x="430" y="138" width="160" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Timer" bpmnElement="BoundaryTimer_AutoRejectAfter72h"><dc:Bounds x="530" y="200" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Gateway" bpmnElement="Gateway_Approved" isMarkerVisible="true"><dc:Bounds x="650" y="153" width="50" height="50"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Approve" bpmnElement="ServiceTask_ApproveCandidate"><dc:Bounds x="750" y="90" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Disqualify" bpmnElement="ServiceTask_DisqualifyCandidate"><dc:Bounds x="750" y="250" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Notify" bpmnElement="ServiceTask_SendRejectionNotification"><dc:Bounds x="950" y="250" width="170" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_EndApproved" bpmnElement="EndEvent_CandidateApproved"><dc:Bounds x="960" y="112" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_EndRejected" bpmnElement="EndEvent_CandidateDisqualified"><dc:Bounds x="1170" y="272" width="36" height="36"/></bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

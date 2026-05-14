@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
+             id="Definitions_CandidateEligibilityCheck"
+             name="CandidateEligibilityCheck"
+             namespace="https://mirems.io/dmn/candidate-eligibility">
+    <inputData id="Input_candidateAge" name="candidateAge">
+        <variable id="Variable_candidateAge" name="candidateAge" typeRef="number"/>
+    </inputData>
+    <inputData id="Input_residencyVerified" name="residencyVerified">
+        <variable id="Variable_residencyVerified" name="residencyVerified" typeRef="boolean"/>
+    </inputData>
+    <decision id="Decision_CandidateEligibilityCheck" name="CandidateEligibilityCheck">
+        <variable id="Variable_candidateEligibility" name="candidateEligibility" typeRef="CandidateEligibilityResult"/>
+        <informationRequirement>
+            <requiredInput href="#Input_candidateAge"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#Input_residencyVerified"/>
+        </informationRequirement>
+        <decisionTable id="DecisionTable_CandidateEligibilityCheck" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_candidateAge" label="candidateAge">
+                <inputExpression id="InputExpression_candidateAge" typeRef="number">
+                    <text>candidateAge</text>
+                </inputExpression>
+            </input>
+            <input id="InputClause_residencyVerified" label="residencyVerified">
+                <inputExpression id="InputExpression_residencyVerified" typeRef="boolean">
+                    <text>residencyVerified</text>
+                </inputExpression>
+            </input>
+            <output id="OutputClause_eligible" label="eligible" name="eligible" typeRef="boolean"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_UnderAge">
+                <inputEntry id="Rule_UnderAge_Age"><text>&lt; 35</text></inputEntry>
+                <inputEntry id="Rule_UnderAge_Residency"><text>-</text></inputEntry>
+                <outputEntry id="Rule_UnderAge_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_UnderAge_Reason"><text>"age must be at least 35"</text></outputEntry>
+            </rule>
+            <rule id="Rule_ResidencyMissing">
+                <inputEntry id="Rule_ResidencyMissing_Age"><text>&gt;= 35</text></inputEntry>
+                <inputEntry id="Rule_ResidencyMissing_Residency"><text>false</text></inputEntry>
+                <outputEntry id="Rule_ResidencyMissing_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_ResidencyMissing_Reason"><text>"residency must be verified"</text></outputEntry>
+            </rule>
+            <rule id="Rule_Eligible">
+                <inputEntry id="Rule_Eligible_Age"><text>&gt;= 35</text></inputEntry>
+                <inputEntry id="Rule_Eligible_Residency"><text>true</text></inputEntry>
+                <outputEntry id="Rule_Eligible_Eligible"><text>true</text></outputEntry>
+                <outputEntry id="Rule_Eligible_Reason"><text>"eligible"</text></outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>
