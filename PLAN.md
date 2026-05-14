@@ -184,7 +184,7 @@
 ## Phase 1 — Core Domain Model
 
 ### GOAL P1-009 | Election Aggregate Root
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-001, P0-008
 **Context files:** `AGENTS.md §5`, `docs/vvsg/VVSG2_MAPPING.md`
 
@@ -195,6 +195,8 @@
 4. Unit test all state transitions (valid and invalid).
 
 **Done Criteria:** 90% unit test coverage on `Election` aggregate; state machine tested exhaustively.
+
+**Completion Note — 2026-05-14:** Added the pure domain `Election` aggregate, `ElectionType`, `ElectionStatus` lifecycle state machine, `InvalidElectionStateException`, and P1-009 domain events. Implemented strict unit tests for aggregate creation, event recording/clearing, allowed transitions, invalid transitions, terminal `CERTIFIED` behavior, validation, and event timestamps. Added JaCoCo XML/HTML report generation for backend Java modules and verified `Election` aggregate coverage at 100% line/branch/instruction coverage with exhaustive state-machine checks. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport build --no-daemon` succeeds.
 
 ---
 

@@ -1,6 +1,7 @@
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.testing.jacoco.tasks.JacocoReport
 
 plugins {
     base
@@ -28,6 +29,7 @@ val backendJavaProjects = listOf(
 
 configure(backendJavaProjects.map { project(it) }) {
     apply(plugin = "java-library")
+    apply(plugin = "jacoco")
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
@@ -44,5 +46,13 @@ configure(backendJavaProjects.map { project(it) }) {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+    }
+
+    tasks.named<JacocoReport>("jacocoTestReport") {
+        dependsOn(tasks.named("test"))
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
     }
 }
