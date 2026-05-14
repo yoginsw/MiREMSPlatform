@@ -252,7 +252,7 @@
 ---
 
 ### GOAL P1-013 | VotingResult — Immutable Record
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-012
 **Context files:** `docs/adr/ADR-004-vote-immutability.md`
 
@@ -264,6 +264,8 @@
 5. Unit test immutability: verify no `@Column(updatable=true)` exists on `VotingResult`.
 
 **Done Criteria:** Attempted update throws exception; hash is deterministic; 90% coverage.
+
+**Completion Note — 2026-05-14:** Added immutable JPA `VotingResult` with Hibernate `@Immutable`, no setters, non-updatable columns/join columns, JSONB `selectedCandidateIds`, timestamp-with-time-zone `castAt`, and SHA-256 hash computed in `@PrePersist`. Added append-only `VotingResultRepository` contract exposing only `save()` and `findBy*()` methods, with no update/delete methods. Added `VoteCorrection` and `CorrectionStatus` for amendments that reference the original result without mutating it. Added TDD tests for immutable annotations, non-updatable fields, immutable selected-candidate list update attempt, deterministic and field-sensitive hash, `@PrePersist` hook, repository method surface, correction reference behavior, and validation. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: result package line coverage 96.8%. Also removed tracked `_temp/` working files from the repository per project cleanup request.
 
 ---
 
