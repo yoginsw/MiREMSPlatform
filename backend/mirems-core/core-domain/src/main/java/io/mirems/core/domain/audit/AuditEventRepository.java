@@ -13,4 +13,6 @@ public interface AuditEventRepository {
     List<AuditEvent> findByAggregateId(UUID aggregateId);
 
     List<AuditEvent> findByEventType(String eventType);
+
+    List<AuditEvent> findAllChronologically();
 }

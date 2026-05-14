@@ -41,6 +41,11 @@ public class InMemoryAuditEventRepository implements AuditEventRepository {
                 .toList();
     }
 
+    @Override
+    public List<AuditEvent> findAllChronologically() {
+        return sortedEvents();
+    }
+
     private List<AuditEvent> sortedEvents() {
         List<AuditEvent> snapshot = new ArrayList<>(events.values());
         snapshot.sort(Comparator.comparing(AuditEvent::getOccurredAt).thenComparing(AuditEvent::getId));

@@ -122,5 +122,12 @@ class AuditReviewProcessServiceTest {
         public List<AuditEvent> findByEventType(String eventType) {
             return events.stream().filter(event -> event.getEventType().equals(eventType)).toList();
         }
+
+        @Override
+        public List<AuditEvent> findAllChronologically() {
+            return events.stream()
+                    .sorted(java.util.Comparator.comparing(AuditEvent::getOccurredAt).thenComparing(AuditEvent::getId))
+                    .toList();
+        }
     }
 }

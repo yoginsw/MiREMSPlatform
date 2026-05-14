@@ -9,4 +9,6 @@ public interface SpringDataAuditEventJpaRepository extends JpaRepository<AuditEv
     List<AuditEvent> findByAggregateIdOrderByOccurredAtAsc(UUID aggregateId);
 
     List<AuditEvent> findByEventType(String eventType);
+
+    List<AuditEvent> findAllByOrderByOccurredAtAscIdAsc();
 }

@@ -14,6 +14,7 @@
 
 
 
+export * from './apis/audit-api';
 export * from './apis/ballots-api';
 export * from './apis/candidates-api';
 export * from './apis/contests-api';

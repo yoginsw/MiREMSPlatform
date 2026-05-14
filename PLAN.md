@@ -687,7 +687,7 @@
 ---
 
 ### GOAL P3-036 | Audit Log Controller
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-014
 
 **Tasks:**
@@ -696,6 +696,14 @@
 3. Integration tests including pagination.
 
 **Done Criteria:** 80% coverage; role restriction verified.
+
+**Completion Notes:**
+- Added OpenAPI `Audit` tag, `GET /audit` operation, `AuditLogEntry`, and `AuditLogPageResponse`; regenerated Java server stubs and TypeScript Axios client.
+- Implemented generated-stub-backed `AuditLogController` with aggregate id/type filters, inclusive `from`/`to` time-window filtering, deterministic chronological ordering, and page/size metadata.
+- Extended the append-only `AuditEventRepository` read contract with `findAllChronologically()` and implemented it in in-memory and JPA adapters.
+- Added `AUDITOR`/`SYSTEM_ADMIN` route restriction for `GET /audit`.
+- Added RFC 7807 handling for invalid audit query and audit service unavailable fallback.
+- Added integration tests for filtering, pagination, second-page access, invalid query validation, and role restrictions.
 
 ---
 

@@ -39,4 +39,9 @@ public class JpaAuditEventRepositoryAdapter implements AuditEventRepository {
     public List<AuditEvent> findByEventType(String eventType) {
         return repository.findByEventType(eventType);
     }
+
+    @Override
+    public List<AuditEvent> findAllChronologically() {
+        return repository.findAllByOrderByOccurredAtAscIdAsc();
+    }
 }

@@ -2,6 +2,7 @@
 .npmignore
 README.md
 api.ts
+apis/audit-api.ts
 apis/ballots-api.ts
 apis/candidates-api.ts
 apis/contests-api.ts
@@ -16,6 +17,8 @@ configuration.ts
 git_push.sh
 index.ts
 models/accessibility-feature.ts
+models/audit-log-entry.ts
+models/audit-log-page-response.ts
 models/ballot-contest-response.ts
 models/ballot-preview-response.ts
 models/ballot-request.ts

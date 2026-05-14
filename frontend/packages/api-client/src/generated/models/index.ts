@@ -1,4 +1,6 @@
 export * from './accessibility-feature';
+export * from './audit-log-entry';
+export * from './audit-log-page-response';
 export * from './ballot-contest-response';
 export * from './ballot-preview-response';
 export * from './ballot-request';

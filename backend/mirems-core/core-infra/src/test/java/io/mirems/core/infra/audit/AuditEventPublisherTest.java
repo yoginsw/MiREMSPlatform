@@ -51,8 +51,8 @@ class AuditEventPublisherTest {
                 .map(java.lang.reflect.Method::getName)
                 .toList();
 
-        assertThat(methodNames).contains("save", "findById", "findByAggregateId", "findByEventType");
-        assertThat(methodNames).allMatch(name -> name.equals("save") || name.startsWith("findBy"));
+        assertThat(methodNames).contains("save", "findById", "findByAggregateId", "findByEventType", "findAllChronologically");
+        assertThat(methodNames).allMatch(name -> name.equals("save") || name.startsWith("findBy") || name.equals("findAllChronologically"));
         assertThat(methodNames).noneMatch(name -> name.startsWith("delete") || name.startsWith("update"));
 
         AuditEvent event = AuditEvent.create(
