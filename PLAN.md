@@ -201,7 +201,7 @@
 ---
 
 ### GOAL P1-010 | Contest and Candidate Entities
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-009
 
 **Tasks:**
@@ -212,6 +212,8 @@
 5. Unit test contest/candidate business rules.
 
 **Done Criteria:** All entity constraints tested; 90% coverage.
+
+**Completion Note — 2026-05-14:** Added pure domain `Contest` and `Candidate` entities with `ContestType`, `CandidateStatus`, `ContestValidationException`, `CandidateStateException`, and candidate approval/withdrawal domain events. Implemented strict TDD tests for contest initialization, required field validation, `voteLimit <= seats`, candidate creation, candidate required fields, approval/withdrawal event payloads, event buffer clearing, invalid lifecycle transitions, and exhaustive candidate status transition matrix. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: contest package line coverage 97.8% and all P1-010 entity/business constraints covered.
 
 ---
 
