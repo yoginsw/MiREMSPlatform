@@ -34,7 +34,7 @@ export interface ElectionRequest {
      * @type {ElectionType}
      * @memberof ElectionRequest
      */
-    'type': ElectionType;
+    'electionType': ElectionType;
     /**
      *
      * @type {string}
@@ -46,11 +46,17 @@ export interface ElectionRequest {
      * @type {string}
      * @memberof ElectionRequest
      */
-    'startsAt': string;
+    'scheduledDate': string;
     /**
      *
      * @type {string}
      * @memberof ElectionRequest
      */
-    'endsAt': string;
+    'countryCode': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ElectionRequest
+     */
+    'extensionPackId': string;
 }

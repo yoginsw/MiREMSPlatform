@@ -21,10 +21,11 @@
  */
 
 export const ElectionType = {
-    General: 'GENERAL',
-    Primary: 'PRIMARY',
-    Special: 'SPECIAL',
-    Referendum: 'REFERENDUM'
+    Presidential: 'PRESIDENTIAL',
+    Parliamentary: 'PARLIAMENTARY',
+    Regional: 'REGIONAL',
+    Referendum: 'REFERENDUM',
+    Local: 'LOCAL'
 } as const;
 
 export type ElectionType = typeof ElectionType[keyof typeof ElectionType];

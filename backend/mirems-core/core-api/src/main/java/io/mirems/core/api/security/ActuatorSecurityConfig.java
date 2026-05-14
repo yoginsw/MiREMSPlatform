@@ -7,6 +7,7 @@ import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,7 +46,13 @@ public class ActuatorSecurityConfig {
     SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/elections").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/elections/*/publish", "/elections/*/close")
+                        .hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/elections", "/elections/*").authenticated()
+                        .anyRequest().permitAll())
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 }

@@ -572,7 +572,7 @@
 ---
 
 ### GOAL P3-030 | Election REST Controller
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-029, P1-016
 
 **Tasks:**
@@ -583,6 +583,8 @@
 5. Integration tests with Spring Boot Test + RestAssured.
 
 **Done Criteria:** All endpoints tested including auth failure cases; 80% coverage.
+
+**Completion Note:** Implemented `ElectionController` against the generated `ElectionsApi` stub with create/list/get/publish/close endpoints, domain-to-generated response mapping, principal/source-IP propagation to `ElectionManagementService`, RFC 7807 not-found/service-unavailable handling, and application security rules requiring `ELECTION_ADMIN` for create/publish/close while allowing any authenticated role for read endpoints. Added RestAssured Spring Boot integration tests for success paths, validation problem details, 404 problem details, unauthenticated 401, and insufficient-role 403. Added read methods to `ElectionManagementService` and unit coverage for repository-backed list/get. Aligned OpenAPI election enum/field names with the existing election domain model and regenerated the TypeScript Axios client.
 
 ---
 

@@ -43,7 +43,7 @@ export interface ElectionResponse {
      * @type {ElectionType}
      * @memberof ElectionResponse
      */
-    'type': ElectionType;
+    'electionType': ElectionType;
     /**
      *
      * @type {string}
@@ -61,11 +61,17 @@ export interface ElectionResponse {
      * @type {string}
      * @memberof ElectionResponse
      */
-    'startsAt': string;
+    'scheduledDate': string;
     /**
      *
      * @type {string}
      * @memberof ElectionResponse
      */
-    'endsAt': string;
+    'countryCode': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ElectionResponse
+     */
+    'extensionPackId': string;
 }

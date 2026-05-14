@@ -750,49 +750,54 @@ components:
           format: uri
     ElectionStatus:
       type: string
-      enum: [DRAFT, PUBLISHED, OPEN, CLOSED, CERTIFIED]
+      enum: [DRAFT, PUBLISHED, ACTIVE, CLOSED, CERTIFIED]
     ElectionType:
       type: string
-      enum: [GENERAL, PRIMARY, SPECIAL, REFERENDUM]
+      enum: [PRESIDENTIAL, PARLIAMENTARY, REGIONAL, REFERENDUM, LOCAL]
     ElectionRequest:
       type: object
-      required: [name, type, jurisdiction, startsAt, endsAt]
+      required: [name, electionType, jurisdiction, scheduledDate, countryCode, extensionPackId]
       properties:
         name:
           type: string
           minLength: 1
-        type:
+        electionType:
           $ref: '#/components/schemas/ElectionType'
         jurisdiction:
           type: string
           minLength: 1
-        startsAt:
+        scheduledDate:
           type: string
-          format: date-time
-        endsAt:
+          format: date
+        countryCode:
           type: string
-          format: date-time
+          minLength: 2
+          maxLength: 2
+        extensionPackId:
+          type: string
+          minLength: 1
     ElectionResponse:
       type: object
-      required: [id, name, type, jurisdiction, status, startsAt, endsAt]
+      required: [id, name, electionType, jurisdiction, status, scheduledDate, countryCode, extensionPackId]
       properties:
         id:
           type: string
           format: uuid
         name:
           type: string
-        type:
+        electionType:
           $ref: '#/components/schemas/ElectionType'
         jurisdiction:
           type: string
         status:
           $ref: '#/components/schemas/ElectionStatus'
-        startsAt:
+        scheduledDate:
           type: string
-          format: date-time
-        endsAt:
+          format: date
+        countryCode:
           type: string
-          format: date-time
+        extensionPackId:
+          type: string
     ContestType:
       type: string
       enum: [SINGLE_WINNER, MULTI_WINNER, REFERENDUM]

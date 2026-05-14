@@ -10,6 +10,7 @@ import io.mirems.core.infra.persistence.contest.SpringDataContestRepository;
 import io.mirems.core.infra.persistence.election.SpringDataElectionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -78,6 +79,16 @@ public class ElectionManagementService {
                 command.actorId(),
                 command.sourceIp());
         return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Election> listElections() {
+        return electionRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<Election> getElection(UUID electionId) {
+        return electionRepository.findById(electionId);
     }
 
     public Contest addContest(AddContestCommand command) {

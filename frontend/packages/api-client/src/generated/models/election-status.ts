@@ -23,7 +23,7 @@
 export const ElectionStatus = {
     Draft: 'DRAFT',
     Published: 'PUBLISHED',
-    Open: 'OPEN',
+    Active: 'ACTIVE',
     Closed: 'CLOSED',
     Certified: 'CERTIFIED'
 } as const;

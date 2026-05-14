@@ -20,6 +20,7 @@ import io.mirems.core.infra.persistence.election.SpringDataElectionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -106,6 +107,20 @@ class ElectionManagementServiceTest {
                 .containsEntry("name", "2026 Local Election")
                 .containsEntry("status", "DRAFT")
                 .containsEntry("countryCode", "KR");
+    }
+
+    @Test
+    void listAndGetElectionsDelegateToRepositoryWithoutPublishingAudit() {
+        Election election = draftElection();
+        when(electionRepository.findAll()).thenReturn(List.of(election));
+        when(electionRepository.findById(ELECTION_ID)).thenReturn(Optional.of(election));
+
+        assertThat(service.listElections()).containsExactly(election);
+        assertThat(service.getElection(ELECTION_ID)).contains(election);
+
+        verify(electionRepository).findAll();
+        verify(electionRepository).findById(ELECTION_ID);
+        verifyNoInteractions(applicationEventPublisher);
     }
 
     @Test
