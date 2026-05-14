@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mirems-core-bpmn
+
+kogito:
+  service:
+    url: ${MIREMS_KOGITO_SERVICE_URL:http://localhost:8080}
+  persistence:
+    type: jdbc
+  data-index:
+    url: ${MIREMS_KOGITO_DATAINDEX_URL:http://localhost:8180}

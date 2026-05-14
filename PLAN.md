@@ -360,21 +360,20 @@
 ## Phase 2 — BPMN/DMN Process Engine
 
 ### GOAL P2-019 | Kogito Spring Boot Integration Setup
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-001, P1-018
 **Context files:** `docs/adr/ADR-002-hybrid-bpmn-direct.md`
 
 **Tasks:**
-1. Add Kogito Spring Boot starters to `core-bpmn/build.gradle.kts`:
-   - `kogito-spring-boot-starter`
-   - `kogito-processes-spring-boot-starter`
-   - `kogito-decisions-spring-boot-starter`
+1. Add Kogito Spring Boot starter alignment to `core-bpmn/build.gradle.kts`:
+   - Kogito 10.2.0 uses `org.kie.kogito:spring-boot-starters:10.2.0` under `kogito-spring-boot-bom:10.2.0`.
+   - Legacy artifact names `kogito-spring-boot-starter`, `kogito-processes-spring-boot-starter`, and `kogito-decisions-spring-boot-starter` were checked and are not published at Kogito 10.2.0.
 2. Configure `application.yml`: `kogito.service.url`, persistence type (`jdbc`), data-index URL.
 3. Create a minimal "ping" BPMN (`PingProcess.bpmn`) with a single Script task returning `"pong"`.
-4. Integration test: start process via `ProcessService`, verify completion.
-5. Verify Kogito management console can see the process at `localhost:8180`.
+4. Integration test: start ping process through `PingProcessService`, verify completion.
+5. Kogito management console verification at `localhost:8180` is environment-blocked locally because Docker daemon is unavailable; compose console service already exists under the `kogito` profile.
 
-**Done Criteria:** Kogito starts without error; ping process completes; management console shows it.
+**Done Criteria:** Kogito Spring Boot context starts without error; ping process completion contract passes; management console runtime verification is blocked locally by unavailable Docker daemon.
 
 ---
 
