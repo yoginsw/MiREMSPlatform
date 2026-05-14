@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   id="AuditReviewProcessDefinitions"
+                   targetNamespace="https://mirems.io/processes/audit">
+    <bpmn2:process id="AuditReviewProcess" name="Audit Review Process" isExecutable="true">
+        <bpmn2:documentation>
+            AUDITOR initiates post-election audit review with read-only access to all election data.
+            The process collects immutable AuditEvent records and produces AuditReport JSON plus PDF artifacts.
+        </bpmn2:documentation>
+        <bpmn2:startEvent id="StartAuditReview" name="AUDITOR initiates post-election audit review">
+            <bpmn2:outgoing>Flow_Start_ReviewScope</bpmn2:outgoing>
+        </bpmn2:startEvent>
+        <bpmn2:userTask id="AuditorSelectsReviewScope" name="AUDITOR selects review scope">
+            <bpmn2:documentation>candidateGroups=AUDITOR; read-only access to all election data</bpmn2:documentation>
+            <bpmn2:incoming>Flow_Start_ReviewScope</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_ReviewScope_CollectEvents</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:serviceTask id="CollectAuditEventRecords" name="collectAuditEventRecords" implementation="Java">
+            <bpmn2:incoming>Flow_ReviewScope_CollectEvents</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_CollectEvents_GenerateReport</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:serviceTask id="GenerateAuditReportJsonAndPdf" name="generateAuditReportJsonAndPdf" implementation="Java">
+            <bpmn2:incoming>Flow_CollectEvents_GenerateReport</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_GenerateReport_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:endEvent id="AuditReportProduced" name="AuditReport produced">
+            <bpmn2:incoming>Flow_GenerateReport_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:sequenceFlow id="Flow_Start_ReviewScope" sourceRef="StartAuditReview" targetRef="AuditorSelectsReviewScope" />
+        <bpmn2:sequenceFlow id="Flow_ReviewScope_CollectEvents" sourceRef="AuditorSelectsReviewScope" targetRef="CollectAuditEventRecords" />
+        <bpmn2:sequenceFlow id="Flow_CollectEvents_GenerateReport" sourceRef="CollectAuditEventRecords" targetRef="GenerateAuditReportJsonAndPdf" />
+        <bpmn2:sequenceFlow id="Flow_GenerateReport_End" sourceRef="GenerateAuditReportJsonAndPdf" targetRef="AuditReportProduced" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="AuditReviewProcessDiagram">
+        <bpmndi:BPMNPlane id="AuditReviewProcessPlane" bpmnElement="AuditReviewProcess">
+            <bpmndi:BPMNShape id="StartAuditReviewShape" bpmnElement="StartAuditReview">
+                <dc:Bounds x="100" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="AuditorSelectsReviewScopeShape" bpmnElement="AuditorSelectsReviewScope">
+                <dc:Bounds x="190" y="98" width="180" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="CollectAuditEventRecordsShape" bpmnElement="CollectAuditEventRecords">
+                <dc:Bounds x="430" y="98" width="180" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="GenerateAuditReportJsonAndPdfShape" bpmnElement="GenerateAuditReportJsonAndPdf">
+                <dc:Bounds x="670" y="98" width="210" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="AuditReportProducedShape" bpmnElement="AuditReportProduced">
+                <dc:Bounds x="940" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

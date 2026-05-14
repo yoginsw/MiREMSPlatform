@@ -519,7 +519,7 @@
 ---
 
 ### GOAL P2-027 | BPMN — Audit Review Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-014
 
 **Tasks:**
@@ -529,6 +529,8 @@
 4. Integration test with mock audit data.
 
 **Done Criteria:** Audit report generated correctly; 80% coverage.
+
+**Completion Note:** Implemented `AuditReviewProcess.bpmn`, AUDITOR-only orchestration service, `AuditReport` PDF/JSON artifact model, default JSON/PDF generator, and JPA audit repository adapter for persisted `AuditEvent` reads. Added tests for mock audit data report generation, chronological event ordering, non-AUDITOR rejection, defensive report content copies, BPMN contract markers, and JPA adapter delegation. Verified full Gradle build and JaCoCo coverage gate.
 
 ---
 
