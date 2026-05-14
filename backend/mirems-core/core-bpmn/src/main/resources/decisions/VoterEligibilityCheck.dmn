@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
+             id="Definitions_VoterEligibilityCheck"
+             name="VoterEligibilityCheck"
+             namespace="https://mirems.io/dmn/voter-eligibility">
+    <inputData id="Input_voterAge" name="voterAge">
+        <variable id="Variable_voterAge" name="voterAge" typeRef="number"/>
+    </inputData>
+    <inputData id="Input_registrationStatus" name="registrationStatus">
+        <variable id="Variable_registrationStatus" name="registrationStatus" typeRef="string"/>
+    </inputData>
+    <inputData id="Input_residencyVerified" name="residencyVerified">
+        <variable id="Variable_residencyVerified" name="residencyVerified" typeRef="boolean"/>
+    </inputData>
+    <inputData id="Input_electionType" name="electionType">
+        <variable id="Variable_electionType" name="electionType" typeRef="string"/>
+    </inputData>
+    <decision id="Decision_VoterEligibilityCheck" name="VoterEligibilityCheck">
+        <variable id="Variable_voterEligibility" name="voterEligibility" typeRef="VoterEligibilityResult"/>
+        <informationRequirement><requiredInput href="#Input_voterAge"/></informationRequirement>
+        <informationRequirement><requiredInput href="#Input_registrationStatus"/></informationRequirement>
+        <informationRequirement><requiredInput href="#Input_residencyVerified"/></informationRequirement>
+        <informationRequirement><requiredInput href="#Input_electionType"/></informationRequirement>
+        <decisionTable id="DecisionTable_VoterEligibilityCheck" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_voterAge" label="voterAge">
+                <inputExpression id="InputExpression_voterAge" typeRef="number"><text>voterAge</text></inputExpression>
+            </input>
+            <input id="InputClause_registrationStatus" label="registrationStatus">
+                <inputExpression id="InputExpression_registrationStatus" typeRef="string"><text>registrationStatus</text></inputExpression>
+            </input>
+            <input id="InputClause_residencyVerified" label="residencyVerified">
+                <inputExpression id="InputExpression_residencyVerified" typeRef="boolean"><text>residencyVerified</text></inputExpression>
+            </input>
+            <input id="InputClause_electionType" label="electionType">
+                <inputExpression id="InputExpression_electionType" typeRef="string"><text>electionType</text></inputExpression>
+            </input>
+            <output id="OutputClause_eligible" label="eligible" name="eligible" typeRef="boolean"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_UnderAge">
+                <inputEntry id="Rule_UnderAge_Age"><text>&lt; 18</text></inputEntry>
+                <inputEntry id="Rule_UnderAge_Status"><text>-</text></inputEntry>
+                <inputEntry id="Rule_UnderAge_Residency"><text>-</text></inputEntry>
+                <inputEntry id="Rule_UnderAge_Type"><text>-</text></inputEntry>
+                <outputEntry id="Rule_UnderAge_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_UnderAge_Reason"><text>"voter age must be at least 18"</text></outputEntry>
+            </rule>
+            <rule id="Rule_RegistrationNotActive">
+                <inputEntry id="Rule_RegistrationNotActive_Age"><text>&gt;= 18</text></inputEntry>
+                <inputEntry id="Rule_RegistrationNotActive_Status"><text>not("ACTIVE")</text></inputEntry>
+                <inputEntry id="Rule_RegistrationNotActive_Residency"><text>-</text></inputEntry>
+                <inputEntry id="Rule_RegistrationNotActive_Type"><text>-</text></inputEntry>
+                <outputEntry id="Rule_RegistrationNotActive_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_RegistrationNotActive_Reason"><text>"voter registration status must be ACTIVE"</text></outputEntry>
+            </rule>
+            <rule id="Rule_ResidencyMissing">
+                <inputEntry id="Rule_ResidencyMissing_Age"><text>&gt;= 18</text></inputEntry>
+                <inputEntry id="Rule_ResidencyMissing_Status"><text>"ACTIVE"</text></inputEntry>
+                <inputEntry id="Rule_ResidencyMissing_Residency"><text>false</text></inputEntry>
+                <inputEntry id="Rule_ResidencyMissing_Type"><text>-</text></inputEntry>
+                <outputEntry id="Rule_ResidencyMissing_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_ResidencyMissing_Reason"><text>"voter residency must be verified"</text></outputEntry>
+            </rule>
+            <rule id="Rule_LocalUnderNineteen">
+                <inputEntry id="Rule_LocalUnderNineteen_Age"><text>[18..19)</text></inputEntry>
+                <inputEntry id="Rule_LocalUnderNineteen_Status"><text>"ACTIVE"</text></inputEntry>
+                <inputEntry id="Rule_LocalUnderNineteen_Residency"><text>true</text></inputEntry>
+                <inputEntry id="Rule_LocalUnderNineteen_Type"><text>"LOCAL"</text></inputEntry>
+                <outputEntry id="Rule_LocalUnderNineteen_Eligible"><text>false</text></outputEntry>
+                <outputEntry id="Rule_LocalUnderNineteen_Reason"><text>"LOCAL elections require voter age at least 19 by core policy"</text></outputEntry>
+            </rule>
+            <rule id="Rule_ReferendumEligible">
+                <inputEntry id="Rule_ReferendumEligible_Age"><text>&gt;= 18</text></inputEntry>
+                <inputEntry id="Rule_ReferendumEligible_Status"><text>"ACTIVE"</text></inputEntry>
+                <inputEntry id="Rule_ReferendumEligible_Residency"><text>true</text></inputEntry>
+                <inputEntry id="Rule_ReferendumEligible_Type"><text>"REFERENDUM"</text></inputEntry>
+                <outputEntry id="Rule_ReferendumEligible_Eligible"><text>true</text></outputEntry>
+                <outputEntry id="Rule_ReferendumEligible_Reason"><text>"eligible"</text></outputEntry>
+            </rule>
+            <rule id="Rule_GeneralEligible">
+                <inputEntry id="Rule_GeneralEligible_Age"><text>&gt;= 18</text></inputEntry>
+                <inputEntry id="Rule_GeneralEligible_Status"><text>"ACTIVE"</text></inputEntry>
+                <inputEntry id="Rule_GeneralEligible_Residency"><text>true</text></inputEntry>
+                <inputEntry id="Rule_GeneralEligible_Type"><text>-</text></inputEntry>
+                <outputEntry id="Rule_GeneralEligible_Eligible"><text>true</text></outputEntry>
+                <outputEntry id="Rule_GeneralEligible_Reason"><text>"eligible"</text></outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>

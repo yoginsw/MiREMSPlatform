@@ -1,5 +1,9 @@
 package io.mirems.core.infra.service.voting;
 
+import io.mirems.core.bpmn.voter.VoterEligibilityDecisionService;
+import io.mirems.core.bpmn.voter.VoterEligibilityRequest;
+import io.mirems.core.bpmn.voter.VoterEligibilityResult;
+import io.mirems.core.domain.election.ElectionType;
 import io.mirems.core.domain.voting.RegistrationStatus;
 import io.mirems.core.domain.voting.VoterRecord;
 import io.mirems.core.domain.voting.encryption.PiiEncryptionService;
@@ -23,23 +27,32 @@ public class VoterRollService {
     private final SpringDataVoterRecordRepository voterRecordRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final PiiEncryptionService encryptionService;
+    private final VoterEligibilityDecisionService voterEligibilityDecisionService;
     private final Supplier<UUID> idGenerator;
 
     public VoterRollService(
             SpringDataVoterRecordRepository voterRecordRepository,
             ApplicationEventPublisher applicationEventPublisher,
-            PiiEncryptionService encryptionService) {
-        this(voterRecordRepository, applicationEventPublisher, encryptionService, UUID::randomUUID);
+            PiiEncryptionService encryptionService,
+            VoterEligibilityDecisionService voterEligibilityDecisionService) {
+        this(
+                voterRecordRepository,
+                applicationEventPublisher,
+                encryptionService,
+                voterEligibilityDecisionService,
+                UUID::randomUUID);
     }
 
     VoterRollService(
             SpringDataVoterRecordRepository voterRecordRepository,
             ApplicationEventPublisher applicationEventPublisher,
             PiiEncryptionService encryptionService,
+            VoterEligibilityDecisionService voterEligibilityDecisionService,
             Supplier<UUID> idGenerator) {
         this.voterRecordRepository = voterRecordRepository;
         this.applicationEventPublisher = applicationEventPublisher;
         this.encryptionService = encryptionService;
+        this.voterEligibilityDecisionService = voterEligibilityDecisionService;
         this.idGenerator = idGenerator;
     }
 
@@ -83,6 +96,19 @@ public class VoterRollService {
         return findVoter(voterId).isEligibleFor(electionId);
     }
 
+    @Transactional(readOnly = true)
+    public VoterEligibilityResult checkEligibility(CheckVoterEligibilityCommand command) {
+        VoterRecord voter = findVoter(command.voterId());
+        if (!voter.getEligibleElections().contains(command.electionId())) {
+            return new VoterEligibilityResult(false, "voter is not assigned to election");
+        }
+        return voterEligibilityDecisionService.evaluate(new VoterEligibilityRequest(
+                command.voterAge(),
+                voter.getRegistrationStatus(),
+                command.residencyVerified(),
+                command.electionType()));
+    }
+
     private VoterRecord findVoter(UUID voterId) {
         return voterRecordRepository
                 .findById(voterId)
@@ -103,4 +129,11 @@ public class VoterRollService {
             String sourceIp) {}
 
     public record UpdateEligibilityCommand(UUID voterId, Set<UUID> eligibleElections, String actorId, String sourceIp) {}
+
+    public record CheckVoterEligibilityCommand(
+            UUID voterId,
+            UUID electionId,
+            int voterAge,
+            boolean residencyVerified,
+            ElectionType electionType) {}
 }

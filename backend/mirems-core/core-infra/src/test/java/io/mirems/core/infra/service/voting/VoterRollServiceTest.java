@@ -8,6 +8,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import io.mirems.core.bpmn.voter.VoterEligibilityDecisionService;
+import io.mirems.core.bpmn.voter.VoterEligibilityRequest;
+import io.mirems.core.bpmn.voter.VoterEligibilityResult;
+import io.mirems.core.domain.election.ElectionType;
 import io.mirems.core.domain.voting.RegistrationStatus;
 import io.mirems.core.domain.voting.VoterRecord;
 import io.mirems.core.domain.voting.encryption.PiiEncryptionService;
@@ -38,6 +42,7 @@ class VoterRollServiceTest {
 
     @Mock private SpringDataVoterRecordRepository voterRecordRepository;
     @Mock private ApplicationEventPublisher applicationEventPublisher;
+    @Mock private VoterEligibilityDecisionService voterEligibilityDecisionService;
 
     private VoterRollService service;
     private PiiEncryptionService encryptionService;
@@ -46,7 +51,12 @@ class VoterRollServiceTest {
     void setUp() {
         encryptionService = new PiiEncryptionService(KEY.getBytes());
         Supplier<UUID> ids = new FixedIds(VOTER_ID);
-        service = new VoterRollService(voterRecordRepository, applicationEventPublisher, encryptionService, ids);
+        service = new VoterRollService(
+                voterRecordRepository,
+                applicationEventPublisher,
+                encryptionService,
+                voterEligibilityDecisionService,
+                ids);
     }
 
     @Test
@@ -106,6 +116,35 @@ class VoterRollServiceTest {
 
         assertThat(service.checkEligibility(VOTER_ID, ELECTION_ID)).isTrue();
         assertThat(service.checkEligibility(VOTER_ID, OTHER_ELECTION_ID)).isFalse();
+    }
+
+    @Test
+    void checkEligibilityCommandUsesVoterEligibilityDmnDecisionService() {
+        VoterRecord voter = voterRecord();
+        when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));
+        when(voterEligibilityDecisionService.evaluate(new VoterEligibilityRequest(
+                        20, RegistrationStatus.ACTIVE, true, ElectionType.PRESIDENTIAL)))
+                .thenReturn(new VoterEligibilityResult(true, "eligible"));
+
+        VoterEligibilityResult result = service.checkEligibility(new VoterRollService.CheckVoterEligibilityCommand(
+                VOTER_ID, ELECTION_ID, 20, true, ElectionType.PRESIDENTIAL));
+
+        assertThat(result).isEqualTo(new VoterEligibilityResult(true, "eligible"));
+        verify(voterEligibilityDecisionService)
+                .evaluate(new VoterEligibilityRequest(20, RegistrationStatus.ACTIVE, true, ElectionType.PRESIDENTIAL));
+    }
+
+    @Test
+    void checkEligibilityCommandRejectsWhenVoterIsNotAssignedToElectionBeforeCallingDmn() {
+        VoterRecord voter = voterRecord();
+        when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));
+
+        VoterEligibilityResult result = service.checkEligibility(new VoterRollService.CheckVoterEligibilityCommand(
+                VOTER_ID, OTHER_ELECTION_ID, 20, true, ElectionType.PRESIDENTIAL));
+
+        assertThat(result.eligible()).isFalse();
+        assertThat(result.reason()).isEqualTo("voter is not assigned to election");
+        verifyNoInteractions(voterEligibilityDecisionService);
     }
 
     @Test

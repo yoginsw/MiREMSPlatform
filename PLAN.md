@@ -442,7 +442,7 @@
 ---
 
 ### GOAL P2-023 | DMN — Voter Eligibility Check
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-019
 **Context files:** `docs/vvsg/VVSG2_MAPPING.md`
 
@@ -454,6 +454,8 @@
 5. Unit test: all decision table rows exercised.
 
 **Done Criteria:** All DMN rows tested; integration with service layer verified; 80% coverage.
+
+**Completion Note — 2026-05-15:** Added `VoterEligibilityCheck.dmn` under `core-bpmn` with voter age, registration status, residency, and election-type-specific decision rows plus `eligible`/`reason` outputs. Added `VoterEligibilityDecisionService`, request/result records, exhaustive row tests, and DMN XML contract verification. Integrated voter eligibility decisions into `VoterRollService.checkEligibility(CheckVoterEligibilityCommand)` while preserving the existing boolean eligibility API and guarding election assignment before DMN evaluation. Verified service-layer integration with Mockito. Verification command `./gradlew :mirems-core:core-bpmn:test :mirems-core:core-bpmn:jacocoTestReport :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: voter BPMN package line coverage 95.0%; voting service package line coverage 92.3%.
 
 ---
 

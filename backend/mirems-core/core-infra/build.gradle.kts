@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":mirems-core:core-domain"))
+    implementation(project(":mirems-core:core-bpmn"))
     api("org.springframework.boot:spring-boot-starter-actuator")
     api("io.micrometer:micrometer-core")
     implementation("org.springframework.boot:spring-boot-starter-aop")
