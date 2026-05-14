@@ -482,7 +482,7 @@
 ---
 
 ### GOAL P2-025 | BPMN — Vote Correction Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-024
 **Context files:** `docs/adr/ADR-004-vote-immutability.md`
 
@@ -494,6 +494,8 @@
 5. Integration test: verify original `VotingResult` is unchanged after correction.
 
 **Done Criteria:** Dual-approval tested; original immutability verified; 80% coverage.
+
+**Completion Note:** Implemented immutable append-only `VoteCorrection` dual approval, `VoteCorrectedEvent` audit payload, `VoteCorrectionProcess.bpmn`, correction orchestration service, repository port/wiring, Flyway approval columns, and integration tests proving the original `VotingResult` is unchanged. Verified full Gradle build and JaCoCo coverage gate.
 
 ---
 

@@ -13,12 +13,14 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 /** Append-only amendment request that references, but never mutates, the original vote record. */
 @Entity
 @Table(name = "vote_corrections")
+@Immutable
 public class VoteCorrection {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
@@ -40,6 +42,18 @@ public class VoteCorrection {
 
     @Column(name = "requested_at", nullable = false, updatable = false, columnDefinition = "timestamp with time zone")
     private OffsetDateTime requestedAt;
+
+    @Column(name = "first_approved_by", updatable = false)
+    private String firstApprovedBy;
+
+    @Column(name = "first_approved_at", updatable = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime firstApprovedAt;
+
+    @Column(name = "second_approved_by", updatable = false)
+    private String secondApprovedBy;
+
+    @Column(name = "second_approved_at", updatable = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime secondApprovedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "correction_status", nullable = false, updatable = false)
@@ -75,6 +89,36 @@ public class VoteCorrection {
         return new VoteCorrection(id, originalVotingResult, correctedCandidateIds, reason, requestedBy, requestedAt);
     }
 
+    public void recordFirstApproval(String approver, OffsetDateTime approvedAt) {
+        ensurePendingApproval();
+        this.firstApprovedBy = requireText(approver, "firstApprovedBy");
+        this.firstApprovedAt = Objects.requireNonNull(approvedAt, "firstApprovedAt is required");
+        this.correctionStatus = CorrectionStatus.FIRST_APPROVED;
+    }
+
+    public VoteCorrectedEvent recordSecondApproval(String approver, OffsetDateTime approvedAt) {
+        ensureFirstApproved();
+        String secondApprover = requireText(approver, "secondApprovedBy");
+        if (secondApprover.equals(firstApprovedBy)) {
+            throw new IllegalArgumentException("second approver must be different from first approver");
+        }
+        this.secondApprovedBy = secondApprover;
+        this.secondApprovedAt = Objects.requireNonNull(approvedAt, "secondApprovedAt is required");
+        this.correctionStatus = CorrectionStatus.APPROVED;
+        return new VoteCorrectedEvent(
+                id,
+                originalVotingResult.getId(),
+                originalVotingResult.getSelectedCandidateIds(),
+                correctedCandidateIds,
+                reason,
+                requestedBy,
+                requestedAt,
+                firstApprovedBy,
+                firstApprovedAt,
+                secondApprovedBy,
+                secondApprovedAt);
+    }
+
     public UUID getId() {
         return id;
     }
@@ -99,8 +143,36 @@ public class VoteCorrection {
         return requestedAt;
     }
 
+    public String getFirstApprovedBy() {
+        return firstApprovedBy;
+    }
+
+    public OffsetDateTime getFirstApprovedAt() {
+        return firstApprovedAt;
+    }
+
+    public String getSecondApprovedBy() {
+        return secondApprovedBy;
+    }
+
+    public OffsetDateTime getSecondApprovedAt() {
+        return secondApprovedAt;
+    }
+
     public CorrectionStatus getCorrectionStatus() {
         return correctionStatus;
+    }
+
+    private void ensurePendingApproval() {
+        if (correctionStatus != CorrectionStatus.PENDING_APPROVAL) {
+            throw new IllegalStateException("correction is not pending approval");
+        }
+    }
+
+    private void ensureFirstApproved() {
+        if (correctionStatus != CorrectionStatus.FIRST_APPROVED) {
+            throw new IllegalStateException("correction requires first approval before second approval");
+        }
     }
 
     private static List<UUID> validateCandidateIds(List<UUID> candidateIds) {

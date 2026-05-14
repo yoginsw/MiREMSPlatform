@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:drools="http://www.jboss.org/drools"
+                   id="VoteCorrectionProcessDefinitions"
+                   targetNamespace="https://mirems.io/processes/correction">
+    <bpmn2:process id="VoteCorrectionProcess" name="Vote Correction Process" isExecutable="true">
+        <bpmn2:documentation>
+            Administrative correction workflow for immutable vote records. The original VotingResult is never modified.
+            Corrections require dual ELECTION_ADMIN approval by distinct approvers and emit a full audit event.
+        </bpmn2:documentation>
+        <bpmn2:startEvent id="StartVoteCorrection" name="Request administrative vote correction">
+            <bpmn2:outgoing>Flow_Start_FirstApproval</bpmn2:outgoing>
+        </bpmn2:startEvent>
+        <bpmn2:userTask id="FirstElectionAdminApproval" name="First ELECTION_ADMIN approval">
+            <bpmn2:documentation>candidateUsers=firstElectionAdmin; role=ELECTION_ADMIN</bpmn2:documentation>
+            <bpmn2:incoming>Flow_Start_FirstApproval</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_FirstApproval_SecondApproval</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:userTask id="SecondElectionAdminApproval" name="Second ELECTION_ADMIN approval">
+            <bpmn2:documentation>candidateUsers=secondElectionAdmin; role=ELECTION_ADMIN; enforceDistinctApprovers</bpmn2:documentation>
+            <bpmn2:incoming>Flow_FirstApproval_SecondApproval</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_SecondApproval_CreateRecord</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:serviceTask id="CreateVoteCorrectionRecord" name="createVoteCorrectionRecord" implementation="Java">
+            <bpmn2:incoming>Flow_SecondApproval_CreateRecord</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_CreateRecord_EmitEvent</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:serviceTask id="EmitVoteCorrectedEvent" name="emitVoteCorrectedEvent" implementation="Java">
+            <bpmn2:incoming>Flow_CreateRecord_EmitEvent</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_EmitEvent_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:endEvent id="VoteCorrectionCompleted" name="Vote correction completed">
+            <bpmn2:incoming>Flow_EmitEvent_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:sequenceFlow id="Flow_Start_FirstApproval" sourceRef="StartVoteCorrection" targetRef="FirstElectionAdminApproval" />
+        <bpmn2:sequenceFlow id="Flow_FirstApproval_SecondApproval" sourceRef="FirstElectionAdminApproval" targetRef="SecondElectionAdminApproval" />
+        <bpmn2:sequenceFlow id="Flow_SecondApproval_CreateRecord" sourceRef="SecondElectionAdminApproval" targetRef="CreateVoteCorrectionRecord" />
+        <bpmn2:sequenceFlow id="Flow_CreateRecord_EmitEvent" sourceRef="CreateVoteCorrectionRecord" targetRef="EmitVoteCorrectedEvent" />
+        <bpmn2:sequenceFlow id="Flow_EmitEvent_End" sourceRef="EmitVoteCorrectedEvent" targetRef="VoteCorrectionCompleted" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="VoteCorrectionProcessDiagram">
+        <bpmndi:BPMNPlane id="VoteCorrectionProcessPlane" bpmnElement="VoteCorrectionProcess">
+            <bpmndi:BPMNShape id="StartVoteCorrectionShape" bpmnElement="StartVoteCorrection">
+                <dc:Bounds x="100" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="FirstElectionAdminApprovalShape" bpmnElement="FirstElectionAdminApproval">
+                <dc:Bounds x="190" y="98" width="150" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SecondElectionAdminApprovalShape" bpmnElement="SecondElectionAdminApproval">
+                <dc:Bounds x="400" y="98" width="160" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="CreateVoteCorrectionRecordShape" bpmnElement="CreateVoteCorrectionRecord">
+                <dc:Bounds x="620" y="98" width="160" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="EmitVoteCorrectedEventShape" bpmnElement="EmitVoteCorrectedEvent">
+                <dc:Bounds x="840" y="98" width="160" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="VoteCorrectionCompletedShape" bpmnElement="VoteCorrectionCompleted">
+                <dc:Bounds x="1060" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
