@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   id="ResultCertificationProcessDefinitions"
+                   targetNamespace="https://mirems.io/processes/certification">
+    <bpmn2:process id="ResultCertificationProcess" name="Result Certification Process" isExecutable="true">
+        <bpmn2:documentation>
+            Completed TabulationReport input is reviewed by an ELECTION_ADMIN and legal/compliance reviewer.
+            The service phase sets ElectionStatus.CERTIFIED, emits ElectionCertifiedEvent, and generates the official PDF certification report.
+        </bpmn2:documentation>
+        <bpmn2:startEvent id="StartResultCertification" name="Completed TabulationReport input">
+            <bpmn2:outgoing>Flow_Start_AdminReview</bpmn2:outgoing>
+        </bpmn2:startEvent>
+        <bpmn2:userTask id="ElectionAdminFinalTabulationReview" name="ELECTION_ADMIN reviews final tabulation">
+            <bpmn2:documentation>candidateGroups=ELECTION_ADMIN; verify locked tabulation hash and final totals</bpmn2:documentation>
+            <bpmn2:incoming>Flow_Start_AdminReview</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_AdminReview_LegalReview</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:userTask id="LegalComplianceReview" name="Legal/compliance review">
+            <bpmn2:documentation>candidateGroups=LEGAL_REVIEWER,COMPLIANCE_OFFICER; may be marked applicable by jurisdiction pack</bpmn2:documentation>
+            <bpmn2:incoming>Flow_AdminReview_LegalReview</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_LegalReview_Certify</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:serviceTask id="SetElectionCertifiedAndEmitEvent" name="setElectionCertifiedAndEmitEvent" implementation="Java">
+            <bpmn2:incoming>Flow_LegalReview_Certify</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Certify_GeneratePdf</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:serviceTask id="GenerateOfficialPdfCertificationReport" name="generateOfficialPdfCertificationReport" implementation="Java">
+            <bpmn2:incoming>Flow_Certify_GeneratePdf</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_GeneratePdf_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:endEvent id="ResultCertificationCompleted" name="Election certified">
+            <bpmn2:incoming>Flow_GeneratePdf_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:sequenceFlow id="Flow_Start_AdminReview" sourceRef="StartResultCertification" targetRef="ElectionAdminFinalTabulationReview" />
+        <bpmn2:sequenceFlow id="Flow_AdminReview_LegalReview" sourceRef="ElectionAdminFinalTabulationReview" targetRef="LegalComplianceReview" />
+        <bpmn2:sequenceFlow id="Flow_LegalReview_Certify" sourceRef="LegalComplianceReview" targetRef="SetElectionCertifiedAndEmitEvent" />
+        <bpmn2:sequenceFlow id="Flow_Certify_GeneratePdf" sourceRef="SetElectionCertifiedAndEmitEvent" targetRef="GenerateOfficialPdfCertificationReport" />
+        <bpmn2:sequenceFlow id="Flow_GeneratePdf_End" sourceRef="GenerateOfficialPdfCertificationReport" targetRef="ResultCertificationCompleted" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="ResultCertificationProcessDiagram">
+        <bpmndi:BPMNPlane id="ResultCertificationProcessPlane" bpmnElement="ResultCertificationProcess">
+            <bpmndi:BPMNShape id="StartResultCertificationShape" bpmnElement="StartResultCertification">
+                <dc:Bounds x="100" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ElectionAdminFinalTabulationReviewShape" bpmnElement="ElectionAdminFinalTabulationReview">
+                <dc:Bounds x="190" y="98" width="180" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="LegalComplianceReviewShape" bpmnElement="LegalComplianceReview">
+                <dc:Bounds x="430" y="98" width="170" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SetElectionCertifiedAndEmitEventShape" bpmnElement="SetElectionCertifiedAndEmitEvent">
+                <dc:Bounds x="660" y="98" width="190" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="GenerateOfficialPdfCertificationReportShape" bpmnElement="GenerateOfficialPdfCertificationReport">
+                <dc:Bounds x="910" y="98" width="210" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ResultCertificationCompletedShape" bpmnElement="ResultCertificationCompleted">
+                <dc:Bounds x="1180" y="120" width="36" height="36" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

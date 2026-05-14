@@ -500,7 +500,7 @@
 ---
 
 ### GOAL P2-026 | BPMN — Result Certification Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-025
 
 **Tasks:**
@@ -513,6 +513,8 @@
 2. Integration test: end-to-end from closed election to certified.
 
 **Done Criteria:** Election reaches CERTIFIED state; PDF generated; 80% coverage.
+
+**Completion Note:** Implemented `ResultCertificationProcess.bpmn`, certification orchestration service, official PDF generation seam/default generator, `ElectionRepository` domain port plus JPA adapter, and tests covering closed election certification, legal review rejection, locked `TabulationReport` precondition, BPMN contract, PDF payload generation, and repository adapter wiring. Verified full Gradle build and JaCoCo coverage gate.
 
 ---
 
