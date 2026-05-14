@@ -11,6 +11,7 @@ import io.mirems.core.infra.persistence.voting.SpringDataVoterRecordRepository;
 import io.mirems.core.infra.service.election.TransactionalAuditEvent;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -89,6 +90,11 @@ public class VoterRollService {
                 command.actorId(),
                 command.sourceIp());
         return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<VoterRecord> getVoter(UUID voterId) {
+        return voterRecordRepository.findById(voterId);
     }
 
     @Transactional(readOnly = true)

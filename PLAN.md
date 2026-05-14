@@ -621,7 +621,7 @@
 ---
 
 ### GOAL P3-033 | Voter Roll Controller
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-032
 
 **Tasks:**
@@ -631,6 +631,14 @@
 4. Integration tests including role-based access.
 
 **Done Criteria:** PII masking tested; role access tested; 80% coverage.
+
+**Completion Notes:**
+- Added generated-stub-backed `VoterRollController` for voter registration, masked voter lookup, and voter eligibility checks.
+- Added PII masking so raw external voter references are decrypted only inside the API boundary and never returned in responses.
+- Added owner-only `VOTER` access and all-record `ELECTION_OFFICER` access, plus voter endpoint security matchers.
+- Added RFC 7807 handling for missing voters, invalid requests, access denial, and service unavailable fallback.
+- Added `VoterRollService.getVoter(...)` with repository delegation test.
+- Added integration and handler tests covering registration, masked lookup, eligibility, unauthorized/forbidden, validation, missing voter, and ProblemDetail mappings.
 
 ---
 

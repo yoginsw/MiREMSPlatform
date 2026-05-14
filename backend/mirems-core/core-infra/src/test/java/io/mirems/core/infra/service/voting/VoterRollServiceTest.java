@@ -110,6 +110,14 @@ class VoterRollServiceTest {
     }
 
     @Test
+    void getVoterReturnsOptionalFromRepository() {
+        VoterRecord voter = voterRecord();
+        when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));
+
+        assertThat(service.getVoter(VOTER_ID)).contains(voter);
+    }
+
+    @Test
     void checkEligibilityReturnsTrueOnlyForActiveVoterEligibleForElection() {
         VoterRecord voter = voterRecord();
         when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));

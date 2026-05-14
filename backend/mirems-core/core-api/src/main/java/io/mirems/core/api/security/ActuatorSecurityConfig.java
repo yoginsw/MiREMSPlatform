@@ -54,6 +54,8 @@ public class ActuatorSecurityConfig {
                         .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/ballot-styles")
                         .hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/voters")
+                        .hasRole("ELECTION_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/ballot-styles/*")
                         .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/elections/*/ballot-styles/*")
@@ -74,7 +76,9 @@ public class ActuatorSecurityConfig {
                                 "/elections/*/contests/*/candidates/*",
                                 "/elections/*/ballots",
                                 "/elections/*/ballots/*/preview",
-                                "/elections/*/ballot-styles")
+                                "/elections/*/ballot-styles",
+                                "/voters/*",
+                                "/voters/*/eligibility/*")
                         .authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
