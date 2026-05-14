@@ -107,7 +107,7 @@
 ---
 
 ### GOAL P0-005 | CI Pipeline — GitHub Actions
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-001, P0-002
 **Context files:** none
 
@@ -121,6 +121,8 @@
 3. Run tests against Testcontainers (no external DB needed in CI).
 
 **Done Criteria:** Pipeline passes on a clean branch with only scaffold code.
+
+**Completion Note — 2026-05-14:** Added `.github/workflows/ci.yml` for push, pull request, and manual dispatch on `main`. The pipeline runs backend build/test on Amazon Corretto 21 with Gradle caching, frontend install/build/lint/test on Node.js 22 and pnpm 9.15.9 with pnpm cache, and staged placeholder jobs for coverage and backend Checkstyle until Jacoco aggregate coverage and Checkstyle rules are introduced. Verified locally with `./gradlew build test --no-daemon` and `pnpm install --frozen-lockfile && pnpm -r build && pnpm -r lint && pnpm -r test`.
 
 ---
 
