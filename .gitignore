@@ -1,0 +1,34 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Java / Gradle
+.gradle/
+build/
+out/
+target/
+
+# Node / pnpm
+node_modules/
+dist/
+coverage/
+.pnpm-store/
+
+# Logs
+*.log
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Docker local
+tmp/
+.local/
+
+

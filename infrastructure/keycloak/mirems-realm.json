@@ -1,0 +1,187 @@
+{
+  "realm": "mirems",
+  "enabled": true,
+  "displayName": "MiREMS Local Development Realm",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "sslRequired": "external",
+  "roles": {
+    "realm": [
+      {
+        "name": "SYSTEM_ADMIN",
+        "description": "Full platform administration including identity, configuration, and emergency operations.",
+        "composite": true,
+        "clientRole": false,
+        "composites": {
+          "realm": [
+            "ELECTION_ADMIN",
+            "ELECTION_OFFICER",
+            "TABULATION_OFFICER",
+            "AUDITOR",
+            "OBSERVER",
+            "VOTER"
+          ]
+        }
+      },
+      {
+        "name": "ELECTION_ADMIN",
+        "description": "Election setup, publication workflow initiation, configuration, and operator assignment.",
+        "composite": true,
+        "clientRole": false,
+        "composites": {
+          "realm": [
+            "ELECTION_OFFICER",
+            "TABULATION_OFFICER",
+            "AUDITOR",
+            "OBSERVER"
+          ]
+        }
+      },
+      {
+        "name": "ELECTION_OFFICER",
+        "description": "Operational election management for candidates, ballots, voter rolls, and polling operations.",
+        "composite": true,
+        "clientRole": false,
+        "composites": {
+          "realm": [
+            "OBSERVER"
+          ]
+        }
+      },
+      {
+        "name": "TABULATION_OFFICER",
+        "description": "Tabulation execution, result preparation, certification workflow participation, and recount support.",
+        "composite": true,
+        "clientRole": false,
+        "composites": {
+          "realm": [
+            "OBSERVER"
+          ]
+        }
+      },
+      {
+        "name": "AUDITOR",
+        "description": "Read-only audit access, audit review workflow participation, and compliance evidence review.",
+        "composite": true,
+        "clientRole": false,
+        "composites": {
+          "realm": [
+            "OBSERVER"
+          ]
+        }
+      },
+      {
+        "name": "OBSERVER",
+        "description": "Read-only observation of authorized election metadata, status, and published results.",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "VOTER",
+        "description": "Future voter portal role for authenticated voter-facing flows. Not used for operator administration.",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "mirems-backend",
+      "name": "MiREMS Backend Resource Server / Service Client",
+      "description": "Confidential backend client for service-to-service access and resource-server role mapping.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "secret": "mirems-backend-dev-secret-change-me",
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {
+        "client.secret.creation.time": "1715670000",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "oidc.ciba.grant.enabled": "false"
+      }
+    },
+    {
+      "clientId": "mirems-frontend",
+      "name": "MiREMS Frontend Shell",
+      "description": "Public browser client using OIDC Authorization Code Flow with PKCE.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "serviceAccountsEnabled": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "frontchannelLogout": true,
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://127.0.0.1:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://127.0.0.1:5173/*",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "oidc.ciba.grant.enabled": "false"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "system-administrators",
+      "realmRoles": [
+        "SYSTEM_ADMIN"
+      ]
+    },
+    {
+      "name": "election-administrators",
+      "realmRoles": [
+        "ELECTION_ADMIN"
+      ]
+    },
+    {
+      "name": "election-officers",
+      "realmRoles": [
+        "ELECTION_OFFICER"
+      ]
+    },
+    {
+      "name": "tabulation-officers",
+      "realmRoles": [
+        "TABULATION_OFFICER"
+      ]
+    },
+    {
+      "name": "auditors",
+      "realmRoles": [
+        "AUDITOR"
+      ]
+    },
+    {
+      "name": "observers",
+      "realmRoles": [
+        "OBSERVER"
+      ]
+    },
+    {
+      "name": "voters",
+      "realmRoles": [
+        "VOTER"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@mirems/mirems-shell",
+  "version": "0.1.0-SNAPSHOT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@mirems/api-client": "workspace:*",
+    "@mirems/i18n": "workspace:*",
+    "@mirems/ui-core": "workspace:*",
+    "@tanstack/react-router": "^1.132.0",
+    "@tanstack/router-devtools": "^1.132.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "axios": "^1.7.9",
+    "oidc-client-ts": "^3.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^2.1.9"
+  }
+}

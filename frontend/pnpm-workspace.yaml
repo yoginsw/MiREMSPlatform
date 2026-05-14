@@ -1,0 +1,4 @@
+packages:
+  - mirems-shell
+  - packages/*
+  - extensions/*
