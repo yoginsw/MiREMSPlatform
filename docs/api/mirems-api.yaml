@@ -1,0 +1,1133 @@
+openapi: 3.1.0
+info:
+  title: MiREMS Core API
+  version: 0.1.0
+  description: >-
+    VVSG 2.0-aligned election management API for elections, contests,
+    candidates, ballots, voter records, voting sessions, tabulation, results,
+    and process administration.
+servers:
+  - url: /api/v1
+tags:
+  - name: Elections
+  - name: Contests
+  - name: Candidates
+  - name: Ballots
+  - name: Voters
+  - name: Voting Sessions
+  - name: Tabulation
+  - name: Process Admin
+security:
+  - bearerAuth: []
+paths:
+  /elections:
+    get:
+      tags: [Elections]
+      operationId: listElections
+      summary: List elections
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Elections returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ElectionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Elections]
+      operationId: createElection
+      summary: Create an election
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ElectionRequest'
+      responses:
+        '201':
+          description: Election created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Elections]
+      operationId: getElection
+      summary: Get election details
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Election returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    put:
+      tags: [Elections]
+      operationId: publishElection
+      summary: Publish an election
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Election published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/close:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    put:
+      tags: [Elections]
+      operationId: closeElection
+      summary: Close an election
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Election closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/contests:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Contests]
+      operationId: listContests
+      summary: List contests for an election
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Contests returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContestResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Contests]
+      operationId: createContest
+      summary: Create a contest
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContestRequest'
+      responses:
+        '201':
+          description: Contest created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContestResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/contests/{contestId}:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/ContestId'
+    get:
+      tags: [Contests]
+      operationId: getContest
+      summary: Get contest details
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Contest returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContestResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    put:
+      tags: [Contests]
+      operationId: updateContest
+      summary: Update a contest
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContestRequest'
+      responses:
+        '200':
+          description: Contest updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContestResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/contests/{contestId}/candidates:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/ContestId'
+    get:
+      tags: [Candidates]
+      operationId: listCandidates
+      summary: List candidates for a contest
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Candidates returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CandidateResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Candidates]
+      operationId: registerCandidate
+      summary: Submit candidate registration
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateRequest'
+      responses:
+        '202':
+          description: Candidate registration accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/contests/{contestId}/candidates/{candidateId}:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/ContestId'
+      - $ref: '#/components/parameters/CandidateId'
+    get:
+      tags: [Candidates]
+      operationId: getCandidate
+      summary: Get candidate registration status
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Candidate returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/contests/{contestId}/candidates/{candidateId}/withdraw:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/ContestId'
+      - $ref: '#/components/parameters/CandidateId'
+    put:
+      tags: [Candidates]
+      operationId: withdrawCandidate
+      summary: Withdraw a candidate
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Candidate withdrawn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/ballots:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Ballots]
+      operationId: listBallots
+      summary: List ballots
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Ballots returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BallotResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Ballots]
+      operationId: createBallot
+      summary: Create a ballot
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BallotRequest'
+      responses:
+        '201':
+          description: Ballot created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/ballots/{ballotId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/BallotId'
+    post:
+      tags: [Ballots]
+      operationId: createBallotVersion
+      summary: Create a new ballot version
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BallotVersionRequest'
+      responses:
+        '201':
+          description: Ballot version created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/ballots/{ballotId}/preview:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/BallotId'
+    get:
+      tags: [Ballots]
+      operationId: previewBallot
+      summary: Return ballot layout JSON preview
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Ballot preview returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotPreviewResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/ballot-styles:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Ballots]
+      operationId: listBallotStyles
+      summary: List ballot styles
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '200':
+          description: Ballot styles returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BallotStyleResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Ballots]
+      operationId: createBallotStyle
+      summary: Create a ballot style
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BallotStyleRequest'
+      responses:
+        '201':
+          description: Ballot style created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotStyleResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/ballot-styles/{ballotStyleId}:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+      - $ref: '#/components/parameters/BallotStyleId'
+    put:
+      tags: [Ballots]
+      operationId: updateBallotStyle
+      summary: Update a ballot style
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BallotStyleRequest'
+      responses:
+        '200':
+          description: Ballot style updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotStyleResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+    delete:
+      tags: [Ballots]
+      operationId: deleteBallotStyle
+      summary: Delete a ballot style
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '204':
+          description: Ballot style deleted
+        default:
+          $ref: '#/components/responses/Problem'
+  /voters:
+    post:
+      tags: [Voters]
+      operationId: registerVoter
+      summary: Register a voter record
+      security:
+        - bearerAuth: [ELECTION_OFFICER]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoterRegistrationRequest'
+      responses:
+        '201':
+          description: Voter registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoterMaskedResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /voters/{voterId}:
+    parameters:
+      - $ref: '#/components/parameters/VoterId'
+    get:
+      tags: [Voters]
+      operationId: getVoter
+      summary: Get masked voter record
+      security:
+        - bearerAuth: [VOTER, ELECTION_OFFICER]
+      responses:
+        '200':
+          description: Masked voter record returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoterMaskedResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /voters/{voterId}/eligibility/{electionId}:
+    parameters:
+      - $ref: '#/components/parameters/VoterId'
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Voters]
+      operationId: checkVoterEligibility
+      summary: Check voter eligibility for an election
+      security:
+        - bearerAuth: [VOTER, ELECTION_OFFICER]
+      responses:
+        '200':
+          description: Eligibility returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoterEligibilityResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /sessions:
+    post:
+      tags: [Voting Sessions]
+      operationId: createVotingSession
+      summary: Create a voting session
+      security:
+        - bearerAuth: [VOTER]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VotingSessionRequest'
+      responses:
+        '201':
+          description: Voting session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VotingSessionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /sessions/{sessionId}/cast:
+    parameters:
+      - $ref: '#/components/parameters/SessionId'
+    post:
+      tags: [Voting Sessions]
+      operationId: castVote
+      summary: Cast a vote in a voting session
+      security:
+        - bearerAuth: [VOTER]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteCastRequest'
+      responses:
+        '201':
+          description: Vote cast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteCastReceiptResponse'
+        '409':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /sessions/{sessionId}/spoil:
+    parameters:
+      - $ref: '#/components/parameters/SessionId'
+    post:
+      tags: [Voting Sessions]
+      operationId: spoilVotingSession
+      summary: Spoil a voting session
+      security:
+        - bearerAuth: [VOTER, ELECTION_OFFICER]
+      responses:
+        '200':
+          description: Session spoiled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VotingSessionResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/tabulate:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    post:
+      tags: [Tabulation]
+      operationId: tabulateElection
+      summary: Start tabulation workflow
+      security:
+        - bearerAuth: [ELECTION_ADMIN]
+      responses:
+        '202':
+          description: Tabulation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /elections/{electionId}/results:
+    parameters:
+      - $ref: '#/components/parameters/ElectionId'
+    get:
+      tags: [Tabulation]
+      operationId: getElectionResults
+      summary: Get election tabulation results
+      security:
+        - bearerAuth: [AUTHENTICATED]
+      responses:
+        '200':
+          description: Results returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TabulationResultResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /admin/processes:
+    get:
+      tags: [Process Admin]
+      operationId: listProcessInstances
+      summary: List active process instances
+      security:
+        - bearerAuth: [SYSTEM_ADMIN]
+      responses:
+        '200':
+          description: Process instances returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /admin/processes/{processInstanceId}/signal:
+    parameters:
+      - $ref: '#/components/parameters/ProcessInstanceId'
+    post:
+      tags: [Process Admin]
+      operationId: signalProcessInstance
+      summary: Send a signal to a process instance
+      security:
+        - bearerAuth: [SYSTEM_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessSignalRequest'
+      responses:
+        '200':
+          description: Signal accepted and process status returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /admin/processes/{processInstanceId}/audit:
+    parameters:
+      - $ref: '#/components/parameters/ProcessInstanceId'
+    get:
+      tags: [Process Admin]
+      operationId: getProcessAuditTrail
+      summary: Get process audit trail
+      security:
+        - bearerAuth: [SYSTEM_ADMIN]
+      responses:
+        '200':
+          description: Process audit entries returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessAuditEntry'
+        default:
+          $ref: '#/components/responses/Problem'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Problem:
+      description: RFC 7807 problem detail
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+  parameters:
+    ElectionId:
+      name: electionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ContestId:
+      name: contestId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    CandidateId:
+      name: candidateId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BallotId:
+      name: ballotId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BallotStyleId:
+      name: ballotStyleId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    VoterId:
+      name: voterId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ProcessInstanceId:
+      name: processInstanceId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    ProblemDetail:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+    ElectionStatus:
+      type: string
+      enum: [DRAFT, PUBLISHED, OPEN, CLOSED, CERTIFIED]
+    ElectionType:
+      type: string
+      enum: [GENERAL, PRIMARY, SPECIAL, REFERENDUM]
+    ElectionRequest:
+      type: object
+      required: [name, type, jurisdiction, startsAt, endsAt]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/ElectionType'
+        jurisdiction:
+          type: string
+          minLength: 1
+        startsAt:
+          type: string
+          format: date-time
+        endsAt:
+          type: string
+          format: date-time
+    ElectionResponse:
+      type: object
+      required: [id, name, type, jurisdiction, status, startsAt, endsAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/ElectionType'
+        jurisdiction:
+          type: string
+        status:
+          $ref: '#/components/schemas/ElectionStatus'
+        startsAt:
+          type: string
+          format: date-time
+        endsAt:
+          type: string
+          format: date-time
+    ContestType:
+      type: string
+      enum: [SINGLE_WINNER, MULTI_WINNER, REFERENDUM]
+    ContestRequest:
+      type: object
+      required: [title, type, seats]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/ContestType'
+        seats:
+          type: integer
+          format: int32
+          minimum: 1
+    ContestResponse:
+      type: object
+      required: [id, electionId, title, type, seats]
+      properties:
+        id:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        type:
+          $ref: '#/components/schemas/ContestType'
+        seats:
+          type: integer
+          format: int32
+    CandidateStatus:
+      type: string
+      enum: [PENDING, APPROVED, DISQUALIFIED, WITHDRAWN]
+    CandidateRequest:
+      type: object
+      required: [displayName, party]
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+        party:
+          type: string
+        externalReference:
+          type: string
+    CandidateResponse:
+      type: object
+      required: [id, contestId, displayName, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        contestId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        party:
+          type: string
+        status:
+          $ref: '#/components/schemas/CandidateStatus'
+    BallotRequest:
+      type: object
+      required: [styleId, contestIds]
+      properties:
+        styleId:
+          type: string
+          format: uuid
+        contestIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    BallotVersionRequest:
+      type: object
+      required: [changeReason, contestIds]
+      properties:
+        changeReason:
+          type: string
+        contestIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    BallotResponse:
+      type: object
+      required: [id, electionId, styleId, version, contestIds]
+      properties:
+        id:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        styleId:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          format: int32
+        contestIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    BallotStyleRequest:
+      type: object
+      required: [name, precinctIds, languageCodes]
+      properties:
+        name:
+          type: string
+        precinctIds:
+          type: array
+          items:
+            type: string
+        languageCodes:
+          type: array
+          items:
+            type: string
+    BallotStyleResponse:
+      type: object
+      required: [id, electionId, name, precinctIds, languageCodes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        precinctIds:
+          type: array
+          items:
+            type: string
+        languageCodes:
+          type: array
+          items:
+            type: string
+    BallotPreviewResponse:
+      type: object
+      required: [ballotId, layout]
+      properties:
+        ballotId:
+          type: string
+          format: uuid
+        layout:
+          type: object
+          additionalProperties: true
+    VoterRegistrationRequest:
+      type: object
+      required: [externalVoterReference, jurisdiction, eligibleElectionIds]
+      properties:
+        externalVoterReference:
+          type: string
+          minLength: 1
+        jurisdiction:
+          type: string
+        eligibleElectionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    VoterMaskedResponse:
+      type: object
+      required: [id, maskedReference, registrationStatus]
+      properties:
+        id:
+          type: string
+          format: uuid
+        maskedReference:
+          type: string
+        registrationStatus:
+          type: string
+          enum: [PENDING, ACTIVE, SUSPENDED, CANCELLED]
+    VoterEligibilityResponse:
+      type: object
+      required: [voterId, electionId, eligible]
+      properties:
+        voterId:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        eligible:
+          type: boolean
+        reason:
+          type: string
+    VotingSessionRequest:
+      type: object
+      required: [voterId, electionId, ballotId]
+      properties:
+        voterId:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        ballotId:
+          type: string
+          format: uuid
+    VotingSessionResponse:
+      type: object
+      required: [id, voterId, electionId, ballotId, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        voterId:
+          type: string
+          format: uuid
+        electionId:
+          type: string
+          format: uuid
+        ballotId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [CREATED, ACTIVE, CAST, SPOILED, EXPIRED]
+    VoteCastRequest:
+      type: object
+      required: [selections]
+      properties:
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/VoteSelection'
+    VoteSelection:
+      type: object
+      required: [contestId, selectionIds]
+      properties:
+        contestId:
+          type: string
+          format: uuid
+        selectionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    VoteCastReceiptResponse:
+      type: object
+      required: [sessionId, votingResultId, receiptHash]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        votingResultId:
+          type: string
+          format: uuid
+        receiptHash:
+          type: string
+    TabulationResultResponse:
+      type: object
+      required: [electionId, status, generatedAt, contestTallies]
+      properties:
+        electionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, CERTIFIED]
+        generatedAt:
+          type: string
+          format: date-time
+        contestTallies:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContestTally'
+    ContestTally:
+      type: object
+      required: [contestId, candidateTallies]
+      properties:
+        contestId:
+          type: string
+          format: uuid
+        candidateTallies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateTally'
+    CandidateTally:
+      type: object
+      required: [candidateId, voteCount]
+      properties:
+        candidateId:
+          type: string
+          format: uuid
+        voteCount:
+          type: integer
+          format: int64
+    ProcessSignalRequest:
+      type: object
+      required: [signalName]
+      properties:
+        signalName:
+          type: string
+          minLength: 1
+        payload:
+          type: object
+          additionalProperties: true
+    ProcessStatus:
+      type: object
+      required: [instanceId, processId, status, variables, activeNodes]
+      properties:
+        instanceId:
+          type: string
+        processId:
+          type: string
+        status:
+          type: string
+        variables:
+          type: object
+          additionalProperties: true
+        activeNodes:
+          type: array
+          items:
+            type: string
+    ProcessAuditEntry:
+      type: object
+      required: [instanceId, processId, eventType, actor, occurredAt, payload]
+      properties:
+        instanceId:
+          type: string
+        processId:
+          type: string
+        eventType:
+          type: string
+        actor:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+        payload:
+          type: object
+          additionalProperties: true

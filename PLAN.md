@@ -556,7 +556,7 @@
 ## Phase 3 — REST API Layer
 
 ### GOAL P3-029 | OpenAPI Specification and Code Generation
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-018
 
 **Tasks:**
@@ -566,6 +566,8 @@
 4. All generated code excluded from coverage measurement.
 
 **Done Criteria:** Spec generates both server stubs and TS client without errors.
+
+**Completion Note:** Added OpenAPI 3.1 contract for election, contest, candidate, ballot, ballot style, voter, voting session, tabulation/results, and process-admin operations. Configured OpenAPI Generator in `core-api` to generate Spring Boot 3 server interfaces under `build/generated/openapi/server` and TypeScript Axios client sources under `frontend/packages/api-client/src/generated`. Wired generated server sources into `compileJava`, added TS client dependency/export wiring, excluded `**/generated/**` from JaCoCo class directories, and added OpenAPI contract tests for domain paths/schemas and role security metadata. Verified server and TS client generation plus backend/frontend builds.
 
 ---
 

@@ -52,6 +52,13 @@ configure(backendJavaProjects.map { project(it) }) {
 
     tasks.named<JacocoReport>("jacocoTestReport") {
         dependsOn(tasks.named("test"))
+        classDirectories.setFrom(
+            files(classDirectories.files.map {
+                fileTree(it) {
+                    exclude("**/generated/**")
+                }
+            })
+        )
         reports {
             xml.required.set(true)
             html.required.set(true)
