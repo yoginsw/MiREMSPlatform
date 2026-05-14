@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:drools="http://www.jboss.org/drools"
+                   id="Definitions_ElectionPublication"
+                   targetNamespace="https://mirems.io/bpmn/election-publication">
+
+    <bpmn2:error id="ElectionValidationFailedEvent" name="ElectionValidationFailedEvent" errorCode="ElectionValidationFailedEvent"/>
+
+    <bpmn2:process id="election-publication" name="Election Publication Process" isExecutable="true">
+        <bpmn2:startEvent id="StartEvent_publishElection" name="publishElection() called from ElectionManagementService">
+            <bpmn2:outgoing>Flow_Start_To_AdminReview</bpmn2:outgoing>
+        </bpmn2:startEvent>
+
+        <bpmn2:userTask id="UserTask_ElectionAdminReview" name="ELECTION_ADMIN reviews election configuration">
+            <bpmn2:incoming>Flow_Start_To_AdminReview</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_AdminReview_To_ContestValidation</bpmn2:outgoing>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceAssignmentExpression>
+                    <bpmn2:formalExpression>ELECTION_ADMIN</bpmn2:formalExpression>
+                </bpmn2:resourceAssignmentExpression>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:serviceTask id="ServiceTask_ValidateRequiredContests"
+                           name="Validate required contests"
+                           drools:taskName="RequiredContestsValidationWorkItemHandler">
+            <bpmn2:incoming>Flow_AdminReview_To_ContestValidation</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_ContestValidation_To_BallotStyleValidation</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:serviceTask id="ServiceTask_ValidateBallotStyleCoverage"
+                           name="Validate ballot style coverage"
+                           drools:taskName="BallotStyleCoverageValidationWorkItemHandler">
+            <bpmn2:incoming>Flow_ContestValidation_To_BallotStyleValidation</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_BallotStyleValidation_To_Gateway</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:exclusiveGateway id="Gateway_ValidationPassed" name="Validation passed?">
+            <bpmn2:incoming>Flow_BallotStyleValidation_To_Gateway</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_ValidationPassed_To_Publish</bpmn2:outgoing>
+            <bpmn2:outgoing>Flow_ValidationFailed_To_ErrorEnd</bpmn2:outgoing>
+        </bpmn2:exclusiveGateway>
+
+        <bpmn2:serviceTask id="ServiceTask_PublishElection"
+                           name="Publish election"
+                           drools:taskName="PublishElectionWorkItemHandler">
+            <bpmn2:incoming>Flow_ValidationPassed_To_Publish</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Publish_To_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:endEvent id="EndEvent_ElectionPublished" name="Election published">
+            <bpmn2:incoming>Flow_Publish_To_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+        <bpmn2:endEvent id="EndEvent_ElectionValidationFailed" name="ElectionValidationFailedEvent">
+            <bpmn2:incoming>Flow_ValidationFailed_To_ErrorEnd</bpmn2:incoming>
+            <bpmn2:errorEventDefinition errorRef="ElectionValidationFailedEvent"/>
+        </bpmn2:endEvent>
+
+        <bpmn2:sequenceFlow id="Flow_Start_To_AdminReview" sourceRef="StartEvent_publishElection" targetRef="UserTask_ElectionAdminReview"/>
+        <bpmn2:sequenceFlow id="Flow_AdminReview_To_ContestValidation" sourceRef="UserTask_ElectionAdminReview" targetRef="ServiceTask_ValidateRequiredContests"/>
+        <bpmn2:sequenceFlow id="Flow_ContestValidation_To_BallotStyleValidation" sourceRef="ServiceTask_ValidateRequiredContests" targetRef="ServiceTask_ValidateBallotStyleCoverage"/>
+        <bpmn2:sequenceFlow id="Flow_BallotStyleValidation_To_Gateway" sourceRef="ServiceTask_ValidateBallotStyleCoverage" targetRef="Gateway_ValidationPassed"/>
+        <bpmn2:sequenceFlow id="Flow_ValidationPassed_To_Publish" sourceRef="Gateway_ValidationPassed" targetRef="ServiceTask_PublishElection">
+            <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">#{validationPassed == true}</bpmn2:conditionExpression>
+        </bpmn2:sequenceFlow>
+        <bpmn2:sequenceFlow id="Flow_ValidationFailed_To_ErrorEnd" sourceRef="Gateway_ValidationPassed" targetRef="EndEvent_ElectionValidationFailed">
+            <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">#{validationPassed == false}</bpmn2:conditionExpression>
+        </bpmn2:sequenceFlow>
+        <bpmn2:sequenceFlow id="Flow_Publish_To_End" sourceRef="ServiceTask_PublishElection" targetRef="EndEvent_ElectionPublished"/>
+    </bpmn2:process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_ElectionPublication">
+        <bpmndi:BPMNPlane id="BPMNPlane_ElectionPublication" bpmnElement="election-publication">
+            <bpmndi:BPMNShape id="Shape_Start" bpmnElement="StartEvent_publishElection"><dc:Bounds x="120" y="160" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_AdminReview" bpmnElement="UserTask_ElectionAdminReview"><dc:Bounds x="210" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_ContestValidation" bpmnElement="ServiceTask_ValidateRequiredContests"><dc:Bounds x="410" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_BallotStyleValidation" bpmnElement="ServiceTask_ValidateBallotStyleCoverage"><dc:Bounds x="610" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Gateway" bpmnElement="Gateway_ValidationPassed" isMarkerVisible="true"><dc:Bounds x="810" y="153" width="50" height="50"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Publish" bpmnElement="ServiceTask_PublishElection"><dc:Bounds x="910" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_End" bpmnElement="EndEvent_ElectionPublished"><dc:Bounds x="1110" y="160" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_ErrorEnd" bpmnElement="EndEvent_ElectionValidationFailed"><dc:Bounds x="930" y="270" width="36" height="36"/></bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

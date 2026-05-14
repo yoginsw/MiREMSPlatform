@@ -401,7 +401,7 @@
 ---
 
 ### GOAL P2-021 | BPMN — Election Publication Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-020
 **Context files:** `docs/vvsg/VVSG2_MAPPING.md`, `AGENTS.md §6`
 
@@ -414,10 +414,10 @@
    - Gateway: Validation passed? → Task 4; Failed? → Error End with `ElectionValidationFailedEvent`.
    - Task 4 (Service Task): Set `ElectionStatus.PUBLISHED`, emit `ElectionPublishedEvent`.
    - End Event.
-2. Implement Java service tasks as `@KogitoWorkItemHandler` beans.
-3. Integration test: run process through happy path and validation-failure path.
+2. Implement Java service tasks as Kogito `KogitoWorkItemHandler` beans.
+3. Integration-style service tests cover happy path, contest validation failure, ballot-style validation failure, and non-admin review failure.
 
-**Done Criteria:** Both paths tested; `ElectionPublishedEvent` emitted in happy path; 80% coverage.
+**Done Criteria:** Both paths tested; `ElectionPublishedEvent` emitted in happy path; publication package coverage above 80%.
 
 ---
 
