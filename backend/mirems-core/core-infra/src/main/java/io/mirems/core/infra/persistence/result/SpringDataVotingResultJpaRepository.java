@@ -9,4 +9,6 @@ public interface SpringDataVotingResultJpaRepository extends JpaRepository<Votin
     List<VotingResult> findBySessionId(UUID sessionId);
 
     List<VotingResult> findByContestId(UUID contestId);
+
+    List<VotingResult> findBySessionElectionId(UUID electionId);
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:drools="http://www.jboss.org/drools"
+                   id="Definitions_BallotTabulation"
+                   targetNamespace="https://mirems.io/bpmn/ballot-tabulation">
+
+    <bpmn2:process id="ballot-tabulation" name="Ballot Tabulation Process" isExecutable="true">
+        <bpmn2:startEvent id="StartEvent_ElectionClosed" name="ElectionStatus changed to CLOSED">
+            <bpmn2:outgoing>Flow_Start_To_LoadResults</bpmn2:outgoing>
+        </bpmn2:startEvent>
+
+        <bpmn2:serviceTask id="ServiceTask_LoadVotingResults"
+                           name="Load all VotingResult records for election"
+                           drools:taskName="LoadVotingResultsWorkItemHandler">
+            <bpmn2:incoming>Flow_Start_To_LoadResults</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_LoadResults_To_Aggregate</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:serviceTask id="ServiceTask_AggregateByContest"
+                           name="Aggregate by Contest and create TabulationReport draft"
+                           drools:taskName="AggregateTabulationReportWorkItemHandler">
+            <bpmn2:incoming>Flow_LoadResults_To_Aggregate</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Aggregate_To_OfficerReview</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:userTask id="UserTask_TabulationOfficerReview" name="TABULATION_OFFICER reviews report">
+            <bpmn2:incoming>Flow_Aggregate_To_OfficerReview</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_OfficerReview_To_LockReport</bpmn2:outgoing>
+            <bpmn2:potentialOwner>
+                <bpmn2:resourceAssignmentExpression>
+                    <bpmn2:formalExpression>TABULATION_OFFICER</bpmn2:formalExpression>
+                </bpmn2:resourceAssignmentExpression>
+            </bpmn2:potentialOwner>
+        </bpmn2:userTask>
+
+        <bpmn2:serviceTask id="ServiceTask_LockReport"
+                           name="Lock report, generate SHA-256 hash, emit TabulationCompletedEvent"
+                           drools:taskName="LockTabulationReportWorkItemHandler">
+            <bpmn2:incoming>Flow_OfficerReview_To_LockReport</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_LockReport_To_PublicResultsGateway</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:exclusiveGateway id="Gateway_PublicResults" name="Public results enabled?">
+            <bpmn2:incoming>Flow_LockReport_To_PublicResultsGateway</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_PublicResults_To_Publish</bpmn2:outgoing>
+            <bpmn2:outgoing>Flow_PrivateResults_To_End</bpmn2:outgoing>
+        </bpmn2:exclusiveGateway>
+
+        <bpmn2:serviceTask id="ServiceTask_PublishResults"
+                           name="Publish results"
+                           drools:taskName="PublishTabulationResultsWorkItemHandler">
+            <bpmn2:incoming>Flow_PublicResults_To_Publish</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Publish_To_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+
+        <bpmn2:endEvent id="EndEvent_TabulationCompleted" name="Tabulation completed">
+            <bpmn2:incoming>Flow_PrivateResults_To_End</bpmn2:incoming>
+            <bpmn2:incoming>Flow_Publish_To_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+
+        <bpmn2:sequenceFlow id="Flow_Start_To_LoadResults" sourceRef="StartEvent_ElectionClosed" targetRef="ServiceTask_LoadVotingResults"/>
+        <bpmn2:sequenceFlow id="Flow_LoadResults_To_Aggregate" sourceRef="ServiceTask_LoadVotingResults" targetRef="ServiceTask_AggregateByContest"/>
+        <bpmn2:sequenceFlow id="Flow_Aggregate_To_OfficerReview" sourceRef="ServiceTask_AggregateByContest" targetRef="UserTask_TabulationOfficerReview"/>
+        <bpmn2:sequenceFlow id="Flow_OfficerReview_To_LockReport" sourceRef="UserTask_TabulationOfficerReview" targetRef="ServiceTask_LockReport"/>
+        <bpmn2:sequenceFlow id="Flow_LockReport_To_PublicResultsGateway" sourceRef="ServiceTask_LockReport" targetRef="Gateway_PublicResults"/>
+        <bpmn2:sequenceFlow id="Flow_PublicResults_To_Publish" sourceRef="Gateway_PublicResults" targetRef="ServiceTask_PublishResults"/>
+        <bpmn2:sequenceFlow id="Flow_PrivateResults_To_End" sourceRef="Gateway_PublicResults" targetRef="EndEvent_TabulationCompleted"/>
+        <bpmn2:sequenceFlow id="Flow_Publish_To_End" sourceRef="ServiceTask_PublishResults" targetRef="EndEvent_TabulationCompleted"/>
+    </bpmn2:process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_BallotTabulation">
+        <bpmndi:BPMNPlane id="BPMNPlane_BallotTabulation" bpmnElement="ballot-tabulation">
+            <bpmndi:BPMNShape id="Shape_Start" bpmnElement="StartEvent_ElectionClosed"><dc:Bounds x="120" y="160" width="36" height="36"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Load" bpmnElement="ServiceTask_LoadVotingResults"><dc:Bounds x="210" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Aggregate" bpmnElement="ServiceTask_AggregateByContest"><dc:Bounds x="410" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Review" bpmnElement="UserTask_TabulationOfficerReview"><dc:Bounds x="610" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Lock" bpmnElement="ServiceTask_LockReport"><dc:Bounds x="810" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Gateway" bpmnElement="Gateway_PublicResults" isMarkerVisible="true"><dc:Bounds x="1010" y="153" width="50" height="50"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_Publish" bpmnElement="ServiceTask_PublishResults"><dc:Bounds x="1110" y="138" width="150" height="80"/></bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Shape_End" bpmnElement="EndEvent_TabulationCompleted"><dc:Bounds x="1310" y="160" width="36" height="36"/></bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

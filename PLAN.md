@@ -460,7 +460,7 @@
 ---
 
 ### GOAL P2-024 | BPMN — Ballot Tabulation Process
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-022, P1-013
 **Context files:** `docs/adr/ADR-004-vote-immutability.md`, `docs/vvsg/VVSG2_MAPPING.md`
 
@@ -476,6 +476,8 @@
 3. Integration test with 100 sample `VotingResult` records.
 
 **Done Criteria:** Tabulation produces correct counts; report hash verified; 80% coverage.
+
+**Completion Note:** Implemented immutable SHA-256-signed `TabulationReport`, `TabulationCompletedEvent`, tabulation BPMN/service flow, JPA repository/migration storage, and 100-record aggregation integration coverage. Verified full Gradle build and JaCoCo coverage gate.
 
 ---
 

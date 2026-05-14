@@ -13,7 +13,8 @@ class MigrationResourceContractTest {
             "db/migration/V2__create_ballot_tables.sql",
             "db/migration/V3__create_voter_tables.sql",
             "db/migration/V4__create_voting_result_tables.sql",
-            "db/migration/V5__create_audit_log_table.sql");
+            "db/migration/V5__create_audit_log_table.sql",
+            "db/migration/V6__create_tabulation_report_table.sql");
 
     @Test
     void requiredFlywayMigrationsArePresent() {
@@ -32,6 +33,7 @@ class MigrationResourceContractTest {
 
         assertThat(sql).contains("idx_elections_status");
         assertThat(sql).contains("idx_voting_results_session_id");
+        assertThat(sql).contains("idx_tabulation_reports_election_id");
         assertThat(sql).contains("idx_audit_events_aggregate_id_occurred_at");
     }
 
