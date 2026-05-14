@@ -17,6 +17,17 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ActuatorSecurityConfig {
     @Bean
     @Order(1)
+    SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/admin/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().hasRole("SYSTEM_ADMIN"))
+                .httpBasic(Customizer.withDefaults())
+                .build();
+    }
+
+    @Bean
+    @Order(2)
     SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher(to(HealthEndpoint.class, MetricsEndpoint.class, InfoEndpoint.class))
@@ -30,7 +41,7 @@ public class ActuatorSecurityConfig {
     }
 
     @Bean
-    @Order(2)
+    @Order(3)
     SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)

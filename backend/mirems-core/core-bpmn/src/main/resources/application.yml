@@ -9,3 +9,5 @@ kogito:
     type: jdbc
   data-index:
     url: ${MIREMS_KOGITO_DATAINDEX_URL:http://localhost:8180}
+  management-console:
+    url: ${MIREMS_KOGITO_MANAGEMENT_CONSOLE_URL:http://localhost:8280}

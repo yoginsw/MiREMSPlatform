@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: mirems-core-api
+  mvc:
+    problemdetails:
+      enabled: true
+
+kogito:
+  service:
+    url: ${MIREMS_KOGITO_SERVICE_URL:http://localhost:8080}
+  data-index:
+    url: ${MIREMS_KOGITO_DATAINDEX_URL:http://localhost:8180}
+  management-console:
+    url: ${MIREMS_KOGITO_MANAGEMENT_CONSOLE_URL:http://localhost:8280}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: MiREMS Platform Core API
+    version: 0.1.0-SNAPSHOT
+    standard: NIST VVSG 2.0 aligned traceability baseline
+
+server:
+  error:
+    include-message: never
+    include-binding-errors: never

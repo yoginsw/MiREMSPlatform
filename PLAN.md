@@ -535,7 +535,7 @@
 ---
 
 ### GOAL P2-028 | Process Monitoring and Admin Console Integration
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-021–P2-027
 
 **Tasks:**
@@ -548,6 +548,8 @@
 4. Integration test all endpoints.
 
 **Done Criteria:** Endpoints return correct data; role restriction enforced; 80% coverage.
+
+**Completion Note:** Added Kogito service/data-index/management-console URL configuration, `ProcessAdminController` admin endpoints, `ProcessMonitoringService` contract, in-memory active process registry, Kogito-backed signal delegation, safe API fallback bean, and `/admin/**` security chain requiring `SYSTEM_ADMIN`. Added MockMvc integration tests for list/signal/audit endpoints and role restrictions plus process monitoring unit tests. Verified full Gradle build and JaCoCo coverage gate.
 
 ---
 

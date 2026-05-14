@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(project(":mirems-core:core-domain"))
+    implementation(project(":mirems-core:core-bpmn"))
     implementation(project(":mirems-core:core-infra"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
