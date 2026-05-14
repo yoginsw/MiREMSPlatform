@@ -56,6 +56,8 @@ public class ActuatorSecurityConfig {
                         .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/voters")
                         .hasRole("ELECTION_OFFICER")
+                        .requestMatchers(HttpMethod.POST, "/sessions", "/sessions/*/cast", "/sessions/*/spoil")
+                        .hasAnyRole("VOTER", "ELECTION_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/ballot-styles/*")
                         .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/elections/*/ballot-styles/*")

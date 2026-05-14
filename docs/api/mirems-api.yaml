@@ -1015,7 +1015,7 @@ components:
           type: string
     VotingSessionRequest:
       type: object
-      required: [voterId, electionId, ballotId]
+      required: [voterId, electionId, ballotStyleId, deviceId]
       properties:
         voterId:
           type: string
@@ -1023,12 +1023,16 @@ components:
         electionId:
           type: string
           format: uuid
-        ballotId:
+        ballotStyleId:
           type: string
           format: uuid
+        deviceId:
+          type: string
+          minLength: 1
+          maxLength: 128
     VotingSessionResponse:
       type: object
-      required: [id, voterId, electionId, ballotId, status]
+      required: [id, voterId, electionId, ballotStyleId, status]
       properties:
         id:
           type: string
@@ -1039,18 +1043,19 @@ components:
         electionId:
           type: string
           format: uuid
-        ballotId:
+        ballotStyleId:
           type: string
           format: uuid
         status:
           type: string
-          enum: [CREATED, ACTIVE, CAST, SPOILED, EXPIRED]
+          enum: [OPENED, CAST, SPOILED, EXPIRED]
     VoteCastRequest:
       type: object
       required: [selections]
       properties:
         selections:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/VoteSelection'
     VoteSelection:
@@ -1062,19 +1067,22 @@ components:
           format: uuid
         selectionIds:
           type: array
+          minItems: 1
           items:
             type: string
             format: uuid
     VoteCastReceiptResponse:
       type: object
-      required: [sessionId, votingResultId, receiptHash]
+      required: [sessionId, resultHashes, receiptHash]
       properties:
         sessionId:
           type: string
           format: uuid
-        votingResultId:
-          type: string
-          format: uuid
+        resultHashes:
+          type: array
+          minItems: 1
+          items:
+            type: string
         receiptHash:
           type: string
     TabulationResultResponse:

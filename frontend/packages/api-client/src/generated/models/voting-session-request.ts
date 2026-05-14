@@ -37,5 +37,11 @@ export interface VotingSessionRequest {
      * @type {string}
      * @memberof VotingSessionRequest
      */
-    'ballotId': string;
+    'ballotStyleId': string;
+    /**
+     *
+     * @type {string}
+     * @memberof VotingSessionRequest
+     */
+    'deviceId': string;
 }

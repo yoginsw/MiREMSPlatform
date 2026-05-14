@@ -643,7 +643,7 @@
 ---
 
 ### GOAL P3-034 | Voting Session Controller
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-033, P1-017
 
 **Tasks:**
@@ -653,6 +653,14 @@
 4. Integration test duplicate vote prevention end-to-end.
 
 **Done Criteria:** Duplicate vote returns 409; receipt hash matches stored hash; 80% coverage.
+
+**Completion Notes:**
+- Added generated-stub-backed `VotingSessionController` for session creation, vote casting, and session spoil operations.
+- Aligned OpenAPI voting-session schemas with the domain/service model: `ballotStyleId`, `deviceId`, `OPENED` status, and cast receipt `resultHashes`.
+- Added cast receipt response mapping so the returned `receiptHash` matches the stored single-result hash returned by `VotingSessionService`.
+- Added route security for `/sessions`, `/sessions/{id}/cast`, and `/sessions/{id}/spoil` for `VOTER` and `ELECTION_OFFICER` roles, with voter self-access enforced on session creation.
+- Added RFC 7807 handling for duplicate/non-open cast conflicts, missing sessions, forbidden access, validation, bad requests, and service unavailable fallback.
+- Added integration and handler tests covering create/cast/spoil, duplicate cast `409`, unauthorized/forbidden, validation, missing session, command mapping, and receipt hash behavior.
 
 ---
 

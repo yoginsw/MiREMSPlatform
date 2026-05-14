@@ -28,10 +28,10 @@ export interface VoteCastReceiptResponse {
     'sessionId': string;
     /**
      *
-     * @type {string}
+     * @type {Array<string>}
      * @memberof VoteCastReceiptResponse
      */
-    'votingResultId': string;
+    'resultHashes': Array<string>;
     /**
      *
      * @type {string}

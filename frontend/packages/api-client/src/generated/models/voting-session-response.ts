@@ -43,7 +43,7 @@ export interface VotingSessionResponse {
      * @type {string}
      * @memberof VotingSessionResponse
      */
-    'ballotId': string;
+    'ballotStyleId': string;
     /**
      *
      * @type {string}
@@ -53,8 +53,7 @@ export interface VotingSessionResponse {
 }
 
 export const VotingSessionResponseStatusEnum = {
-    Created: 'CREATED',
-    Active: 'ACTIVE',
+    Opened: 'OPENED',
     Cast: 'CAST',
     Spoiled: 'SPOILED',
     Expired: 'EXPIRED'
