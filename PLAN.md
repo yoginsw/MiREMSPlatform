@@ -665,7 +665,7 @@
 ---
 
 ### GOAL P3-035 | Tabulation and Results Controller
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-034, P2-024
 
 **Tasks:**
@@ -674,6 +674,15 @@
 3. Integration tests.
 
 **Done Criteria:** 80% coverage; public/restricted access verified.
+
+**Completion Notes:**
+- Added generated-stub-backed `TabulationController` for tabulation workflow trigger and election results retrieval.
+- `POST /elections/{id}/tabulate` loads the canonical election, invokes `BallotTabulationProcessService`, and returns `202 Accepted` with `ProcessStatus` containing report id/hash variables.
+- `GET /elections/{id}/results` returns public results for `CERTIFIED` elections and restricts non-certified results to election/tabulation officials.
+- Added explicit mapping from immutable `TabulationReport` / domain `ContestTally` into OpenAPI `TabulationResultResponse`, including deterministic contest/candidate ordering.
+- Added route security for tabulation trigger (`TABULATION_OFFICER`) and controller-level public/restricted results enforcement.
+- Added RFC 7807 handling for missing election, missing tabulation report, authentication required, forbidden, invalid workflow requests, and service unavailable fallback.
+- Added integration and handler tests covering workflow trigger, public certified results, restricted non-certified results, forbidden access, not-found paths, and response mapping.
 
 ---
 
