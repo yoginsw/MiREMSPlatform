@@ -342,7 +342,7 @@
 ---
 
 ### GOAL P1-018 | MapStruct DTOs and Mappers
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-016, P1-017
 
 **Tasks:**
@@ -352,6 +352,8 @@
 4. Unit test each mapper with sample data.
 
 **Done Criteria:** All mappers compile; PII exclusion verified in tests; 80% coverage.
+
+**Completion Note — 2026-05-14:** Added Java record request/response DTOs in `core-api` for election, contest, candidate, ballot, ballot style, voter, voting session, and voting result API boundaries. Added MapStruct mappers for `Election`, `Contest`, `Candidate`, `Ballot`, `VoterRecord`, `VotingSession`, and `VotingResult`, including parent ID flattening for nested domain relationships. Response DTOs intentionally exclude raw and encrypted `externalVoterId`; reflection and mapper tests verify PII exclusion. Verified `./gradlew :mirems-core:core-api:test :mirems-core:core-api:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: `core-api` total line coverage 80.4%, mapper package line coverage 85.9%, DTO package line coverage 100.0%.
 
 ---
 

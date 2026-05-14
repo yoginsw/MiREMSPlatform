@@ -8,6 +8,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.mapstruct:mapstruct")
+    annotationProcessor(platform(project(":mirems-bom")))
+    annotationProcessor("org.mapstruct:mapstruct-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

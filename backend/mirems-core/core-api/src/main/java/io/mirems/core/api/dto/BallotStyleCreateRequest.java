@@ -1,0 +1,13 @@
+package io.mirems.core.api.dto;
+
+import io.mirems.core.domain.ballot.AccessibilityFeature;
+import java.util.Set;
+import java.util.UUID;
+
+public record BallotStyleCreateRequest(
+        UUID ballotId,
+        String styleCode,
+        String district,
+        String language,
+        Set<AccessibilityFeature> accessibilityFeatures) {
+}
