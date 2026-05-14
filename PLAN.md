@@ -235,7 +235,7 @@
 ---
 
 ### GOAL P1-012 | VoterRoll and VotingSession Entities
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-011
 
 **Tasks:**
@@ -246,6 +246,8 @@
 5. Unit tests covering PII encryption round-trip and duplicate prevention.
 
 **Done Criteria:** Encryption tested; duplicate prevention tested; 90% coverage.
+
+**Completion Note — 2026-05-14:** Added pure domain `VoterRecord` and `VotingSession` entities with `RegistrationStatus`, `SessionStatus`, `VotingSessionValidationException`, and `VotingSessionStateException`. Added AES-256-GCM `PiiEncryptionService`, `@Encrypted` marker annotation, and `EncryptedStringJpaConverter` using `MIREMS_PII_ENCRYPTION_KEY_BASE64` for JPA no-arg converter operation. `VoterRecord.externalVoterId` is encrypted on create and only decrypted through an explicit encryption service. Implemented duplicate prevention so a voter can have at most one non-SPOILED voting session per election, while allowing replacement after SPOILED. Verified PII encryption round-trip, randomized ciphertext, tamper rejection, converter null/non-null round-trip, voter eligibility, immutable collections, session lifecycle, terminal transitions, and duplicate prevention. Verified `./gradlew :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport build --no-daemon` succeeds. JaCoCo result: voting package line coverage 93.1%.
 
 ---
 

@@ -40,6 +40,7 @@ configure(backendJavaProjects.map { project(it) }) {
     dependencies {
         "implementation"(platform(project(":mirems-bom")))
         "testImplementation"(platform(project(":mirems-bom")))
+        "implementation"("jakarta.persistence:jakarta.persistence-api")
         "testImplementation"("org.junit.jupiter:junit-jupiter")
         "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
     }
