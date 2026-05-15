@@ -5,6 +5,17 @@ spring:
     problemdetails:
       enabled: true
 
+mirems:
+  security:
+    rate-limit:
+      enabled: ${MIREMS_RATE_LIMIT_ENABLED:true}
+      capacity: ${MIREMS_RATE_LIMIT_CAPACITY:60}
+      refill-tokens: ${MIREMS_RATE_LIMIT_REFILL_TOKENS:60}
+      refill-period: ${MIREMS_RATE_LIMIT_REFILL_PERIOD:PT1M}
+    cors:
+      frontend-origin: ${MIREMS_FRONTEND_ORIGIN:http://localhost:5173}
+      prod-allowed-origins: ${MIREMS_PROD_ALLOWED_ORIGINS:}
+
 kogito:
   service:
     url: ${MIREMS_KOGITO_SERVICE_URL:http://localhost:8080}

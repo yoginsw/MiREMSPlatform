@@ -708,7 +708,7 @@
 ---
 
 ### GOAL P3-037 | API Rate Limiting and Security Headers
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-030–P3-036
 
 **Tasks:**
@@ -718,6 +718,13 @@
 4. Integration tests for rate limiting and header presence.
 
 **Done Criteria:** Rate limit returns 429 after threshold; all security headers present; 80% coverage.
+
+**Completion Notes:**
+- Added Bucket4j-backed `ApiRateLimitingFilter` for sensitive endpoints with configurable capacity/refill, per-IP bucket, and per-authenticated-user bucket enforcement.
+- Added `429 application/problem+json` response with `Retry-After` when rate limits are exceeded.
+- Added security headers filter for `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, and `Content-Security-Policy`.
+- Added configurable CORS policy: non-prod allows only `mirems.security.cors.frontend-origin`; prod uses explicit `mirems.security.cors.prod-allowed-origins` allow-list.
+- Added integration tests for rate limiting threshold, security headers, and CORS origin restriction, plus unit tests for prod/non-prod CORS selection.
 
 ---
 

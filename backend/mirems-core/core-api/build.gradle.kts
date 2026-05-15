@@ -80,6 +80,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.bucket4j:bucket4j-core:8.10.1")
     implementation("io.swagger.core.v3:swagger-annotations-jakarta:2.2.22")
     implementation("org.mapstruct:mapstruct")
     annotationProcessor(platform(project(":mirems-bom")))
