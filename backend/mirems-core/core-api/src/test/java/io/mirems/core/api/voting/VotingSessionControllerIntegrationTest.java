@@ -71,6 +71,7 @@ class VotingSessionControllerIntegrationTest {
         RestAssured.port = port;
         RestAssured.basePath = "/miremsplatform";
         session = openedSession();
+        when(votingSessionService.electionIdForSession(SESSION_ID)).thenReturn(ELECTION_ID);
     }
 
     @Test
@@ -241,15 +242,15 @@ class VotingSessionControllerIntegrationTest {
             return new InMemoryUserDetailsManager(
                     User.withUsername("election-officer")
                             .password("{noop}password")
-                            .roles("ELECTION_OFFICER")
+                            .authorities("ROLE_ELECTION_OFFICER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername(VOTER_ID.toString())
                             .password("{noop}password")
-                            .roles("VOTER")
+                            .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername(OTHER_VOTER_ID.toString())
                             .password("{noop}password")
-                            .roles("VOTER")
+                            .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build());
         }
     }

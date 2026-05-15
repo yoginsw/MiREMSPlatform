@@ -4,6 +4,7 @@ import io.mirems.core.api.generated.api.VotersApi;
 import io.mirems.core.api.generated.model.VoterEligibilityResponse;
 import io.mirems.core.api.generated.model.VoterMaskedResponse;
 import io.mirems.core.api.generated.model.VoterRegistrationRequest;
+import io.mirems.core.api.security.ElectionScoped;
 import io.mirems.core.bpmn.voter.VoterEligibilityResult;
 import io.mirems.core.domain.election.ElectionType;
 import io.mirems.core.domain.voting.RegistrationStatus;
@@ -63,6 +64,7 @@ public class VoterRollController implements VotersApi {
     }
 
     @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<VoterEligibilityResponse> checkVoterEligibility(UUID voterId, UUID electionId) {
         ensureCanAccessVoter(voterId);

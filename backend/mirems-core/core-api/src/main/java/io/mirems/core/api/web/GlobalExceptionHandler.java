@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SecurityException.class)
     ProblemDetail handleSecurityException(SecurityException exception, HttpServletRequest request) {
         return problemDetail(HttpStatus.FORBIDDEN, exception, request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    ProblemDetail handleAccessDeniedException(AccessDeniedException exception, HttpServletRequest request) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, exception.getMessage());
+        detail.setTitle("Access denied");
+        detail.setType(URI.create("urn:mirems:error:access-denied"));
+        detail.setInstance(URI.create(request.getRequestURI()));
+        detail.setProperty("errorCode", "MIR-SEC-403");
+        detail.setProperty("exceptionType", exception.getClass().getSimpleName());
+        return detail;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

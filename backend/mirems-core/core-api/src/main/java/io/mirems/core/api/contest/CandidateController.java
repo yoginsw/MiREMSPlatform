@@ -3,6 +3,7 @@ package io.mirems.core.api.contest;
 import io.mirems.core.api.generated.api.CandidatesApi;
 import io.mirems.core.api.generated.model.CandidateRequest;
 import io.mirems.core.api.generated.model.CandidateResponse;
+import io.mirems.core.api.security.ElectionScoped;
 import io.mirems.core.bpmn.candidate.CandidateOfficerDecision;
 import io.mirems.core.bpmn.candidate.CandidateRegistrationProcessService;
 import io.mirems.core.bpmn.candidate.CandidateRegistrationRequest;
@@ -38,6 +39,7 @@ public class CandidateController implements CandidatesApi {
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<CandidateResponse> registerCandidate(
             UUID electionId, UUID contestId, CandidateRequest candidateRequest) {
@@ -58,12 +60,14 @@ public class CandidateController implements CandidatesApi {
     }
 
     @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<List<CandidateResponse>> listCandidates(UUID electionId, UUID contestId) {
         return ResponseEntity.ok(service().listCandidates(electionId, contestId).stream().map(this::toResponse).toList());
     }
 
     @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<CandidateResponse> getCandidate(UUID electionId, UUID contestId, UUID candidateId) {
         return ResponseEntity.ok(toResponse(service()
@@ -72,6 +76,7 @@ public class CandidateController implements CandidatesApi {
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<CandidateResponse> withdrawCandidate(UUID electionId, UUID contestId, UUID candidateId) {
         return ResponseEntity.ok(toResponse(service().withdrawCandidate(candidateId, actorId(), sourceIp())));

@@ -46,16 +46,24 @@ public class MiremsSecurityContext {
 
     public List<String> electionScope() {
         Authentication authentication = authentication();
-        if (!(authentication instanceof JwtAuthenticationToken jwtAuthentication)) {
+        if (authentication instanceof JwtAuthenticationToken jwtAuthentication) {
+            Object claim = jwtAuthentication.getToken().getClaims().get("mirems_election_scope");
+            if (!(claim instanceof Collection<?> values)) {
+                return List.of();
+            }
+            return values.stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .filter(value -> !value.isBlank())
+                    .toList();
+        }
+        if (authentication == null) {
             return List.of();
         }
-        Object claim = jwtAuthentication.getToken().getClaims().get("mirems_election_scope");
-        if (!(claim instanceof Collection<?> values)) {
-            return List.of();
-        }
-        return values.stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(authority -> authority.startsWith("ELECTION_SCOPE_"))
+                .map(authority -> authority.substring("ELECTION_SCOPE_".length()))
                 .filter(value -> !value.isBlank())
                 .toList();
     }

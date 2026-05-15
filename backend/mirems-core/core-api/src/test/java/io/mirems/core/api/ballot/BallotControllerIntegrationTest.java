@@ -266,8 +266,8 @@ class BallotControllerIntegrationTest {
         @Bean
         UserDetailsService testUsers() {
             return new InMemoryUserDetailsManager(
-                    User.withUsername("election-admin").password("{noop}password").roles("ELECTION_ADMIN").build(),
-                    User.withUsername("observer").password("{noop}password").roles("OBSERVER").build());
+                    User.withUsername("election-admin").password("{noop}password").authorities("ROLE_ELECTION_ADMIN", "ELECTION_SCOPE_" + ELECTION_ID).build(),
+                    User.withUsername("observer").password("{noop}password").authorities("ROLE_OBSERVER", "ELECTION_SCOPE_" + ELECTION_ID).build());
         }
     }
 }

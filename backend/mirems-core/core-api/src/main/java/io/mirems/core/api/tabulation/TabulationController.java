@@ -5,6 +5,8 @@ import io.mirems.core.api.generated.model.CandidateTally;
 import io.mirems.core.api.generated.model.ContestTally;
 import io.mirems.core.api.generated.model.ProcessStatus;
 import io.mirems.core.api.generated.model.TabulationResultResponse;
+import io.mirems.core.api.security.ElectionScopeValidator;
+import io.mirems.core.api.security.ElectionScoped;
 import io.mirems.core.bpmn.tabulation.BallotTabulationProcessService;
 import io.mirems.core.bpmn.tabulation.BallotTabulationRequest;
 import io.mirems.core.bpmn.tabulation.BallotTabulationResult;
@@ -38,19 +40,23 @@ public class TabulationController implements TabulationApi {
     private final ObjectProvider<ElectionRepository> electionRepository;
     private final ObjectProvider<TabulationReportRepository> tabulationReportRepository;
     private final HttpServletRequest request;
+    private final ElectionScopeValidator electionScopeValidator;
 
     public TabulationController(
             ObjectProvider<BallotTabulationProcessService> tabulationProcessService,
             ObjectProvider<ElectionRepository> electionRepository,
             ObjectProvider<TabulationReportRepository> tabulationReportRepository,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            ElectionScopeValidator electionScopeValidator) {
         this.tabulationProcessService = tabulationProcessService;
         this.electionRepository = electionRepository;
         this.tabulationReportRepository = tabulationReportRepository;
         this.request = request;
+        this.electionScopeValidator = electionScopeValidator;
     }
 
     @PreAuthorize("hasAnyRole('TABULATION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ProcessStatus> tabulateElection(UUID electionId) {
         Election election = findElection(electionId);
@@ -81,6 +87,7 @@ public class TabulationController implements TabulationApi {
         Election election = findElection(electionId);
         if (election.getElectionStatus() != ElectionStatus.CERTIFIED) {
             requireAuthenticatedOfficial();
+            electionScopeValidator.requireAccess(electionId);
         }
         TabulationReport report = reportRepository()
                 .findByElectionId(electionId)

@@ -44,6 +44,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
         })
 class ApiSecurityHardeningIntegrationTest {
     private static final UUID SESSION_ID = UUID.fromString("37000000-0000-0000-0000-000000000001");
+    private static final UUID ELECTION_ID = UUID.fromString("37000000-0000-0000-0000-000000000004");
     private static final UUID CONTEST_ID = UUID.fromString("37000000-0000-0000-0000-000000000002");
     private static final UUID CANDIDATE_ID = UUID.fromString("37000000-0000-0000-0000-000000000003");
     private static final String RESULT_HASH = "abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd";
@@ -58,6 +59,7 @@ class ApiSecurityHardeningIntegrationTest {
     void setUp() {
         RestAssured.port = port;
         RestAssured.basePath = "/miremsplatform";
+        when(votingSessionService.electionIdForSession(SESSION_ID)).thenReturn(ELECTION_ID);
         when(votingSessionService.castBallot(any()))
                 .thenReturn(new VotingSessionService.CastBallotReceipt(SESSION_ID, List.of(RESULT_HASH)));
     }
@@ -135,7 +137,7 @@ class ApiSecurityHardeningIntegrationTest {
         UserDetailsService userDetailsService() {
             return new InMemoryUserDetailsManager(User.withUsername("voter-037")
                     .password("{noop}password")
-                    .roles("VOTER")
+                    .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                     .build());
         }
     }

@@ -6,6 +6,7 @@ import io.mirems.core.api.generated.model.VoteCastRequest;
 import io.mirems.core.api.generated.model.VoteSelection;
 import io.mirems.core.api.generated.model.VotingSessionRequest;
 import io.mirems.core.api.generated.model.VotingSessionResponse;
+import io.mirems.core.api.security.ElectionScopeValidator;
 import io.mirems.core.domain.voting.VotingSession;
 import io.mirems.core.infra.service.voting.VotingSessionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,16 +28,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class VotingSessionController implements VotingSessionsApi {
     private final ObjectProvider<VotingSessionService> votingSessionService;
     private final HttpServletRequest request;
+    private final ElectionScopeValidator electionScopeValidator;
 
-    public VotingSessionController(ObjectProvider<VotingSessionService> votingSessionService, HttpServletRequest request) {
+    public VotingSessionController(
+            ObjectProvider<VotingSessionService> votingSessionService,
+            HttpServletRequest request,
+            ElectionScopeValidator electionScopeValidator) {
         this.votingSessionService = votingSessionService;
         this.request = request;
+        this.electionScopeValidator = electionScopeValidator;
     }
 
     @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VotingSessionResponse> createVotingSession(VotingSessionRequest votingSessionRequest) {
         ensureCanAccessVoter(votingSessionRequest.getVoterId());
+        electionScopeValidator.requireAccess(votingSessionRequest.getElectionId());
         VotingSession session = service().openSession(new VotingSessionService.OpenSessionCommand(
                 votingSessionRequest.getVoterId(),
                 votingSessionRequest.getElectionId(),
@@ -50,6 +57,7 @@ public class VotingSessionController implements VotingSessionsApi {
     @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VoteCastReceiptResponse> castVote(UUID sessionId, VoteCastRequest voteCastRequest) {
+        electionScopeValidator.requireAccess(service().electionIdForSession(sessionId));
         VotingSessionService.CastBallotReceipt receipt = service().castBallot(new VotingSessionService.CastBallotCommand(
                 sessionId,
                 voteCastRequest.getSelections().stream().map(this::toSelection).toList(),
@@ -62,6 +70,7 @@ public class VotingSessionController implements VotingSessionsApi {
     @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VotingSessionResponse> spoilVotingSession(UUID sessionId) {
+        electionScopeValidator.requireAccess(service().electionIdForSession(sessionId));
         VotingSession session = service().spoilBallot(sessionId, actorId(), sourceIp());
         return ResponseEntity.ok(toResponse(session));
     }

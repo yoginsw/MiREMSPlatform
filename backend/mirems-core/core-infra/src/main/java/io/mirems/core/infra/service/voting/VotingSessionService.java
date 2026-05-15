@@ -165,6 +165,10 @@ public class VotingSessionService {
         return saved;
     }
 
+    public UUID electionIdForSession(UUID sessionId) {
+        return findSession(sessionId).getElection().getId();
+    }
+
     private void ensureNoExistingNonSpoiledSession(UUID voterId, UUID electionId) {
         if (votingSessionRepository.existsByVoterRecordIdAndElectionIdAndSessionStatusNot(
                 voterId, electionId, SessionStatus.SPOILED)) {

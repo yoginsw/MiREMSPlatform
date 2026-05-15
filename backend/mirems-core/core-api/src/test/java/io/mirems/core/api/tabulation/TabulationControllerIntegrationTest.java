@@ -216,15 +216,15 @@ class TabulationControllerIntegrationTest {
             return new InMemoryUserDetailsManager(
                     User.withUsername("tabulation-officer")
                             .password("{noop}password")
-                            .roles("TABULATION_OFFICER")
+                            .authorities("ROLE_TABULATION_OFFICER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername("election-officer")
                             .password("{noop}password")
-                            .roles("ELECTION_OFFICER")
+                            .authorities("ROLE_ELECTION_OFFICER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername("voter")
                             .password("{noop}password")
-                            .roles("VOTER")
+                            .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build());
         }
     }

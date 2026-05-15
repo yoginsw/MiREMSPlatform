@@ -3,6 +3,8 @@ package io.mirems.core.api.election;
 import io.mirems.core.api.generated.api.ElectionsApi;
 import io.mirems.core.api.generated.model.ElectionRequest;
 import io.mirems.core.api.generated.model.ElectionResponse;
+import io.mirems.core.api.security.ElectionScoped;
+import io.mirems.core.api.security.ElectionScopeValidator;
 import io.mirems.core.infra.service.election.ElectionManagementService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -20,11 +22,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class ElectionController implements ElectionsApi {
     private final ObjectProvider<ElectionManagementService> electionManagementService;
     private final HttpServletRequest httpServletRequest;
+    private final ElectionScopeValidator electionScopeValidator;
 
     public ElectionController(
-            ObjectProvider<ElectionManagementService> electionManagementService, HttpServletRequest httpServletRequest) {
+            ObjectProvider<ElectionManagementService> electionManagementService,
+            HttpServletRequest httpServletRequest,
+            ElectionScopeValidator electionScopeValidator) {
         this.electionManagementService = electionManagementService;
         this.httpServletRequest = httpServletRequest;
+        this.electionScopeValidator = electionScopeValidator;
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
@@ -49,11 +55,13 @@ public class ElectionController implements ElectionsApi {
     @Override
     public ResponseEntity<List<ElectionResponse>> listElections() {
         return ResponseEntity.ok(service().listElections().stream()
+                .filter(election -> electionScopeValidator.canAccess(election.getId()))
                 .map(this::toResponse)
                 .toList());
     }
 
     @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ElectionResponse> getElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service()
@@ -62,12 +70,14 @@ public class ElectionController implements ElectionsApi {
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ElectionResponse> publishElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service().publishElection(electionId, actorId(), sourceIp())));
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ElectionResponse> closeElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service().closeElection(electionId, actorId(), sourceIp())));

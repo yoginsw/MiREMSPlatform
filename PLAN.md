@@ -770,7 +770,7 @@
 ---
 
 ### GOAL P4-040 | Election-Scoped Authorization
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P4-039
 
 **Tasks:**
@@ -780,6 +780,8 @@
 4. Integration tests: user with Election A scope cannot access Election B data.
 
 **Done Criteria:** Cross-election access rejected; 80% coverage.
+
+**Completion Note — 2026-05-15:** Added `ElectionScopeValidator`, `@ElectionScoped`, and an AOP authorization aspect that enforces JWT `mirems_election_scope` or explicit `ELECTION_SCOPE_<electionId>` test/service authorities before scoped controller methods proceed. Election list responses are filtered to the caller's scope, and Election, Contest, Candidate, Ballot, Voter eligibility, Tabulation, and Voting Session endpoints now perform election-scope checks; certified election results remain public while uncertified results require both official authorization and election scope. Cross-election JWT integration tests verify Election A tokens receive `403` for Election B and do not call the service layer; unscoped JWT and Basic users without election-scope authority are denied. Verification passed with `:mirems-core:core-api:test`, `:mirems-core:core-api:jacocoTestReport`, and `:mirems-core:core-api:build`; core-api line coverage is 86.19%.
 
 ---
 

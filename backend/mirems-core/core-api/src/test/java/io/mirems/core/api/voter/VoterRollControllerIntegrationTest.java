@@ -214,19 +214,19 @@ class VoterRollControllerIntegrationTest {
             return new InMemoryUserDetailsManager(
                     User.withUsername("election-officer")
                             .password("{noop}password")
-                            .roles("ELECTION_OFFICER")
+                            .authorities("ROLE_ELECTION_OFFICER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername("observer")
                             .password("{noop}password")
-                            .roles("OBSERVER")
+                            .authorities("ROLE_OBSERVER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername(VOTER_ID.toString())
                             .password("{noop}password")
-                            .roles("VOTER")
+                            .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername(OTHER_VOTER_ID.toString())
                             .password("{noop}password")
-                            .roles("VOTER")
+                            .authorities("ROLE_VOTER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build());
         }
     }

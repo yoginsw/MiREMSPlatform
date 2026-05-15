@@ -274,15 +274,15 @@ class ContestCandidateControllerIntegrationTest {
             return new InMemoryUserDetailsManager(
                     User.withUsername("election-admin")
                             .password("{noop}password")
-                            .roles("ELECTION_ADMIN")
+                            .authorities("ROLE_ELECTION_ADMIN", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername("election-officer")
                             .password("{noop}password")
-                            .roles("ELECTION_OFFICER")
+                            .authorities("ROLE_ELECTION_OFFICER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build(),
                     User.withUsername("observer")
                             .password("{noop}password")
-                            .roles("OBSERVER")
+                            .authorities("ROLE_OBSERVER", "ELECTION_SCOPE_" + ELECTION_ID)
                             .build());
         }
     }

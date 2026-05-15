@@ -3,6 +3,7 @@ package io.mirems.core.api.contest;
 import io.mirems.core.api.generated.api.ContestsApi;
 import io.mirems.core.api.generated.model.ContestRequest;
 import io.mirems.core.api.generated.model.ContestResponse;
+import io.mirems.core.api.security.ElectionScoped;
 import io.mirems.core.domain.contest.Contest;
 import io.mirems.core.infra.service.election.ElectionManagementService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class ContestController implements ContestsApi {
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ContestResponse> createContest(UUID electionId, ContestRequest contestRequest) {
         Contest contest = service().addContest(new ElectionManagementService.AddContestCommand(
@@ -45,12 +47,14 @@ public class ContestController implements ContestsApi {
     }
 
     @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<List<ContestResponse>> listContests(UUID electionId) {
         return ResponseEntity.ok(service().listContests(electionId).stream().map(this::toResponse).toList());
     }
 
     @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ContestResponse> getContest(UUID electionId, UUID contestId) {
         return ResponseEntity.ok(toResponse(service()
@@ -59,6 +63,7 @@ public class ContestController implements ContestsApi {
     }
 
     @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
+    @ElectionScoped
     @Override
     public ResponseEntity<ContestResponse> updateContest(UUID electionId, UUID contestId, ContestRequest contestRequest) {
         Contest contest = service().updateContest(new ElectionManagementService.UpdateContestCommand(
