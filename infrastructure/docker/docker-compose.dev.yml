@@ -9,10 +9,12 @@ services:
       POSTGRES_DB: ${MIREMS_DB_NAME:-mirems}
       POSTGRES_USER: ${MIREMS_DB_USER:-mirems}
       POSTGRES_PASSWORD: ${MIREMS_DB_PASS:-mirems_dev_password}
+      MIREMS_KEYCLOAK_DB_NAME: ${MIREMS_KEYCLOAK_DB_NAME:-keycloak}
     ports:
       - "${MIREMS_DB_PORT:-5432}:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ../postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -35,7 +37,7 @@ services:
       KEYCLOAK_ADMIN: ${MIREMS_KEYCLOAK_ADMIN:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${MIREMS_KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${MIREMS_DB_NAME:-mirems}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${MIREMS_KEYCLOAK_DB_NAME:-keycloak}
       KC_DB_USERNAME: ${MIREMS_DB_USER:-mirems}
       KC_DB_PASSWORD: ${MIREMS_DB_PASS:-mirems_dev_password}
       KC_HTTP_ENABLED: "true"

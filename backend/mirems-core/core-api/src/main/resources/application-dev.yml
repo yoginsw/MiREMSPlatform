@@ -1,3 +1,9 @@
+spring:
+  datasource:
+    url: ${MIREMS_DB_URL:jdbc:postgresql://localhost:15432/mirems}
+    username: ${MIREMS_DB_USER:mirems}
+    password: ${MIREMS_DB_PASS:mirems_dev_password}
+
 springdoc:
   api-docs:
     enabled: true

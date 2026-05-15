@@ -37,7 +37,7 @@ val generateGitProperties by tasks.registering {
 
 openApiGenerate {
     generatorName.set("spring")
-    inputSpec.set(openApiSpec.asFile.absolutePath)
+    inputSpec.set(openApiSpec.asFile.toURI().toString())
     outputDir.set(generatedServerDir.get().asFile.absolutePath)
     apiPackage.set("io.mirems.core.api.generated.api")
     modelPackage.set("io.mirems.core.api.generated.model")
@@ -59,7 +59,7 @@ openApiGenerate {
 
 tasks.register<GenerateTask>("generateTypeScriptAxiosClient") {
     generatorName.set("typescript-axios")
-    inputSpec.set(openApiSpec.asFile.absolutePath)
+    inputSpec.set(openApiSpec.asFile.toURI().toString())
     outputDir.set(generatedTypeScriptClientDir.asFile.absolutePath)
     configOptions.set(
         mapOf(
