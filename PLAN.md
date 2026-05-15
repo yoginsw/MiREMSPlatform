@@ -888,7 +888,7 @@
 ---
 
 ### GOAL P5-047 | Election List and Detail Pages
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-045, P5-046, P3-030
 
 **Tasks:**
@@ -899,6 +899,8 @@
 5. Tests with MSW (Mock Service Worker) mocking API.
 
 **Done Criteria:** Pages render with mocked data; role-based actions tested; 75% coverage.
+
+**Completion Note — 2026-05-16:** Implemented `ElectionListPage` and `ElectionDetailPage` under `mirems-shell/src/features/elections`, wired them into the TanStack file routes for `/elections` and `/elections/$id`, and added a generated API-client wrapper for election, contest, ballot, publish, and close calls with bearer-token propagation from the OIDC session. The list page supports status/type filters, pagination, status badges, loading/error/empty states, and Korean admin copy. The detail page renders election metadata, contest summaries, ballot summary counts, `ELECTION_ADMIN` plus election-scope-gated actions, optimistic publish/close status updates, rollback failure messaging, and non-admin guidance. Added MSW-backed Vitest/React Testing Library tests covering list rendering, authorization header propagation, filtering, pagination, detail summaries, role/scope-based action visibility, and optimistic status updates. Verification passed with Windows-native `pnpm --filter @mirems/mirems-shell test`, `lint`, `build`, targeted coverage for election pages above 75%, and `pnpm -r build`.
 
 ---
 
