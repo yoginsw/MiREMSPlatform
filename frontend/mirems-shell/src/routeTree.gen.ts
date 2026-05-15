@@ -16,6 +16,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as ProtectedAuditRouteImport } from './routes/_protected/audit'
 import { Route as ProtectedAdminRouteImport } from './routes/_protected/admin'
 import { Route as ProtectedElectionsIndexRouteImport } from './routes/_protected/elections/index'
+import { Route as ProtectedElectionsNewRouteImport } from './routes/_protected/elections/new'
 import { Route as ProtectedElectionsIdRouteImport } from './routes/_protected/elections/$id'
 import { Route as ProtectedElectionsIdResultsRouteImport } from './routes/_protected/elections/$id/results'
 import { Route as ProtectedElectionsIdContestsRouteImport } from './routes/_protected/elections/$id/contests'
@@ -55,6 +56,11 @@ const ProtectedElectionsIndexRoute = ProtectedElectionsIndexRouteImport.update({
   path: '/elections/',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedElectionsNewRoute = ProtectedElectionsNewRouteImport.update({
+  id: '/elections/new',
+  path: '/elections/new',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ProtectedElectionsIdRoute = ProtectedElectionsIdRouteImport.update({
   id: '/elections/$id',
   path: '/elections/$id',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
+  '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections/': typeof ProtectedElectionsIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
+  '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections': typeof ProtectedElectionsIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/_protected/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/_protected/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
+  '/_protected/elections/new': typeof ProtectedElectionsNewRoute
   '/_protected/elections/': typeof ProtectedElectionsIndexRoute
   '/_protected/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
   '/_protected/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth/callback'
     | '/elections/$id'
+    | '/elections/new'
     | '/elections/'
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth/callback'
     | '/elections/$id'
+    | '/elections/new'
     | '/elections'
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_protected/audit'
     | '/auth/callback'
     | '/_protected/elections/$id'
+    | '/_protected/elections/new'
     | '/_protected/elections/'
     | '/_protected/elections/$id/ballots'
     | '/_protected/elections/$id/contests'
@@ -215,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedElectionsIndexRouteImport
       parentRoute: typeof ProtectedRoute
     }
+    '/_protected/elections/new': {
+      id: '/_protected/elections/new'
+      path: '/elections/new'
+      fullPath: '/elections/new'
+      preLoaderRoute: typeof ProtectedElectionsNewRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_protected/elections/$id': {
       id: '/_protected/elections/$id'
       path: '/elections/$id'
@@ -265,6 +284,7 @@ interface ProtectedRouteChildren {
   ProtectedAdminRoute: typeof ProtectedAdminRoute
   ProtectedAuditRoute: typeof ProtectedAuditRoute
   ProtectedElectionsIdRoute: typeof ProtectedElectionsIdRouteWithChildren
+  ProtectedElectionsNewRoute: typeof ProtectedElectionsNewRoute
   ProtectedElectionsIndexRoute: typeof ProtectedElectionsIndexRoute
 }
 
@@ -272,6 +292,7 @@ const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedAdminRoute: ProtectedAdminRoute,
   ProtectedAuditRoute: ProtectedAuditRoute,
   ProtectedElectionsIdRoute: ProtectedElectionsIdRouteWithChildren,
+  ProtectedElectionsNewRoute: ProtectedElectionsNewRoute,
   ProtectedElectionsIndexRoute: ProtectedElectionsIndexRoute,
 }
 

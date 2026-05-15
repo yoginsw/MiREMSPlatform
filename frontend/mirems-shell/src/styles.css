@@ -254,6 +254,15 @@ h2 { font-family: var(--font-serif); font-size: 1.9rem; letter-spacing: -0.02em;
 h3 { font-size: 1.14rem; }
 .page-header p:last-child { color: var(--color-text-secondary); margin: 8px 0 0; }
 .page-actions { display: flex; gap: 10px; }
+.action-link { color: var(--color-brand-primary); display: inline-flex; font-weight: 700; margin-top: 12px; text-decoration: none; }
+.action-link:focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 3px; }
+.wizard-page { display: grid; gap: 18px; }
+.wizard-steps { display: grid; gap: 8px; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+.wizard-steps li { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); color: var(--color-text-secondary); font-weight: 700; padding: 10px 12px; }
+.wizard-steps li[data-active="true"] { border-color: var(--color-brand-primary); color: var(--color-brand-primary); }
+.wizard-panel { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); display: grid; gap: 16px; padding: 20px; }
+.form-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+.wizard-actions { align-items: center; display: flex; gap: 10px; justify-content: flex-end; }
 .filters-grid { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(180px, 1fr)); margin: 18px 0; padding: 18px; width: 100%; }
 .pagination { align-items: center; color: var(--color-text-secondary); display: flex; justify-content: space-between; margin-top: 16px; }
 .pagination-actions { display: flex; gap: 8px; }

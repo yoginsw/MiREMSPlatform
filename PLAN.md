@@ -905,7 +905,7 @@
 ---
 
 ### GOAL P5-048 | Election Creation Wizard
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-047
 
 **Tasks:**
@@ -916,6 +916,8 @@
 5. Tests for each wizard step and submit flow.
 
 **Done Criteria:** Full wizard flow tested end-to-end with mocked API; 75% coverage.
+
+**Completion Note — 2026-05-16:** Implemented `ElectionCreationWizard` using React Hook Form with five steps for basic election information, contest drafts, ballot-style drafts, review, and submit completion. Added `ELECTION_ADMIN` role gating, client-side validation for required fields, ISO country code, ballot language code, and positive seat counts, plus generated API-client submission through `createElection` with runtime bearer-token propagation. Wired the wizard to `/elections/new` and added an admin-only entry link from the election list. Added MSW-backed tests covering the full wizard flow, validation blocking, role hiding, request payload shape, and `Authorization` header propagation. Verification passed with Windows-native `pnpm --filter @mirems/mirems-shell test`, `lint`, `build`, targeted election feature coverage above 75%, and `pnpm -r build`.
 
 ---
 

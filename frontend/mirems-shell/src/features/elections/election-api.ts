@@ -5,6 +5,7 @@ import {
   ElectionsApi,
   type BallotResponse,
   type ContestResponse,
+  type ElectionRequest,
   type ElectionResponse,
 } from '@mirems/api-client';
 
@@ -21,6 +22,12 @@ function createElectionApis(accessToken: string | undefined) {
     contestsApi: new ContestsApi(configuration),
     electionsApi: new ElectionsApi(configuration),
   };
+}
+
+export async function createElection(request: ElectionRequest, accessToken?: string): Promise<ElectionResponse> {
+  const { electionsApi } = createElectionApis(accessToken);
+  const response = await electionsApi.createElection(request);
+  return response.data;
 }
 
 export async function listElections(accessToken?: string): Promise<ElectionResponse[]> {

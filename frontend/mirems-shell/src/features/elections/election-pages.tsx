@@ -109,7 +109,8 @@ export function ElectionListPage({ pageSize = 10 }: { pageSize?: number }) {
           <h2 id="election-list-title">선거 목록</h2>
           <Badge variant="neutral">API</Badge>
         </div>
-        <p>등록된 선거를 조회하고 상태, 유형, 관할 기준으로 관리하는 화면입니다.</p>
+        <p>등록된 선거를 조회하고 상태, 유형 기준으로 관리하는 화면입니다.</p>
+        {auth.hasRole('ELECTION_ADMIN') ? <a className="action-link" href="/elections/new">새 선거 등록</a> : null}
       </div>
 
       <div className="filters-grid" aria-label="선거 목록 필터">
