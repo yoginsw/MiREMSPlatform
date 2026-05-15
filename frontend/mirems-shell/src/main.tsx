@@ -6,14 +6,11 @@ import { authUpdatedEventName } from './auth/auth-events';
 import { AuthProvider } from './auth/AuthProvider';
 import { LoginPage } from './auth/LoginPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import { RoleGuard } from './auth/RoleGuard';
 import { useAuth } from './auth/useAuth';
 import { platformHref, visibleNavigationItems } from './navigation';
+import { dashboardActions, processActions, taskNotifications, visibleTaskNotifications } from './role-ui';
 import './styles.css';
-const taskNotifications = [
-  { id: 'task-1', title: '선거 발행 검토', meta: '관리자 검토 · 3일 2시간 남음' },
-  { id: 'task-2', title: '후보자 자격 심사', meta: 'ELECTION_OFFICER 필요 · 18건' },
-];
-
 const processSteps = [
   { label: '시작', status: 'completed' },
   { label: '구성 검증', status: 'completed' },
@@ -52,6 +49,7 @@ function App() {
   }
 
   const navItems = visibleNavigationItems(auth.roles);
+  const visibleTaskCount = visibleTaskNotifications(auth.roles).length;
 
   return (
     <div className="app-shell" data-theme="light">
@@ -69,8 +67,8 @@ function App() {
         <div className="topbar-actions">
           <span className="extension-badge">KR</span>
           <span className="extension-badge extension-badge--muted">US</span>
-          <button className="notification-button" type="button" aria-label="미완료 태스크 2건">
-            🔔<span className="notification-count">2</span>
+          <button className="notification-button" type="button" aria-label={`미완료 태스크 ${visibleTaskCount}건`}>
+            🔔<span className="notification-count">{visibleTaskCount}</span>
           </button>
           <button className="user-menu" type="button" aria-label="사용자 메뉴 열기" onClick={() => void (auth.isAuthenticated ? auth.logout() : auth.login(currentPath))}>
             <span className="avatar" aria-hidden="true">{auth.isAuthenticated ? '관' : '?'}</span>
@@ -136,8 +134,11 @@ function App() {
               <p>현재 프로세스 단계와 감사 가능한 다음 조치를 명확하게 표시합니다.</p>
             </div>
             <div className="page-actions">
-              <button className="button button--secondary" type="button">내보내기</button>
-              <button className="button button--primary" type="button">발행 검토</button>
+              {dashboardActions.map((action) => (
+                <RoleGuard roles={action.roles} key={action.id}>
+                  <button className={`button button--${action.variant}`} type="button">{action.label}</button>
+                </RoleGuard>
+              ))}
             </div>
           </section>
 
@@ -167,8 +168,11 @@ function App() {
               <strong>현재 단계: 관리자 검토</strong>
               <span>담당자: admin@election.go.kr · 기한: 2026-05-20 18:00</span>
               <div className="process-actions">
-                <button className="button button--primary" type="button">승인 ✓</button>
-                <button className="button button--danger-ghost" type="button">반려 ✕</button>
+                {processActions.map((action) => (
+                  <RoleGuard roles={action.roles} key={action.id}>
+                    <button className={`button button--${action.variant}`} type="button">{action.label}</button>
+                  </RoleGuard>
+                ))}
               </div>
             </div>
           </section>
@@ -178,10 +182,12 @@ function App() {
               <h3 id="notifications-title">태스크 알림</h3>
               <div className="task-list">
                 {taskNotifications.map((task) => (
-                  <a className="task-item" href={platformHref('/admin/processes')} key={task.id}>
-                    <strong>{task.title}</strong>
-                    <span>{task.meta}</span>
-                  </a>
+                  <RoleGuard roles={task.roles} key={task.id}>
+                    <a className="task-item" href={task.href}>
+                      <strong>{task.title}</strong>
+                      <span>{task.meta}</span>
+                    </a>
+                  </RoleGuard>
                 ))}
               </div>
             </article>

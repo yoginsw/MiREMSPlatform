@@ -819,7 +819,7 @@
 ---
 
 ### GOAL P4-043 | Role-Based UI Rendering
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P4-042
 
 **Tasks:**
@@ -829,6 +829,8 @@
 4. Tests: verify admin actions hidden from observer role.
 
 **Done Criteria:** Role-gated UI tested with all roles; 75% coverage.
+
+**Completion Note — 2026-05-16:** Added fail-closed `<RoleGuard roles={[...]}>` and pure role-decision tests covering direct roles, inherited MiREMS hierarchy roles, observer denial, missing-role denial, and empty-guard denial. Centralized role-gated dashboard actions, process approval actions, and task notifications in `role-ui.ts`, then applied `RoleGuard` to dashboard page actions, BPMN process approve/reject actions, and task notification links so observer-only users do not see administrator actions. `useAuth()` already exposes `user`, `hasRole()`, and `hasElectionScope()` from P4-042 and is used by `RoleGuard`. Verification passed with `pnpm --filter @mirems/mirems-shell test` (11 files / 27 tests), `lint`, `build`, static security scan, and independent review.
 
 ---
 
