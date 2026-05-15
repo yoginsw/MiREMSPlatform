@@ -76,6 +76,8 @@ public class ActuatorSecurityConfig {
                         .hasRole("TABULATION_OFFICER")
                         .requestMatchers(HttpMethod.GET, "/audit")
                         .hasAnyRole("AUDITOR", "SYSTEM_ADMIN")
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        .permitAll()
                         .requestMatchers(HttpMethod.PUT, "/elections/*/ballot-styles/*")
                         .hasRole("ELECTION_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/elections/*/ballot-styles/*")

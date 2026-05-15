@@ -5,6 +5,12 @@ spring:
     problemdetails:
       enabled: true
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 mirems:
   security:
     rate-limit:

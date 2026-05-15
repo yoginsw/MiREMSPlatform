@@ -729,7 +729,7 @@
 ---
 
 ### GOAL P3-038 | API Documentation and Health Endpoints
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P3-037
 
 **Tasks:**
@@ -739,6 +739,13 @@
 4. Integration tests.
 
 **Done Criteria:** Swagger UI loads in dev; health shows Kogito status.
+
+**Completion Notes:**
+- Added SpringDoc WebMVC UI with default-disabled docs and dev-profile enablement for `/v3/api-docs` and `/swagger-ui.html`.
+- Added generated Gradle build/git metadata and `/actuator/info` contribution for version, git commit, and build time.
+- Added `kogito` Actuator health component backed by the Kogito process adapter.
+- Added integration tests for dev docs, prod docs disablement, actuator info metadata, and Kogito health details.
+- Verification: backend Gradle full test/build and frontend `pnpm build` pass; `core-api` line coverage 85.7%, documentation package 100.0%.
 
 ---
 

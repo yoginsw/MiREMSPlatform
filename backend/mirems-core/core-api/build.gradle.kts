@@ -5,9 +5,35 @@ plugins {
     id("org.openapi.generator") version "7.8.0"
 }
 
+springBoot {
+    buildInfo {
+        properties {
+            name.set("MiREMS Platform Core API")
+            version.set(project.version.toString())
+        }
+    }
+}
+
 val openApiSpec = rootProject.layout.projectDirectory.file("docs/api/mirems-api.yaml")
 val generatedServerDir = layout.buildDirectory.dir("generated/openapi/server")
 val generatedTypeScriptClientDir = rootProject.layout.projectDirectory.dir("frontend/packages/api-client/src/generated")
+val generatedGitResourcesDir = layout.buildDirectory.dir("generated/resources/git")
+
+val generateGitProperties by tasks.registering {
+    val outputFile = generatedGitResourcesDir.map { it.file("git.properties") }
+    outputs.file(outputFile)
+    doLast {
+        val gitCommit = runCatching {
+            providers.exec {
+                commandLine("git", "rev-parse", "--short", "HEAD")
+            }.standardOutput.asText.get().trim()
+        }.getOrDefault("unknown")
+        outputFile.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText("git.commit.id.abbrev=$gitCommit\ngit.commit.id=$gitCommit\n")
+        }
+    }
+}
 
 openApiGenerate {
     generatorName.set("spring")
@@ -61,7 +87,12 @@ tasks.register<GenerateTask>("generateTypeScriptAxiosClient") {
 sourceSets {
     main {
         java.srcDir(generatedServerDir.map { it.dir("src/main/java") })
+        resources.srcDir(generatedGitResourcesDir)
     }
+}
+
+tasks.named("processResources") {
+    dependsOn(tasks.named("bootBuildInfo"), generateGitProperties)
 }
 
 tasks.named("compileJava") {
@@ -81,6 +112,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.bucket4j:bucket4j-core:8.10.1")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
     implementation("io.swagger.core.v3:swagger-annotations-jakarta:2.2.22")
     implementation("org.mapstruct:mapstruct")
     annotationProcessor(platform(project(":mirems-bom")))
