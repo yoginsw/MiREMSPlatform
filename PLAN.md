@@ -835,7 +835,7 @@
 ---
 
 ### GOAL P4-044 | Session Timeout and Token Refresh
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P4-042
 
 **Tasks:**
@@ -845,6 +845,8 @@
 4. Unit tests for refresh logic.
 
 **Done Criteria:** Refresh tested; auto-logout on failure verified.
+
+**Completion Note — 2026-05-16:** Added frontend session lifecycle management for OIDC users: silent refresh is scheduled one minute before access-token expiry, a Korean session-timeout warning dialog appears five minutes before expiry, and token expiry or silent-refresh failure clears the in-memory user and removes the OIDC user record. Added unit tests for warning threshold, refresh scheduling, successful silent refresh, refresh-failure logout, and already-expired-token logout. Verification passed with Windows-native `pnpm --filter @mirems/mirems-shell test`, `lint`, `build`, and `pnpm -r build`.
 
 ---
 
