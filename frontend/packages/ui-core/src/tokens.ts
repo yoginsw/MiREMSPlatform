@@ -51,9 +51,9 @@ export const radii = {
 } as const;
 
 export const typography = {
-  serif: "'IBM Plex Serif', 'Noto Serif KR', Georgia, serif",
-  sans: "'IBM Plex Sans', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif",
-  mono: "'IBM Plex Mono', 'Fira Code', Consolas, monospace",
+  serif: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+  sans: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+  mono: "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
 } as const;
 
 export const designSystemName = 'Civic Precision';
