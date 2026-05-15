@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,33 +36,53 @@ public class ActuatorSecurityConfig {
     @Bean
     @Order(1)
     SecurityFilterChain adminSecurityFilterChain(
-            HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            HttpSecurity http,
+            Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter,
+            SecurityAuditingAuthenticationEntryPoint authenticationEntryPoint,
+            SecurityAuditingAccessDeniedHandler accessDeniedHandler,
+            JwtAuthenticationSuccessAuditFilter jwtAuthenticationSuccessAuditFilter)
             throws Exception {
         return http
                 .securityMatcher("/admin/**")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().hasRole("SYSTEM_ADMIN"))
-                .httpBasic(Customizer.withDefaults())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
+                .addFilterAfter(jwtAuthenticationSuccessAuditFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     @Order(2)
     SecurityFilterChain actuatorSecurityFilterChain(
-            HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            HttpSecurity http,
+            Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter,
+            SecurityAuditingAuthenticationEntryPoint authenticationEntryPoint,
+            SecurityAuditingAccessDeniedHandler accessDeniedHandler,
+            JwtAuthenticationSuccessAuditFilter jwtAuthenticationSuccessAuditFilter)
             throws Exception {
         return http
                 .securityMatcher(to(HealthEndpoint.class, MetricsEndpoint.class, InfoEndpoint.class))
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(to(HealthEndpoint.class)).permitAll()
                         .requestMatchers(to(MetricsEndpoint.class, InfoEndpoint.class)).hasRole("SYSTEM_ADMIN")
                         .anyRequest().denyAll())
-                .httpBasic(Customizer.withDefaults())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
+                .addFilterAfter(jwtAuthenticationSuccessAuditFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
@@ -70,11 +91,17 @@ public class ActuatorSecurityConfig {
     SecurityFilterChain applicationSecurityFilterChain(
             HttpSecurity http,
             ApiRateLimitingFilter apiRateLimitingFilter,
-            Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter,
+            SecurityAuditingAuthenticationEntryPoint authenticationEntryPoint,
+            SecurityAuditingAccessDeniedHandler accessDeniedHandler,
+            JwtAuthenticationSuccessAuditFilter jwtAuthenticationSuccessAuditFilter)
             throws Exception {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/elections").hasAnyRole("ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/contests")
@@ -120,15 +147,26 @@ public class ActuatorSecurityConfig {
                                 "/voters/*/eligibility/*")
                         .authenticated()
                         .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
                 .addFilterAfter(apiRateLimitingFilter, BasicAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationSuccessAuditFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     FilterRegistrationBean<ApiRateLimitingFilter> apiRateLimitingFilterRegistration(ApiRateLimitingFilter filter) {
         FilterRegistrationBean<ApiRateLimitingFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
+    FilterRegistrationBean<JwtAuthenticationSuccessAuditFilter> jwtAuthenticationSuccessAuditFilterRegistration(
+            JwtAuthenticationSuccessAuditFilter filter) {
+        FilterRegistrationBean<JwtAuthenticationSuccessAuditFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
     }

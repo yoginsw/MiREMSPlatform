@@ -786,7 +786,7 @@
 ---
 
 ### GOAL P4-041 | Audit Security Events
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P4-040, P1-014
 
 **Tasks:**
@@ -795,6 +795,8 @@
 3. Integration test: verify security violations produce audit events.
 
 **Done Criteria:** Security events in audit log verified; 80% coverage.
+
+**Completion Note — 2026-05-15:** Added security audit recording for authentication failures, authorization/role violations, election-scope violations, and successful JWT authentications. Security failures are persisted as append-only `AuditEvent` records with `eventType=SECURITY_VIOLATION`, bounded reason codes, structured payload metadata (`violationType`, actor, path, method, reason, and election id when applicable), and remote-address source IP capture without trusting `X-Forwarded-For`. Successful JWT authentications are recorded as `AUTHENTICATION_SUCCESS` through a resource-server filter. Added custom Spring Security authentication-entry-point and access-denied-handler wiring across admin, actuator, and application chains while preserving Basic/Bearer `WWW-Authenticate` challenge semantics, and integrated election-scope denial auditing before fail-closed rejection. Integration tests verify invalid bearer-token, invalid Basic credentials, role-violation, cross-election-scope denial, JWT-success audit events, bounded reason payloads, source-IP spoof resistance, and protocol-specific 401 challenges. Verification passed with `:mirems-core:core-api:test`, `:mirems-core:core-api:jacocoTestReport`, and `:mirems-core:core-api:build`; core-api line coverage is 87.01%.
 
 ---
 
