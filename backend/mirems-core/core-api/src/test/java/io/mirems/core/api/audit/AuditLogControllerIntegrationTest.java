@@ -45,7 +45,7 @@ class AuditLogControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
         when(auditEventRepository.findAllChronologically()).thenReturn(List.of(
                 event("36000000-0000-0000-0000-000000000011", AGGREGATE_ID, "Election", "ElectionCreated", "2026-06-03T09:00:00Z"),
                 event("36000000-0000-0000-0000-000000000012", OTHER_AGGREGATE_ID, "VotingSession", "VoteCast", "2026-06-03T09:02:00Z"),

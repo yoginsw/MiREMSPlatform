@@ -57,7 +57,7 @@ class VoterRollControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
         voter = VoterRecord.create(VOTER_ID, EXTERNAL_VOTER_ID, Set.of(ELECTION_ID), RegistrationStatus.ACTIVE, ENCRYPTION);
     }
 

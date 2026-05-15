@@ -59,7 +59,7 @@ public class ApiRateLimitingFilter extends OncePerRequestFilter {
     }
 
     private boolean isSensitiveEndpoint(HttpServletRequest request) {
-        String path = request.getRequestURI();
+        String path = request.getServletPath();
         return properties.getRateLimit().getSensitiveEndpointPatterns().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, path));
     }

@@ -51,6 +51,8 @@ info:
     standard: NIST VVSG 2.0 aligned traceability baseline
 
 server:
+  servlet:
+    context-path: /miremsplatform
   error:
     include-message: never
     include-binding-errors: never

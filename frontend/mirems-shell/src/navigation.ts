@@ -7,6 +7,16 @@ export type Role =
   | 'OBSERVER'
   | 'VOTER';
 
+export const PLATFORM_BASE_PATH = '/miremsplatform';
+
+export function platformHref(path: string): string {
+  if (path === '/') {
+    return PLATFORM_BASE_PATH;
+  }
+
+  return `${PLATFORM_BASE_PATH}${path}`;
+}
+
 export interface NavigationItem {
   icon: string;
   label: string;
@@ -26,32 +36,32 @@ const roleHierarchy: Record<Role, Role[]> = {
 };
 
 export const navigationItems: NavigationItem[] = [
-  { icon: '🏠', label: '대시보드', href: '/', minimumRoles: ['OBSERVER', 'VOTER'], section: 'main' },
-  { icon: '📋', label: '선거 관리', href: '/elections', minimumRoles: ['OBSERVER'], section: 'main' },
+  { icon: '🏠', label: '대시보드', href: platformHref('/'), minimumRoles: ['OBSERVER', 'VOTER'], section: 'main' },
+  { icon: '📋', label: '선거 관리', href: platformHref('/elections'), minimumRoles: ['OBSERVER'], section: 'main' },
   {
     icon: '👤',
     label: '후보자 관리',
-    href: '/elections/current/candidates',
+    href: platformHref('/elections/current/candidates'),
     minimumRoles: ['ELECTION_OFFICER'],
     section: 'operations',
   },
   {
     icon: '🗳',
     label: '투표소 관리',
-    href: '/elections/current/ballots',
+    href: platformHref('/elections/current/ballots'),
     minimumRoles: ['ELECTION_OFFICER'],
     section: 'operations',
   },
-  { icon: '👥', label: '선거인 명부', href: '/voters', minimumRoles: ['ELECTION_OFFICER'], section: 'operations' },
+  { icon: '👥', label: '선거인 명부', href: platformHref('/voters'), minimumRoles: ['ELECTION_OFFICER'], section: 'operations' },
   {
     icon: '📊',
     label: '개표 결과',
-    href: '/elections/current/results',
+    href: platformHref('/elections/current/results'),
     minimumRoles: ['OBSERVER', 'VOTER'],
     section: 'operations',
   },
-  { icon: '📁', label: '감사 로그', href: '/audit', minimumRoles: ['AUDITOR', 'SYSTEM_ADMIN'], section: 'audit' },
-  { icon: '⚙️', label: '시스템 관리', href: '/admin', minimumRoles: ['SYSTEM_ADMIN'], section: 'system' },
+  { icon: '📁', label: '감사 로그', href: platformHref('/audit'), minimumRoles: ['AUDITOR', 'SYSTEM_ADMIN'], section: 'audit' },
+  { icon: '⚙️', label: '시스템 관리', href: platformHref('/admin'), minimumRoles: ['SYSTEM_ADMIN'], section: 'system' },
 ];
 
 export function visibleNavigationItems(userRoles: Role[]): NavigationItem[] {

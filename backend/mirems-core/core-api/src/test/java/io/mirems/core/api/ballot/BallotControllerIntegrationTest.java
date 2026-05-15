@@ -63,7 +63,7 @@ class BallotControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
         election = Election.create(ELECTION_ID, "2028 General Election", ElectionType.PRESIDENTIAL,
                 "US-FED", LocalDate.of(2028, 11, 7), "US", "ext-us");
         contest = Contest.create(CONTEST_ID, election, ContestType.CANDIDATE_CHOICE, "President", 1, 1);

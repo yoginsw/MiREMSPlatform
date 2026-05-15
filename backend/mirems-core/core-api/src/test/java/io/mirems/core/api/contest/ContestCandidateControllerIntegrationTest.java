@@ -65,7 +65,7 @@ class ContestCandidateControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
         election = Election.create(
                 ELECTION_ID,
                 "2028 General Election",

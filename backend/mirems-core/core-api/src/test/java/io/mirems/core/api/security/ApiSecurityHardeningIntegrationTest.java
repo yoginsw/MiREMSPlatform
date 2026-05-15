@@ -57,7 +57,7 @@ class ApiSecurityHardeningIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
         when(votingSessionService.castBallot(any()))
                 .thenReturn(new VotingSessionService.CastBallotReceipt(SESSION_ID, List.of(RESULT_HASH)));
     }

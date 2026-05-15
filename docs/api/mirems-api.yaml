@@ -7,7 +7,7 @@ info:
     candidates, ballots, voter records, voting sessions, tabulation, results,
     and process administration.
 servers:
-  - url: /api/v1
+  - url: /miremsplatform
 tags:
   - name: Elections
   - name: Contests

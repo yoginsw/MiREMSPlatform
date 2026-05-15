@@ -49,7 +49,7 @@ class ElectionControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.basePath = "";
+        RestAssured.basePath = "/miremsplatform";
     }
 
     @Test

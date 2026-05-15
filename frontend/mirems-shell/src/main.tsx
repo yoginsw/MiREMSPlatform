@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { colors, designSystemName } from '@mirems/ui-core';
-import { type Role, visibleNavigationItems } from './navigation';
+import { platformHref, type Role, visibleNavigationItems } from './navigation';
 import './styles.css';
 
 const activeRoles: Role[] = ['SYSTEM_ADMIN'];
@@ -60,7 +60,7 @@ function App() {
                 {index > 0 && item.section !== navItems[index - 1]?.section ? (
                   <div className="nav-section-label">{sectionLabel(item.section)}</div>
                 ) : null}
-                <a className={item.href === '/' ? 'nav-item nav-item--active' : 'nav-item'} href={item.href}>
+                <a className={item.href === platformHref('/') ? 'nav-item nav-item--active' : 'nav-item'} href={item.href}>
                   <span aria-hidden="true">{item.icon}</span>
                   <span>{item.label}</span>
                 </a>
@@ -83,10 +83,10 @@ function App() {
                 관리합니다.
               </p>
               <div className="hero-actions">
-                <a className="button button--secondary-on-dark" href="/login">
+                <a className="button button--secondary-on-dark" href={platformHref('/login')}>
                   시스템 로그인 →
                 </a>
-                <a className="button button--ghost-on-dark" href="/elections/current/results">
+                <a className="button button--ghost-on-dark" href={platformHref('/elections/current/results')}>
                   공식 결과 보기
                 </a>
               </div>
@@ -150,7 +150,7 @@ function App() {
               <h3 id="notifications-title">태스크 알림</h3>
               <div className="task-list">
                 {taskNotifications.map((task) => (
-                  <a className="task-item" href="/admin/processes" key={task.id}>
+                  <a className="task-item" href={platformHref('/admin/processes')} key={task.id}>
                     <strong>{task.title}</strong>
                     <span>{task.meta}</span>
                   </a>
