@@ -801,7 +801,7 @@
 ---
 
 ### GOAL P4-042 | Frontend OIDC PKCE Auth Flow
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-004, P0-002
 
 **Tasks:**
@@ -813,6 +813,8 @@
 6. Tests: auth flow with mocked Keycloak.
 
 **Done Criteria:** Login/logout flow works; protected routes redirect unauthenticated users.
+
+**Completion Note — 2026-05-15:** Added `oidc-client-ts` OIDC Authorization Code + PKCE configuration for `mirems-shell`, including platform-base-path callback, silent-renew, and logout redirect URIs. Implemented in-memory `AuthProvider`, `useAuth()`, Keycloak realm-role/election-scope claim helpers, login/logout methods, auth callback handling with post-login return redirect, and a Korean login page. Added `ProtectedRoute` decision logic and wrapped protected dashboard content so unauthenticated users are directed to `/miremsplatform/login?returnUrl=...` while public landing/login/callback flows remain available. Tokens are managed by `oidc-client-ts` user-manager state in React memory and are not stored by MiREMS application code in `localStorage`. Tests cover OIDC settings, role hierarchy/claim extraction, election scope, protected-route redirect decisions, sanitized return URLs, in-memory user storage, and same-document callback completion. Verification passed with `pnpm --filter @mirems/mirems-shell test`, `lint`, and `build`.
 
 ---
 

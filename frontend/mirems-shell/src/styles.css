@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
 
 :root {
   --color-navy-950: #050d1a;
@@ -60,9 +60,9 @@
   --radius-lg: 8px;
   --radius-xl: 12px;
   --radius-full: 9999px;
-  --font-serif: 'IBM Plex Serif', 'Noto Serif KR', Georgia, serif;
-  --font-sans: 'IBM Plex Sans', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'Fira Code', Consolas, monospace;
+  --font-serif: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -297,6 +297,41 @@ th, td { border-bottom: 1px solid var(--color-border-default); padding: 13px 14p
 tbody tr:nth-child(even) { background: var(--color-bg-surface-alt); }
 tbody tr:hover { background: var(--color-navy-50); }
 code { font-family: var(--font-mono); }
+
+.login-page {
+  align-items: center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(74, 120, 196, 0.20), transparent 30%),
+    var(--color-bg-canvas);
+  display: grid;
+  min-height: 100vh;
+  padding: 32px;
+}
+.login-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  display: grid;
+  gap: 18px;
+  margin: 0 auto;
+  max-width: 560px;
+  padding: 36px;
+}
+.login-card h1 { font-family: var(--font-serif); margin: 0; }
+.login-card p { color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+.login-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.auth-state-message,
+.auth-redirect {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  margin-top: 24px;
+  padding: 28px;
+}
+.auth-redirect { display: grid; gap: 12px; }
+.auth-redirect p { color: var(--color-text-secondary); margin: 0; }
 
 @media (max-width: 960px) {
   .topbar { padding: 0 16px; }

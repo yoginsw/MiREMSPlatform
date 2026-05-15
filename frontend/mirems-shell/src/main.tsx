@@ -1,10 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { colors, designSystemName } from '@mirems/ui-core';
-import { platformHref, type Role, visibleNavigationItems } from './navigation';
+import { AuthCallbackPage } from './auth/AuthCallbackPage';
+import { authUpdatedEventName } from './auth/auth-events';
+import { AuthProvider } from './auth/AuthProvider';
+import { LoginPage } from './auth/LoginPage';
+import { ProtectedRoute } from './auth/ProtectedRoute';
+import { useAuth } from './auth/useAuth';
+import { platformHref, visibleNavigationItems } from './navigation';
 import './styles.css';
-
-const activeRoles: Role[] = ['SYSTEM_ADMIN'];
 const taskNotifications = [
   { id: 'task-1', title: '선거 발행 검토', meta: '관리자 검토 · 3일 2시간 남음' },
   { id: 'task-2', title: '후보자 자격 심사', meta: 'ELECTION_OFFICER 필요 · 18건' },
@@ -24,7 +28,30 @@ const resultRows = [
 ];
 
 function App() {
-  const navItems = visibleNavigationItems(activeRoles);
+  const auth = useAuth();
+  const [currentPath, setCurrentPath] = React.useState(() => `${window.location.pathname}${window.location.search}`);
+
+  React.useEffect(() => {
+    const syncPath = () => setCurrentPath(`${window.location.pathname}${window.location.search}`);
+    window.addEventListener('popstate', syncPath);
+    window.addEventListener(authUpdatedEventName, syncPath);
+    return () => {
+      window.removeEventListener('popstate', syncPath);
+      window.removeEventListener(authUpdatedEventName, syncPath);
+    };
+  }, []);
+
+  const normalizedPath = window.location.pathname.replace(/\/$/, '');
+
+  if (normalizedPath === platformHref('/login')) {
+    return <LoginPage />;
+  }
+
+  if (normalizedPath === platformHref('/auth/callback')) {
+    return <AuthCallbackPage />;
+  }
+
+  const navItems = visibleNavigationItems(auth.roles);
 
   return (
     <div className="app-shell" data-theme="light">
@@ -45,9 +72,9 @@ function App() {
           <button className="notification-button" type="button" aria-label="미완료 태스크 2건">
             🔔<span className="notification-count">2</span>
           </button>
-          <button className="user-menu" type="button" aria-label="사용자 메뉴 열기">
-            <span className="avatar" aria-hidden="true">관</span>
-            시스템 관리자 ▾
+          <button className="user-menu" type="button" aria-label="사용자 메뉴 열기" onClick={() => void (auth.isAuthenticated ? auth.logout() : auth.login(currentPath))}>
+            <span className="avatar" aria-hidden="true">{auth.isAuthenticated ? '관' : '?'}</span>
+            {auth.isAuthenticated ? auth.user?.profile.preferred_username ?? '인증 사용자' : '로그인'} ▾
           </button>
         </div>
       </header>
@@ -98,7 +125,8 @@ function App() {
             </div>
           </section>
 
-          <section className="page-header" aria-labelledby="dashboard-title">
+          <ProtectedRoute isAuthenticated={auth.isAuthenticated} isLoading={auth.isLoading} currentPath={currentPath}>
+            <section className="page-header" aria-labelledby="dashboard-title">
             <div>
               <p className="breadcrumb">대시보드 / 제22대 국회의원선거</p>
               <div className="title-row">
@@ -188,6 +216,7 @@ function App() {
               </div>
             </article>
           </section>
+          </ProtectedRoute>
         </main>
       </div>
     </div>
@@ -231,7 +260,9 @@ if (!root) {
 
 createRoot(root).render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>,
 );
 
