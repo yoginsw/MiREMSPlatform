@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@mirems/ui-core';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthProvider } from './auth/AuthProvider';
 import { PLATFORM_BASE_PATH } from './navigation';
@@ -41,8 +42,10 @@ declare module '@tanstack/react-router' {
 
 export function AppRouter() {
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

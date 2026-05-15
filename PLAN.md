@@ -871,7 +871,7 @@
 ---
 
 ### GOAL P5-046 | Design System and Component Library (ui-core)
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-002
 
 **Tasks:**
@@ -882,6 +882,8 @@
 5. Unit tests with Vitest + React Testing Library for each component.
 
 **Done Criteria:** All 12 components have tests; accessibility checked; 75% coverage.
+
+**Completion Note — 2026-05-16:** Implemented the `@mirems/ui-core` component library with 11 planned base components plus `ThemeProvider` for scoped CSS-custom-property theming. Components use CSS Modules, accessible labels/roles/ARIA states, Escape handling for `Modal`, native form semantics, and keyboard arrow navigation for `Tabs`. Added Vitest + React Testing Library coverage for all 12 exported UI primitives and a Ladle visual catalog with form, feedback, data display, navigation, and dialog stories. Integrated `ThemeProvider` at the `mirems-shell` router root. Verification passed with Windows-native `pnpm --filter @mirems/ui-core test`, `lint`, `build`, `catalog:build`, `pnpm --filter @mirems/mirems-shell test`, `lint`, `build`, and `pnpm -r build`.
 
 ---
 

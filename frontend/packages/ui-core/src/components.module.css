@@ -1,0 +1,228 @@
+:root {
+  --mirems-color-surface: #ffffff;
+  --mirems-color-surface-muted: #f4f7f9;
+  --mirems-color-border: #a8bcc8;
+  --mirems-color-text: #111620;
+  --mirems-color-muted: #445168;
+  --mirems-color-primary: #244478;
+  --mirems-color-primary-contrast: #ffffff;
+  --mirems-color-success: #1d6843;
+  --mirems-color-warning: #b54708;
+  --mirems-color-danger: #991414;
+  --mirems-focus-ring: 0 0 0 3px rgba(46, 88, 153, 0.35);
+}
+
+.controlBase {
+  border: 1px solid var(--mirems-color-border);
+  border-radius: 8px;
+  font: inherit;
+  min-height: 2.5rem;
+  padding: 0.625rem 0.75rem;
+}
+
+.controlBase:focus-visible,
+.button:focus-visible,
+.tab:focus-visible,
+.modalClose:focus-visible {
+  box-shadow: var(--mirems-focus-ring);
+  outline: 2px solid transparent;
+}
+
+.button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.625rem 1rem;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.buttonPrimary {
+  background: var(--mirems-color-primary);
+  color: var(--mirems-color-primary-contrast);
+}
+
+.buttonSecondary {
+  background: var(--mirems-color-surface);
+  border-color: var(--mirems-color-border);
+  color: var(--mirems-color-text);
+}
+
+.buttonDanger {
+  background: var(--mirems-color-danger);
+  color: var(--mirems-color-primary-contrast);
+}
+
+.field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.label {
+  color: var(--mirems-color-text);
+  font-weight: 700;
+}
+
+.helpText {
+  color: var(--mirems-color-muted);
+  font-size: 0.875rem;
+}
+
+.errorText {
+  color: var(--mirems-color-danger);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.inputInvalid {
+  border-color: var(--mirems-color-danger);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid var(--mirems-color-border);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table th {
+  background: var(--mirems-color-surface-muted);
+  color: var(--mirems-color-text);
+}
+
+.backdrop {
+  align-items: center;
+  background: rgba(5, 13, 26, 0.55);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+}
+
+.dialog {
+  background: var(--mirems-color-surface);
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(5, 13, 26, 0.28);
+  color: var(--mirems-color-text);
+  max-width: min(36rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  width: 100%;
+}
+
+.modalHeader {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.modalClose {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.badge {
+  border-radius: 9999px;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.25rem 0.625rem;
+}
+
+.badgeNeutral { background: var(--mirems-color-surface-muted); color: var(--mirems-color-text); }
+.badgeSuccess { background: #daf0e5; color: var(--mirems-color-success); }
+.badgeWarning { background: #fef5e4; color: var(--mirems-color-warning); }
+.badgeDanger { background: #fce8e8; color: var(--mirems-color-danger); }
+
+.alert {
+  border: 1px solid var(--mirems-color-border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.alertInfo { background: #d8e6f7; color: var(--mirems-color-primary); }
+.alertSuccess { background: #daf0e5; color: var(--mirems-color-success); }
+.alertWarning { background: #fef5e4; color: var(--mirems-color-warning); }
+.alertDanger { background: #fce8e8; color: var(--mirems-color-danger); }
+
+.spinner {
+  animation: mirems-spin 0.8s linear infinite;
+  border: 3px solid var(--mirems-color-border);
+  border-radius: 9999px;
+  border-top-color: var(--mirems-color-primary);
+  display: inline-block;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+@keyframes mirems-spin { to { transform: rotate(360deg); } }
+
+.visuallyHidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.card {
+  background: var(--mirems-color-surface);
+  border: 1px solid var(--mirems-color-border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.cardHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tabList {
+  border-bottom: 1px solid var(--mirems-color-border);
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tab {
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.75rem 1rem;
+}
+
+.tabSelected {
+  border-bottom-color: var(--mirems-color-primary);
+  color: var(--mirems-color-primary);
+  font-weight: 800;
+}
+
+.tabPanel {
+  padding: 1rem 0;
+}
