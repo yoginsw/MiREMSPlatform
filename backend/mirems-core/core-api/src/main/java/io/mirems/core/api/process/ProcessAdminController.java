@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping(path = "/admin/processes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,16 +23,19 @@ public class ProcessAdminController {
         this.processMonitoringService = processMonitoringService;
     }
 
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping
     public List<ProcessStatus> listActiveProcesses() {
         return processMonitoringService.listActiveProcesses();
     }
 
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @PostMapping(path = "/{id}/signal", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProcessStatus signalProcess(@PathVariable("id") String id, @RequestBody ProcessSignalCommand command) {
         return processMonitoringService.signalProcess(id, command);
     }
 
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/{id}/audit")
     public List<ProcessAuditEntry> auditTrail(@PathVariable("id") String id) {
         return processMonitoringService.getAuditTrail(id);

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -24,6 +25,7 @@ public class AuditLogController implements AuditApi {
         this.auditEventRepository = auditEventRepository;
     }
 
+    @PreAuthorize("hasAnyRole('AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<AuditLogPageResponse> searchAuditEvents(
             UUID aggregateId,

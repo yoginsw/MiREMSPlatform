@@ -14,6 +14,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -27,6 +28,7 @@ public class ContestController implements ContestsApi {
         this.httpServletRequest = httpServletRequest;
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ContestResponse> createContest(UUID electionId, ContestRequest contestRequest) {
         Contest contest = service().addContest(new ElectionManagementService.AddContestCommand(
@@ -42,11 +44,13 @@ public class ContestController implements ContestsApi {
                 .body(toResponse(contest));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<List<ContestResponse>> listContests(UUID electionId) {
         return ResponseEntity.ok(service().listContests(electionId).stream().map(this::toResponse).toList());
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ContestResponse> getContest(UUID electionId, UUID contestId) {
         return ResponseEntity.ok(toResponse(service()
@@ -54,6 +58,7 @@ public class ContestController implements ContestsApi {
                 .orElseThrow(() -> new ContestNotFoundException(contestId))));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ContestResponse> updateContest(UUID electionId, UUID contestId, ContestRequest contestRequest) {
         Contest contest = service().updateContest(new ElectionManagementService.UpdateContestCommand(

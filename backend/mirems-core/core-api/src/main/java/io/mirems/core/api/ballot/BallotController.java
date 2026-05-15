@@ -27,6 +27,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -39,6 +40,7 @@ public class BallotController implements BallotsApi {
         this.request = request;
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<BallotResponse> createBallot(UUID electionId, BallotRequest ballotRequest) {
         Ballot ballot = service().createBallot(new BallotManagementService.CreateBallotCommand(
@@ -50,11 +52,13 @@ public class BallotController implements BallotsApi {
                 .body(toBallotResponse(ballot));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<List<BallotResponse>> listBallots(UUID electionId) {
         return ResponseEntity.ok(service().listBallots(electionId).stream().map(this::toBallotResponse).toList());
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<BallotResponse> createBallotVersion(
             UUID electionId, UUID ballotId, BallotVersionRequest ballotVersionRequest) {
@@ -70,6 +74,7 @@ public class BallotController implements BallotsApi {
                 .body(toBallotResponse(ballot));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<BallotPreviewResponse> previewBallot(UUID electionId, UUID ballotId) {
         Ballot ballot = service().previewBallot(electionId, ballotId)
@@ -77,6 +82,7 @@ public class BallotController implements BallotsApi {
         return ResponseEntity.ok(new BallotPreviewResponse(ballot.getId(), previewLayout(ballot)));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<BallotStyleResponse> createBallotStyle(UUID electionId, BallotStyleRequest ballotStyleRequest) {
         BallotStyle style = service().createBallotStyle(new BallotManagementService.CreateBallotStyleCommand(
@@ -92,11 +98,13 @@ public class BallotController implements BallotsApi {
                 .body(toBallotStyleResponse(style));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<List<BallotStyleResponse>> listBallotStyles(UUID electionId) {
         return ResponseEntity.ok(service().listBallotStyles(electionId).stream().map(this::toBallotStyleResponse).toList());
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<BallotStyleResponse> updateBallotStyle(
             UUID electionId, UUID ballotStyleId, BallotStyleRequest ballotStyleRequest) {
@@ -113,6 +121,7 @@ public class BallotController implements BallotsApi {
         return ResponseEntity.ok(toBallotStyleResponse(style));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<Void> deleteBallotStyle(UUID electionId, UUID ballotStyleId) {
         service().deleteBallotStyle(electionId, ballotStyleId, actorId(), sourceIp());

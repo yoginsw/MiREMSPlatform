@@ -12,9 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,25 +26,32 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.core.convert.converter.Converter;
 
 @Configuration(proxyBeanMethods = false)
+@EnableMethodSecurity
 @EnableConfigurationProperties(ApiSecurityProperties.class)
 public class ActuatorSecurityConfig {
     @Bean
     @Order(1)
-    SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain adminSecurityFilterChain(
+            HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            throws Exception {
         return http
                 .securityMatcher("/admin/**")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().hasRole("SYSTEM_ADMIN"))
                 .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
                 .build();
     }
 
     @Bean
     @Order(2)
-    SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain actuatorSecurityFilterChain(
+            HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            throws Exception {
         return http
                 .securityMatcher(to(HealthEndpoint.class, MetricsEndpoint.class, InfoEndpoint.class))
                 .cors(Customizer.withDefaults())
@@ -51,43 +61,50 @@ public class ActuatorSecurityConfig {
                         .requestMatchers(to(MetricsEndpoint.class, InfoEndpoint.class)).hasRole("SYSTEM_ADMIN")
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
                 .build();
     }
 
     @Bean
     @Order(3)
-    SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http, ApiRateLimitingFilter apiRateLimitingFilter) throws Exception {
+    SecurityFilterChain applicationSecurityFilterChain(
+            HttpSecurity http,
+            ApiRateLimitingFilter apiRateLimitingFilter,
+            Converter<Jwt, ? extends AbstractAuthenticationToken> keycloakRealmRoleConverter)
+            throws Exception {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/elections").hasRole("ELECTION_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/elections/*/contests").hasRole("ELECTION_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*").hasRole("ELECTION_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections").hasAnyRole("ELECTION_ADMIN", "SYSTEM_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/elections/*/contests")
+                        .hasAnyRole("ELECTION_ADMIN", "SYSTEM_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*")
+                        .hasAnyRole("ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/ballots", "/elections/*/ballots/*/versions")
-                        .hasRole("ELECTION_ADMIN")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/ballot-styles")
-                        .hasRole("ELECTION_ADMIN")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/voters")
-                        .hasRole("ELECTION_OFFICER")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/sessions", "/sessions/*/cast", "/sessions/*/spoil")
-                        .hasAnyRole("VOTER", "ELECTION_OFFICER")
+                        .hasAnyRole("VOTER", "ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/tabulate")
-                        .hasRole("TABULATION_OFFICER")
+                        .hasAnyRole("TABULATION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/audit")
-                        .hasAnyRole("AUDITOR", "SYSTEM_ADMIN")
+                        .hasAnyRole("AUDITOR", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers(HttpMethod.PUT, "/elections/*/ballot-styles/*")
-                        .hasRole("ELECTION_ADMIN")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/elections/*/ballot-styles/*")
-                        .hasRole("ELECTION_ADMIN")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/elections/*/contests/*/candidates")
-                        .hasRole("ELECTION_OFFICER")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/contests/*/candidates/*/withdraw")
-                        .hasRole("ELECTION_OFFICER")
+                        .hasAnyRole("ELECTION_OFFICER", "ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/elections/*/publish", "/elections/*/close")
-                        .hasRole("ELECTION_ADMIN")
+                        .hasAnyRole("ELECTION_ADMIN", "SYSTEM_ADMIN")
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/elections",
@@ -104,6 +121,7 @@ public class ActuatorSecurityConfig {
                         .authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRealmRoleConverter)))
                 .addFilterAfter(apiRateLimitingFilter, BasicAuthenticationFilter.class)
                 .build();
     }

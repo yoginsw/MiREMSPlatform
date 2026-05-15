@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -40,6 +41,7 @@ public class VoterRollController implements VotersApi {
         this.request = request;
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VoterMaskedResponse> registerVoter(VoterRegistrationRequest voterRegistrationRequest) {
         VoterRecord voter = service().registerVoter(new VoterRollService.RegisterVoterCommand(
@@ -51,6 +53,7 @@ public class VoterRollController implements VotersApi {
         return ResponseEntity.created(URI.create("/voters/" + voter.getId())).body(toMaskedResponse(voter));
     }
 
+    @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VoterMaskedResponse> getVoter(UUID voterId) {
         ensureCanAccessVoter(voterId);
@@ -59,6 +62,7 @@ public class VoterRollController implements VotersApi {
         return ResponseEntity.ok(toMaskedResponse(voter));
     }
 
+    @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VoterEligibilityResponse> checkVoterEligibility(UUID voterId, UUID electionId) {
         ensureCanAccessVoter(voterId);

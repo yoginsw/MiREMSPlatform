@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -32,6 +33,7 @@ public class VotingSessionController implements VotingSessionsApi {
         this.request = request;
     }
 
+    @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VotingSessionResponse> createVotingSession(VotingSessionRequest votingSessionRequest) {
         ensureCanAccessVoter(votingSessionRequest.getVoterId());
@@ -45,6 +47,7 @@ public class VotingSessionController implements VotingSessionsApi {
         return ResponseEntity.created(URI.create("/sessions/" + session.getId())).body(toResponse(session));
     }
 
+    @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VoteCastReceiptResponse> castVote(UUID sessionId, VoteCastRequest voteCastRequest) {
         VotingSessionService.CastBallotReceipt receipt = service().castBallot(new VotingSessionService.CastBallotCommand(
@@ -56,6 +59,7 @@ public class VotingSessionController implements VotingSessionsApi {
                 .body(new VoteCastReceiptResponse(receipt.sessionId(), receipt.resultHashes(), receiptHash(receipt.resultHashes())));
     }
 
+    @PreAuthorize("hasAnyRole('VOTER','ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<VotingSessionResponse> spoilVotingSession(UUID sessionId) {
         VotingSession session = service().spoilBallot(sessionId, actorId(), sourceIp());

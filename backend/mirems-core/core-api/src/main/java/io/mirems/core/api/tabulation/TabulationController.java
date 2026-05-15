@@ -29,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -49,6 +50,7 @@ public class TabulationController implements TabulationApi {
         this.request = request;
     }
 
+    @PreAuthorize("hasAnyRole('TABULATION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ProcessStatus> tabulateElection(UUID electionId) {
         Election election = findElection(electionId);

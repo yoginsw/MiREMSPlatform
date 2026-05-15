@@ -13,6 +13,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -26,6 +27,7 @@ public class ElectionController implements ElectionsApi {
         this.httpServletRequest = httpServletRequest;
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ElectionResponse> createElection(ElectionRequest electionRequest) {
         io.mirems.core.domain.election.Election election = service().createElection(
@@ -43,6 +45,7 @@ public class ElectionController implements ElectionsApi {
                 .body(toResponse(election));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<List<ElectionResponse>> listElections() {
         return ResponseEntity.ok(service().listElections().stream()
@@ -50,6 +53,7 @@ public class ElectionController implements ElectionsApi {
                 .toList());
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','TABULATION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ElectionResponse> getElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service()
@@ -57,11 +61,13 @@ public class ElectionController implements ElectionsApi {
                 .orElseThrow(() -> new ElectionNotFoundException(electionId))));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ElectionResponse> publishElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service().publishElection(electionId, actorId(), sourceIp())));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<ElectionResponse> closeElection(UUID electionId) {
         return ResponseEntity.ok(toResponse(service().closeElection(electionId, actorId(), sourceIp())));

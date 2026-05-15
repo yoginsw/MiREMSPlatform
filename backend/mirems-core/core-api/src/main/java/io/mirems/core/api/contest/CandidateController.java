@@ -19,6 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @Validated
@@ -36,6 +37,7 @@ public class CandidateController implements CandidatesApi {
         this.httpServletRequest = httpServletRequest;
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<CandidateResponse> registerCandidate(
             UUID electionId, UUID contestId, CandidateRequest candidateRequest) {
@@ -55,11 +57,13 @@ public class CandidateController implements CandidatesApi {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(toResponse(candidate));
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<List<CandidateResponse>> listCandidates(UUID electionId, UUID contestId) {
         return ResponseEntity.ok(service().listCandidates(electionId, contestId).stream().map(this::toResponse).toList());
     }
 
+    @PreAuthorize("hasAnyRole('OBSERVER','ELECTION_OFFICER','AUDITOR','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<CandidateResponse> getCandidate(UUID electionId, UUID contestId, UUID candidateId) {
         return ResponseEntity.ok(toResponse(service()
@@ -67,6 +71,7 @@ public class CandidateController implements CandidatesApi {
                 .orElseThrow(() -> new CandidateNotFoundException(candidateId))));
     }
 
+    @PreAuthorize("hasAnyRole('ELECTION_OFFICER','ELECTION_ADMIN','SYSTEM_ADMIN')")
     @Override
     public ResponseEntity<CandidateResponse> withdrawCandidate(UUID electionId, UUID contestId, UUID candidateId) {
         return ResponseEntity.ok(toResponse(service().withdrawCandidate(candidateId, actorId(), sourceIp())));

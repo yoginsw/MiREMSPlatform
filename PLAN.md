@@ -752,7 +752,7 @@
 ## Phase 4 — Authentication & RBAC
 
 ### GOAL P4-039 | Spring Security Keycloak Integration
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-004, P3-029
 **Context files:** `docs/adr/ADR-001-auth-strategy.md`
 
@@ -764,6 +764,8 @@
 5. Integration test with mocked JWT tokens for each role.
 
 **Done Criteria:** All endpoints enforce correct roles; 80% coverage.
+
+**Completion Note — 2026-05-15:** Spring OAuth2 resource-server JWT support is wired to the Keycloak issuer environment variables, realm roles are converted to `ROLE_*` authorities, `MiremsSecurityContext` extracts user/role/election-scope claims, and controller method authorization is enabled with `@PreAuthorize` where access is not intentionally conditional/public. Mocked Keycloak JWT tests verify bearer-token 401/403/200 behavior and claim extraction. Verification passed with `:mirems-core:core-api:test` and `:mirems-core:core-api:jacocoTestReport`; core-api line coverage is 85.92%.
 
 ---
 

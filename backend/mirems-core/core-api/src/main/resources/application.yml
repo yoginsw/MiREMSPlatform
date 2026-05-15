@@ -4,6 +4,11 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${MIREMS_KEYCLOAK_ISSUER_URI:${MIREMS_KEYCLOAK_URL:http://localhost:8081}/realms/${MIREMS_KEYCLOAK_REALM:mirems}}
 
 springdoc:
   api-docs:
