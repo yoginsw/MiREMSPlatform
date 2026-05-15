@@ -853,7 +853,7 @@
 ## Phase 5 — Frontend Shell
 
 ### GOAL P5-045 | TanStack Router — File-Based Routing Setup
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P0-002, P4-042
 **Context files:** `docs/adr/ADR-005-frontend-routing.md`
 
@@ -865,6 +865,8 @@
 5. Tests: route rendering with mocked auth.
 
 **Done Criteria:** All routes render; unauthenticated redirect works; 75% coverage.
+
+**Completion Note — 2026-05-16:** Added TanStack Router integration for `mirems-shell` with a platform-base-path router, route modules under `src/routes/`, and a route definition contract covering public landing/login/callback plus protected election, admin, and audit routes. Refactored the shell into a protected layout that applies the existing `ProtectedRoute` decision logic around routed content, while `/` remains a public landing page and Router Devtools render only in development mode. Added Vitest coverage for the Phase 5 route tree, file-to-route mapping, platform base path, and public/protected route classification. Verification passed with Windows-native `pnpm --filter @mirems/mirems-shell test`, `lint`, and `build`.
 
 ---
 
