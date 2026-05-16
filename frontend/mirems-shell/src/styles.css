@@ -103,7 +103,10 @@ body {
   background: var(--color-bg-canvas);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  line-break: normal;
   min-width: 320px;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -276,7 +279,7 @@ a:focus-visible {
 .error-details { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-lg); color: var(--color-navy-100); display: grid; gap: 10px; margin: 24px 0 0; max-width: 720px; padding: 16px; }
 .error-details div { display: grid; gap: 4px; }
 .error-details dt { color: var(--color-neutral-300); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
-.error-details dd { font-family: var(--font-mono); margin: 0; overflow-wrap: anywhere; }
+.error-details dd { font-family: var(--font-mono); margin: 0; overflow-wrap: break-word; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .trust-card { align-content: center; display: grid; gap: 12px; }
 .trust-card span { border: 1px solid rgba(255,255,255,0.22); border-radius: var(--radius-full); padding: 10px 14px; text-align: center; }

@@ -12,6 +12,22 @@
   --mirems-focus-ring: 0 0 0 3px rgba(46, 88, 153, 0.35);
 }
 
+.label,
+.helpText,
+.errorText,
+.button,
+.controlBase,
+.table,
+.dialog,
+.badge,
+.alert,
+.tab,
+.modalClose {
+  line-break: normal;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
 .controlBase {
   border: 1px solid var(--mirems-color-border);
   border-radius: 8px;
