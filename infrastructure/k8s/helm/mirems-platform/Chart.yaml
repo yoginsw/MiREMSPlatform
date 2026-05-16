@@ -1,0 +1,13 @@
+apiVersion: v2
+name: mirems-platform
+description: MiREMS Platform production deployment chart
+version: 0.1.0
+appVersion: "0.1.0-SNAPSHOT"
+type: application
+keywords:
+  - elections
+  - vvsg
+  - spring-boot
+  - react
+maintainers:
+  - name: MiREMS Platform Team

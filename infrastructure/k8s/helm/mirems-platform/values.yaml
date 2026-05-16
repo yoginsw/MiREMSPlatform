@@ -1,0 +1,59 @@
+global:
+  imagePullPolicy: IfNotPresent
+  labels:
+    app.kubernetes.io/part-of: mirems-platform
+
+coreApi:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/yoginsw/mirems-core-api
+    tag: "0.1.0-SNAPSHOT"
+  port: 8080
+  contextPath: /miremsplatform
+  resources:
+    requests:
+      cpu: 500m
+      memory: 768Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  env:
+    MIREMS_DB_URL: jdbc:postgresql://mirems-postgres:5432/mirems
+    MIREMS_DB_USER: mirems
+    MIREMS_KEYCLOAK_URL: https://keycloak.example.invalid
+    MIREMS_KEYCLOAK_REALM: mirems
+    MIREMS_KEYCLOAK_CLIENT: mirems-core-api
+    MIREMS_KAFKA_BOOTSTRAP: mirems-kafka:9092
+  secrets:
+    existingSecret: ""
+    MIREMS_DB_PASS: ""
+    MIREMS_ENCRYPTION_KEY: ""
+
+frontend:
+  image:
+    repository: ghcr.io/yoginsw/mirems-frontend
+    tag: "0.1.0-SNAPSHOT"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: mirems.example.invalid
+  tlsSecretName: mirems-platform-tls
+
+networkPolicy:
+  enabled: true
+  allowedNamespaceLabels:
+    kubernetes.io/metadata.name: ingress-nginx
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL

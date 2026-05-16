@@ -1446,10 +1446,31 @@ Verification:
 ## Phase 10 — Production Hardening
 
 ### GOAL P10-097 — P10-104 | Kubernetes, Security Scanning, and Documentation
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P9-096
 
 Covers: Helm charts for production K8s, Trivy container scanning, OWASP ZAP API scan, Grafana dashboards, runbook documentation, data backup/restore procedures, and final VVSG 2.0 compliance report generation.
+
+Implementation notes:
+- Added production Helm chart under `infrastructure/k8s/helm/mirems-platform` with core API Deployment, Service, Ingress, Secret, ServiceAccount, NetworkPolicy, probes, resource limits, and non-root security contexts.
+- Added Trivy and OWASP ZAP scan wrappers under `infrastructure/security` with release-evidence output paths and fail-on-high/critical Trivy behavior.
+- Added Grafana production dashboard for API request rate, p95 latency, audit events, voting sessions, and JVM memory.
+- Added production operations and backup/restore runbooks with deployment, security scanning, incident response, rollback, RPO/RTO, restore, and integrity-verification procedures.
+- Added final VVSG 2.0 compliance report/evidence index with open certification items clearly separated from implementation evidence.
+- Added structural verification script `scripts/verify_p10_assets.py` and evidence note `docs/verification/P10-097-104.md`.
+
+Verification:
+- `python3 -m pytest scripts/verify_p10_assets.py -q` — PASS.
+- `bash -n infrastructure/security/trivy-scan.sh infrastructure/security/zap-api-scan.sh` — PASS.
+- `python3 -m json.tool infrastructure/grafana/dashboards/mirems-platform.json` — PASS.
+- Windows-native `gradlew.bat build` — PASS.
+- Windows-native `pnpm lint` — PASS.
+- Windows-native `pnpm build` — PASS.
+- Windows-native `pnpm test` — PASS.
+- Evidence summary: `docs/verification/P10-097-104.md`.
+
+Operational follow-up:
+- Local `helm`, `trivy`, and `zap-api-scan.py` binaries were not available in this environment; execute Helm rendering, Trivy image scans, and OWASP ZAP scans in CI/staging before release sign-off.
 
 ---
 

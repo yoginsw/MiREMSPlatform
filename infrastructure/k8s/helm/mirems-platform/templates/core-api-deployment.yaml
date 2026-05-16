@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mirems-platform.fullname" . }}-core-api
+  labels:
+    {{- include "mirems-platform.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.coreApi.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: core-api
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "mirems-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/component: core-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "{{ .Values.coreApi.contextPath }}/actuator/prometheus"
+        prometheus.io/port: "{{ .Values.coreApi.port }}"
+    spec:
+      serviceAccountName: {{ include "mirems-platform.fullname" . }}-core-api
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: {{ .Values.podSecurityContext.runAsUser }}
+        runAsGroup: {{ .Values.podSecurityContext.runAsGroup }}
+        fsGroup: {{ .Values.podSecurityContext.fsGroup }}
+      containers:
+        - name: core-api
+          image: "{{ .Values.coreApi.image.repository }}:{{ .Values.coreApi.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.coreApi.port }}
+          env:
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: {{ .Values.coreApi.contextPath | quote }}
+            - name: MIREMS_DB_URL
+              value: {{ .Values.coreApi.env.MIREMS_DB_URL | quote }}
+            - name: MIREMS_DB_USER
+              value: {{ .Values.coreApi.env.MIREMS_DB_USER | quote }}
+            - name: MIREMS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mirems-platform.coreApiSecretName" . }}
+                  key: MIREMS_DB_PASS
+            - name: MIREMS_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mirems-platform.coreApiSecretName" . }}
+                  key: MIREMS_ENCRYPTION_KEY
+            - name: MIREMS_KEYCLOAK_URL
+              value: {{ .Values.coreApi.env.MIREMS_KEYCLOAK_URL | quote }}
+            - name: MIREMS_KEYCLOAK_REALM
+              value: {{ .Values.coreApi.env.MIREMS_KEYCLOAK_REALM | quote }}
+            - name: MIREMS_KEYCLOAK_CLIENT
+              value: {{ .Values.coreApi.env.MIREMS_KEYCLOAK_CLIENT | quote }}
+            - name: MIREMS_KAFKA_BOOTSTRAP
+              value: {{ .Values.coreApi.env.MIREMS_KAFKA_BOOTSTRAP | quote }}
+          readinessProbe:
+            httpGet:
+              path: {{ printf "%s/actuator/health/readiness" .Values.coreApi.contextPath | quote }}
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: {{ printf "%s/actuator/health/liveness" .Values.coreApi.contextPath | quote }}
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.coreApi.resources | nindent 12 }}
