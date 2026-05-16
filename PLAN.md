@@ -1172,7 +1172,7 @@
 ---
 
 ### GOAL P6-060 | KR — 선거 유형 및 관할 모델
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P6-059
 
 **Tasks:**
@@ -1183,6 +1183,13 @@
 5. Tests.
 
 **Done Criteria:** KR election types and jurisdiction hierarchy tested.
+
+**Implementation Notes:**
+- Added `KrElectionType` with 대통령선거, 국회의원선거, 지방선거, 교육감선거, 보궐선거 labels, slugs, and core `ElectionType` mappings.
+- Added `KrJurisdictionLevel` and immutable `KrJurisdiction` entity model for 시/도 → 시/군/구 → 읍/면/동 hierarchy, parent validation, normalized administrative codes, and 선거구 코드 mapping.
+- Added `V101__kr_election_type_jurisdiction_tables.sql` with `kr_election_types` seed rows and `kr_jurisdictions` hierarchy/constituency schema, exact parent-level trigger validation, immutable level updates, and indexes.
+- Added tests for KR election-type coverage/mapping, jurisdiction hierarchy path and parent-level validation, required-field normalization/rejection, and migration resource contract.
+- Verification passed: `gradlew.bat :extensions:ext-kr:test`, `gradlew.bat :extensions:ext-kr:jacocoTestReport`, `gradlew.bat :extensions:ext-kr:build`, `gradlew.bat build`. Coverage: ext-kr package 97.13% instruction / 96.72% line / 75.00% branch; new KR model classes 100%/93.33%/100% line for `KrElectionType`/`KrJurisdiction`/`KrJurisdictionLevel`.
 
 ---
 
