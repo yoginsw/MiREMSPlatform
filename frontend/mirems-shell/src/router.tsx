@@ -4,6 +4,7 @@ import { AuthProvider } from './auth/AuthProvider';
 import { I18nProvider } from './i18n/I18nProvider';
 import { PLATFORM_BASE_PATH } from './navigation';
 import { routeTree } from './routeTree.gen';
+import { ShellThemeProvider } from './theme/shell-theme';
 
 export interface MiremsRouteDefinition {
   path: string;
@@ -50,9 +51,11 @@ export function AppRouter() {
   return (
     <ThemeProvider>
       <I18nProvider>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <ShellThemeProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </ShellThemeProvider>
       </I18nProvider>
     </ThemeProvider>
   );

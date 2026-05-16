@@ -65,6 +65,37 @@
   --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
+.app-shell[data-theme="dark"] {
+  --color-bg-canvas: #050d1a;
+  --color-bg-surface: #111620;
+  --color-bg-surface-alt: #1f2837;
+  --color-bg-inset: #0a1628;
+  --color-border-default: #445168;
+  --color-border-strong: #8096a8;
+  --color-text-primary: #f4f7f9;
+  --color-text-secondary: #ccd8e0;
+  --color-text-link: #b0c8ec;
+  --color-interactive-primary: #4a78c4;
+  --color-interactive-primary-hover: #b0c8ec;
+}
+
+.app-shell[data-theme="high-contrast"] {
+  --color-bg-canvas: #000000;
+  --color-bg-surface: #000000;
+  --color-bg-surface-alt: #111111;
+  --color-bg-inset: #000000;
+  --color-border-default: #ffffff;
+  --color-border-strong: #facc15;
+  --color-border-focus: #facc15;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #facc15;
+  --color-text-inverse: #000000;
+  --color-text-link: #facc15;
+  --color-interactive-primary: #facc15;
+  --color-interactive-primary-hover: #ffffff;
+  --shadow-focus-ring: 0 0 0 4px #facc15;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -78,6 +109,12 @@ body {
 a { color: inherit; text-decoration: none; }
 
 button, a { -webkit-tap-highlight-color: transparent; }
+
+.app-shell {
+  background: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+}
 
 button:focus-visible,
 a:focus-visible {
@@ -133,6 +170,12 @@ a:focus-visible {
 }
 
 .topbar-actions { align-items: center; display: flex; gap: 12px; margin-left: auto; }
+.theme-switcher,
+.language-switcher { align-items: center; display: inline-flex; gap: 4px; }
+.theme-switcher__button,
+.language-switcher__button { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius-full); color: var(--color-text-inverse); cursor: pointer; font: inherit; font-size: 0.78rem; min-height: 32px; padding: 0 10px; }
+.theme-switcher__button[aria-pressed="true"],
+.language-switcher__button[aria-pressed="true"] { background: var(--color-interactive-primary); border-color: var(--color-interactive-primary-hover); color: var(--color-text-inverse); font-weight: 800; }
 .extension-badge {
   border: 1px solid var(--color-navy-400);
   border-radius: var(--radius-full);
@@ -193,6 +236,9 @@ a:focus-visible {
 .nav-item--active { background: rgba(46, 88, 153, 0.30); border-left-color: var(--color-navy-400); color: var(--color-navy-200); }
 .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: grid; gap: 4px; font-size: 0.78rem; margin-top: 24px; padding: 16px 8px 0; }
 .sidebar-footer strong { color: var(--color-navy-200); }
+.bottom-nav { background: var(--color-neutral-900); border-top: 1px solid rgba(255, 255, 255, 0.10); bottom: 0; color: var(--color-neutral-300); left: 0; overflow-x: auto; padding: 8px; position: fixed; right: 0; z-index: 300; }
+.bottom-nav nav { display: flex; gap: 6px; }
+.bottom-nav .nav-item { flex: 0 0 auto; font-size: 0.8rem; min-width: max-content; }
 
 .main-content { flex: 1; padding: 32px 48px 64px; }
 .hero-panel {
@@ -413,8 +459,6 @@ code { font-family: var(--font-mono); }
   .topbar { padding: 0 16px; }
   .scope-selector, .extension-badge, .user-menu { display: none; }
   .workspace { display: block; }
-  .sidebar { bottom: 0; flex: none; height: 60px; left: 0; overflow-x: auto; padding: 8px; position: fixed; right: 0; top: auto; z-index: 300; }
-  .sidebar nav { display: flex; gap: 6px; }
   .nav-section-label, .sidebar-footer { display: none; }
   .nav-item { font-size: 0.8rem; min-width: max-content; }
   .main-content { padding: 20px 16px 92px; }
@@ -422,6 +466,13 @@ code { font-family: var(--font-mono); }
   .page-header, .process-panel__header, .card-header { align-items: flex-start; flex-direction: column; }
   .dashboard-grid, .content-grid, .progress-steps { grid-template-columns: 1fr; }
   .progress-step:not(:last-child)::after { display: none; }
+}
+
+@media (max-width: 767px) {
+  .brand-subtitle, .notification-button { display: none; }
+  .topbar { gap: 12px; height: 56px; }
+  .topbar-actions { gap: 6px; }
+  .theme-switcher__button { padding: 0 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

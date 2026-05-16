@@ -1102,7 +1102,7 @@
 ---
 
 ### GOAL P5-057 | Responsive Layout and Theming
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-046
 
 **Tasks:**
@@ -1113,6 +1113,14 @@
 5. Tests: layout rendering at mobile/tablet/desktop breakpoints.
 
 **Done Criteria:** All breakpoints tested; themes switch correctly; 75% coverage.
+
+**Implementation Notes:**
+- Added `ShellThemeProvider`, `ThemeSwitcher`, in-memory shell theme state, and deterministic responsive layout helpers for desktop/tablet/mobile breakpoints.
+- Refactored shell rendering through `ShellChrome` so desktop uses sidebar navigation and tablet/mobile use a bottom navigation surface.
+- Added light/dark/high-contrast theme CSS custom-property overrides on `.app-shell[data-theme]` without localStorage/cookie/IndexedDB persistence.
+- Extended i18n resources with theme selector and mobile navigation labels while preserving locale key parity.
+- Added tests for desktop/tablet/mobile layout rendering, compact language-switcher availability, light/dark/high-contrast switching, and no browser-storage calls for theme preference.
+- Verification passed: `pnpm --filter @mirems/i18n test`, `pnpm --filter @mirems/i18n build`, `pnpm --filter @mirems/mirems-shell test` (26 files / 86 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature+i18n+theme coverage 94.81% all statements / 96.22% theme statements / 90.38% ShellLayout statements.
 
 ---
 

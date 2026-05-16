@@ -37,5 +37,14 @@
     "selectorLabel": "Language selection",
     "ko": "Korean",
     "en": "English"
+  },
+  "theme": {
+    "selectorLabel": "Theme selection",
+    "light": "Light",
+    "dark": "Dark",
+    "high-contrast": "High contrast"
+  },
+  "layout": {
+    "mobileNavigationLabel": "Mobile bottom navigation"
   }
 }
