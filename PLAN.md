@@ -1036,7 +1036,7 @@
 ---
 
 ### GOAL P5-054 | Audit Log Viewer
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-053, P3-036
 
 **Tasks:**
@@ -1046,6 +1046,13 @@
 4. Tests.
 
 **Done Criteria:** Filters tested; CSV export verified; 75% coverage.
+
+**Implementation Notes:**
+- Implemented generated-client-backed audit API wrapper for `/audit` with runtime bearer token propagation.
+- Added protected `/audit` viewer for `AUDITOR` and `SYSTEM_ADMIN` with fail-closed role gating before protected API calls.
+- Added Korean audit table with search, aggregate ID/type, date-range server filters, actor client filter, payload display, and CSV export of currently filtered rows with spreadsheet-formula neutralization.
+- Added MSW tests for Authorization header propagation, filter query parameters, actor/search filtering, CSV download, and denied-role API suppression.
+- Verification passed: `pnpm --filter @mirems/mirems-shell test` (21 files / 74 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature coverage 94.82% all statements / 95.96% audit statements.
 
 ---
 
