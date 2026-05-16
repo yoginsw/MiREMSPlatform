@@ -1216,7 +1216,7 @@
 ---
 
 ### GOAL P6-062 | KR — 비례대표 Contest Type
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P6-061
 
 **Tasks:**
@@ -1227,6 +1227,14 @@
 5. Tests with sample election data.
 
 **Done Criteria:** Seat allocation produces correct results for known test cases.
+
+**Implementation Notes:**
+- Added KR proportional representation contest support under `io.mirems.extension.kr.proportional` with code `PROPORTIONAL_REPRESENTATION`, Korean label `비례대표`, National Assembly election binding, positive-seat validation, and vote limit 1.
+- Added party-list ballot layout rendering with deterministic list-order sorting, single-selection metadata, party logo URI propagation, empty-list rejection, and duplicate party ID rejection.
+- Added D'Hondt seat allocation request/result records and `KrDhondtSeatAllocationDecisionService` using highest quotients with deterministic tie-breaking by higher vote total then party ID.
+- Added `KrDhondtSeatAllocation.dmn` resource with executable FEEL guard/allocation rows for D'Hondt highest-quotient calculation, including quotient sorting and deterministic tie-break expressions aligned to the Java service.
+- Added sample-data tests for known 5-seat and 10-seat D'Hondt outcomes plus tie-breaking, invalid input, party-list rendering, contest metadata, and DMN XML contract.
+- Verification passed: `gradlew.bat :extensions:ext-kr:test --tests io.mirems.extension.kr.proportional.*`, `gradlew.bat :extensions:ext-kr:test :extensions:ext-kr:jacocoTestReport`, `gradlew.bat :extensions:ext-kr:build`, `gradlew.bat build`. Coverage: `io.mirems.extension.kr.proportional` package 93.67% instruction / 95.33% line / 76.47% branch.
 
 ---
 

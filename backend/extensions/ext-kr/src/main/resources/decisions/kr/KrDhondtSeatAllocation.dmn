@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_KrDhondtSeatAllocation"
+             name="KrDhondtSeatAllocation"
+             namespace="https://mirems.io/dmn/kr/dhondt-seat-allocation">
+    <inputData id="Input_totalSeats" name="totalSeats">
+        <variable id="Variable_totalSeats" name="totalSeats" typeRef="number"/>
+    </inputData>
+    <inputData id="Input_partyVotes" name="partyVotes">
+        <variable id="Variable_partyVotes" name="partyVotes" typeRef="list"/>
+    </inputData>
+    <decision id="Decision_KrDhondtSeatAllocation" name="KrDhondtSeatAllocation">
+        <variable id="Variable_result" name="seatAllocations" typeRef="KrDhondtSeatAllocationResult"/>
+        <decisionTable id="DecisionTable_KrDhondtSeatAllocation" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_totalSeats">
+                <inputExpression id="InputExpression_totalSeats" typeRef="number"><text>totalSeats</text></inputExpression>
+            </input>
+            <input id="InputClause_partyVotes">
+                <inputExpression id="InputExpression_partyVotes" typeRef="list"><text>partyVotes</text></inputExpression>
+            </input>
+            <output id="OutputClause_seatAllocations" label="seatAllocations" name="seatAllocations" typeRef="list"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_InvalidSeatCount">
+                <inputEntry id="R1_Seats"><text>&lt; 1</text></inputEntry>
+                <inputEntry id="R1_Parties"><text>-</text></inputEntry>
+                <outputEntry id="R1_Out"><text>[]</text></outputEntry>
+                <outputEntry id="R1_Reason"><text>"totalSeats must be greater than zero"</text></outputEntry>
+            </rule>
+            <rule id="Rule_InvalidPartyVotes">
+                <inputEntry id="R2_Seats"><text>&gt;= 1</text></inputEntry>
+                <inputEntry id="R2_Parties"><text>count(partyVotes) = 0 or some vote in partyVotes satisfies vote.votes &lt; 0</text></inputEntry>
+                <outputEntry id="R2_Out"><text>[]</text></outputEntry>
+                <outputEntry id="R2_Reason"><text>"partyVotes must be valid before D'Hondt allocation"</text></outputEntry>
+            </rule>
+            <rule id="Rule_AllocateByHighestQuotients">
+                <inputEntry id="R3_Seats"><text>&gt;= 1</text></inputEntry>
+                <inputEntry id="R3_Parties"><text>count(partyVotes) &gt; 0 and every vote in partyVotes satisfies vote.votes &gt;= 0</text></inputEntry>
+                <outputEntry id="R3_Out"><text>for party in partyVotes return { partyId: party.partyId, partyName: party.partyName, votes: party.votes, allocatedSeats: count(for quotient in sort(flatten(for vote in partyVotes return for divisor in 1..totalSeats return { partyId: vote.partyId, votes: vote.votes, value: vote.votes / divisor }), function(left, right) left.value &gt; right.value or (left.value = right.value and (left.votes &gt; right.votes or (left.votes = right.votes and left.partyId &lt; right.partyId))))[1..totalSeats] return if quotient.partyId = party.partyId then quotient else null[item != null]) }</text></outputEntry>
+                <outputEntry id="R3_Reason"><text>"allocated by D'Hondt highest quotients"</text></outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>
