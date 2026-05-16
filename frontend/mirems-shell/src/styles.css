@@ -550,6 +550,14 @@ code { font-family: var(--font-mono); }
 .landing-nav a { color: var(--color-text-secondary); font-size: 0.9rem; font-weight: 800; }
 .landing-nav a:hover { color: var(--color-text-link); }
 .landing-header__controls { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.landing-header .theme-switcher__button,
+.landing-header .language-switcher__button { background: var(--color-bg-surface-alt); border-color: var(--color-border-strong); color: var(--color-text-primary); }
+.landing-header .theme-switcher__button:hover,
+.landing-header .language-switcher__button:hover { background: var(--color-bg-surface); border-color: var(--color-text-link); color: var(--color-text-link); }
+.landing-header .theme-switcher__button[aria-pressed="true"],
+.landing-header .language-switcher__button[aria-pressed="true"] { background: var(--color-interactive-primary); border-color: var(--color-interactive-primary-hover); color: var(--color-text-inverse); }
+.landing-page[data-theme="dark"] .landing-header .theme-switcher__button[aria-pressed="true"],
+.landing-page[data-theme="dark"] .landing-header .language-switcher__button[aria-pressed="true"] { background: var(--color-navy-200); border-color: var(--color-navy-100); color: var(--color-navy-950); }
 .landing-header__login { min-height: 38px; }
 
 .landing-hero {

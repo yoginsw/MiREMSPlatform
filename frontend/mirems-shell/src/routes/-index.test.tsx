@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -18,6 +20,8 @@ function renderLandingPage() {
     </ThemeProvider>,
   );
 }
+
+const stylesCss = readFileSync(join(process.cwd(), 'src/styles.css'), 'utf8');
 
 afterEach(() => {
   resetShellLanguageForTests();
@@ -62,5 +66,17 @@ describe('MiREMS public landing page', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'High contrast' }));
     expect(landingRoot).toHaveAttribute('data-theme', 'high-contrast');
+  });
+
+  it('keeps inactive landing header language and theme buttons readable in light and dark themes', () => {
+    expect(stylesCss).toContain('.landing-header .theme-switcher__button,');
+    expect(stylesCss).toContain('.landing-header .language-switcher__button {');
+    expect(stylesCss).toContain('background: var(--color-bg-surface-alt);');
+    expect(stylesCss).toContain('color: var(--color-text-primary);');
+    expect(stylesCss).toContain('border-color: var(--color-border-strong);');
+    expect(stylesCss).toContain('.landing-header .theme-switcher__button[aria-pressed="true"],');
+    expect(stylesCss).toContain('color: var(--color-text-inverse);');
+    expect(stylesCss).toContain('.landing-page[data-theme="dark"] .landing-header .theme-switcher__button[aria-pressed="true"],');
+    expect(stylesCss).toContain('color: var(--color-navy-950);');
   });
 });
