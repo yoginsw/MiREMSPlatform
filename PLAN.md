@@ -1342,7 +1342,7 @@ Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.ena
 ---
 
 ### GOAL P7-071 | US — HAVA and UOCAVA DMN Rules
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P7-070
 **Context files:** `docs/extensions/us/LEGAL.md`
 
@@ -1351,6 +1351,13 @@ Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.ena
 2. `UsAbsenteeBallot.dmn`: UOCAVA overseas/military voter rules.
 3. State-specific age rules (18 on election day in most states; primary age rules vary).
 4. Exhaustive DMN tests.
+
+**Implementation Notes:**
+- Added `docs/extensions/us/LEGAL.md` as an explicit implementation-assumptions snapshot; production legal review remains required for full state-by-state rules.
+- Added `UsVoterEligibility.dmn` and `UsAbsenteeBallot.dmn` with service-layer mirrors for HAVA provisional ID handling, UOCAVA military/overseas absentee eligibility, FWAB fallback, domestic no-excuse snapshot behavior, and Maryland-style primary age-by-general-election exception.
+- Added exhaustive decision-row tests plus DMN XML contract tests for required inputs/outputs, decision resources, rule IDs, normalized state-code handling, FWAB date-window bounds, and row counts.
+- Verification passed: targeted US rules tests, `gradlew.bat :extensions:ext-us:test :extensions:ext-us:jacocoTestReport`, `gradlew.bat :extensions:ext-us:build`, and `gradlew.bat build`.
+- Coverage: `io.mirems.extension.us` 95.70% instruction / 94.97% line / 84.38% branch.
 
 ---
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_UsAbsenteeBallot"
+             name="UsAbsenteeBallot"
+             namespace="https://mirems.io/dmn/us/absentee-ballot">
+    <inputData id="Input_voterCategory" name="voterCategory"><variable id="Variable_voterCategory" name="voterCategory" typeRef="string"/></inputData>
+    <inputData id="Input_ballotRequestDate" name="ballotRequestDate"><variable id="Variable_ballotRequestDate" name="ballotRequestDate" typeRef="date"/></inputData>
+    <inputData id="Input_electionDay" name="electionDay"><variable id="Variable_electionDay" name="electionDay" typeRef="date"/></inputData>
+    <inputData id="Input_stateCode" name="stateCode"><variable id="Variable_stateCode" name="stateCode" typeRef="string"/></inputData>
+    <inputData id="Input_blankBallotNotReceived" name="blankBallotNotReceived"><variable id="Variable_blankBallotNotReceived" name="blankBallotNotReceived" typeRef="boolean"/></inputData>
+    <decision id="Decision_UsAbsenteeBallot" name="UsAbsenteeBallot">
+        <variable id="Variable_result" name="absenteeBallot" typeRef="UsAbsenteeBallotResult"/>
+        <decisionTable id="DecisionTable_UsAbsenteeBallot" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_voterCategory"><inputExpression id="InputExpression_voterCategory" typeRef="string"><text>voterCategory</text></inputExpression></input>
+            <input id="InputClause_daysBeforeElection"><inputExpression id="InputExpression_daysBeforeElection" typeRef="number"><text>days and time duration(ballotRequestDate, electionDay).days</text></inputExpression></input>
+            <input id="InputClause_blankBallotNotReceived"><inputExpression id="InputExpression_blankBallotNotReceived" typeRef="boolean"><text>blankBallotNotReceived</text></inputExpression></input>
+            <input id="InputClause_stateCode"><inputExpression id="InputExpression_stateCode" typeRef="string"><text>stateCode</text></inputExpression></input>
+            <output id="OutputClause_eligible" label="eligible" name="eligible" typeRef="boolean"/>
+            <output id="OutputClause_fwab" label="federalWriteInAbsenteeBallotAllowed" name="federalWriteInAbsenteeBallotAllowed" typeRef="boolean"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_UocavaFwabFallback"><inputEntry id="R1_C"><text>"MILITARY", "OVERSEAS_CITIZEN"</text></inputEntry><inputEntry id="R1_D"><text>[0..45]</text></inputEntry><inputEntry id="R1_B"><text>true</text></inputEntry><inputEntry id="R1_S"><text>-</text></inputEntry><outputEntry id="R1_O1"><text>true</text></outputEntry><outputEntry id="R1_O2"><text>true</text></outputEntry><outputEntry id="R1_O3"><text>"UOCAVA late request permits federal write-in absentee ballot"</text></outputEntry></rule>
+            <rule id="Rule_UocavaMilitary"><inputEntry id="R2_C"><text>"MILITARY"</text></inputEntry><inputEntry id="R2_D"><text>-</text></inputEntry><inputEntry id="R2_B"><text>-</text></inputEntry><inputEntry id="R2_S"><text>-</text></inputEntry><outputEntry id="R2_O1"><text>true</text></outputEntry><outputEntry id="R2_O2"><text>false</text></outputEntry><outputEntry id="R2_O3"><text>"eligible UOCAVA military voter"</text></outputEntry></rule>
+            <rule id="Rule_UocavaOverseasCitizen"><inputEntry id="R3_C"><text>"OVERSEAS_CITIZEN"</text></inputEntry><inputEntry id="R3_D"><text>-</text></inputEntry><inputEntry id="R3_B"><text>-</text></inputEntry><inputEntry id="R3_S"><text>-</text></inputEntry><outputEntry id="R3_O1"><text>true</text></outputEntry><outputEntry id="R3_O2"><text>false</text></outputEntry><outputEntry id="R3_O3"><text>"eligible UOCAVA overseas citizen voter"</text></outputEntry></rule>
+            <rule id="Rule_DomesticNoExcuse"><inputEntry id="R4_C"><text>"DOMESTIC_NO_EXCUSE"</text></inputEntry><inputEntry id="R4_D"><text>-</text></inputEntry><inputEntry id="R4_B"><text>-</text></inputEntry><inputEntry id="R4_S"><text>-</text></inputEntry><outputEntry id="R4_O1"><text>true</text></outputEntry><outputEntry id="R4_O2"><text>false</text></outputEntry><outputEntry id="R4_O3"><text>"eligible state absentee voter"</text></outputEntry></rule>
+            <rule id="Rule_NotAbsenteeEligible"><inputEntry id="R5_C"><text>"NOT_ABSENTEE_ELIGIBLE"</text></inputEntry><inputEntry id="R5_D"><text>-</text></inputEntry><inputEntry id="R5_B"><text>-</text></inputEntry><inputEntry id="R5_S"><text>-</text></inputEntry><outputEntry id="R5_O1"><text>false</text></outputEntry><outputEntry id="R5_O2"><text>false</text></outputEntry><outputEntry id="R5_O3"><text>"absentee category is not eligible"</text></outputEntry></rule>
+        </decisionTable>
+    </decision>
+</definitions>
