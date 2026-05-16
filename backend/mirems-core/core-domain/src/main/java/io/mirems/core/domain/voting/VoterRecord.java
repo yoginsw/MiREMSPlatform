@@ -76,10 +76,21 @@ public class VoterRecord {
             BallotStyle ballotStyle,
             String deviceId,
             OffsetDateTime startedAt) {
+        return openVotingSession(id, election, ballotStyle, deviceId, startedAt, VotingMethod.ELECTION_DAY);
+    }
+
+    public VotingSession openVotingSession(
+            UUID id,
+            Election election,
+            BallotStyle ballotStyle,
+            String deviceId,
+            OffsetDateTime startedAt,
+            VotingMethod votingMethod) {
         Election targetElection = Objects.requireNonNull(election, "election is required");
         ensureEligibleFor(targetElection);
         ensureNoNonSpoiledSessionFor(targetElection);
-        VotingSession votingSession = VotingSession.open(id, this, targetElection, ballotStyle, deviceId, startedAt);
+        VotingSession votingSession = VotingSession.open(
+                id, this, targetElection, ballotStyle, deviceId, startedAt, votingMethod);
         votingSessions.add(votingSession);
         return votingSession;
     }

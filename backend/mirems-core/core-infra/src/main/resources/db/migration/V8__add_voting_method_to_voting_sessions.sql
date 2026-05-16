@@ -1,0 +1,2 @@
+ALTER TABLE voting_sessions
+    ADD COLUMN voting_method VARCHAR(64) NOT NULL DEFAULT 'ELECTION_DAY';

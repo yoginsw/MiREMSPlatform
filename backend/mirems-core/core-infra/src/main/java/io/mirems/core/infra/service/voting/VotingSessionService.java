@@ -6,7 +6,10 @@ import io.mirems.core.domain.election.Election;
 import io.mirems.core.domain.result.VotingResult;
 import io.mirems.core.domain.voting.SessionStatus;
 import io.mirems.core.domain.voting.VoterRecord;
+import io.mirems.core.domain.voting.VotingMethod;
 import io.mirems.core.domain.voting.VotingSession;
+import io.mirems.core.domain.voting.VotingSessionOpeningContext;
+import io.mirems.core.domain.voting.VotingSessionOpeningPolicy;
 import io.mirems.core.domain.voting.VotingSessionValidationException;
 import io.mirems.core.infra.persistence.ballot.SpringDataBallotStyleRepository;
 import io.mirems.core.infra.persistence.contest.SpringDataContestRepository;
@@ -40,6 +43,7 @@ public class VotingSessionService {
     private final SpringDataContestRepository contestRepository;
     private final SpringDataVotingResultJpaRepository votingResultRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final List<VotingSessionOpeningPolicy> openingPolicies;
     private final Supplier<UUID> idGenerator;
     private final Supplier<OffsetDateTime> clock;
 
@@ -50,7 +54,8 @@ public class VotingSessionService {
             SpringDataVotingSessionRepository votingSessionRepository,
             SpringDataContestRepository contestRepository,
             SpringDataVotingResultJpaRepository votingResultRepository,
-            ApplicationEventPublisher applicationEventPublisher) {
+            ApplicationEventPublisher applicationEventPublisher,
+            List<VotingSessionOpeningPolicy> openingPolicies) {
         this(
                 voterRecordRepository,
                 electionRepository,
@@ -59,6 +64,7 @@ public class VotingSessionService {
                 contestRepository,
                 votingResultRepository,
                 applicationEventPublisher,
+                openingPolicies,
                 UUID::randomUUID,
                 OffsetDateTime::now);
     }
@@ -71,6 +77,7 @@ public class VotingSessionService {
             SpringDataContestRepository contestRepository,
             SpringDataVotingResultJpaRepository votingResultRepository,
             ApplicationEventPublisher applicationEventPublisher,
+            List<VotingSessionOpeningPolicy> openingPolicies,
             Supplier<UUID> idGenerator,
             Supplier<OffsetDateTime> clock) {
         this.voterRecordRepository = voterRecordRepository;
@@ -80,6 +87,7 @@ public class VotingSessionService {
         this.contestRepository = contestRepository;
         this.votingResultRepository = votingResultRepository;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.openingPolicies = List.copyOf(openingPolicies);
         this.idGenerator = idGenerator;
         this.clock = clock;
     }
@@ -96,8 +104,10 @@ public class VotingSessionService {
                 .findById(command.ballotStyleId())
                 .orElseThrow(() -> new EntityNotFoundException("BallotStyle not found: " + command.ballotStyleId()));
 
+        OffsetDateTime openedAt = clock.get();
+        validateOpeningPolicies(voterRecord, election, ballotStyle, command, openedAt);
         VotingSession session = voterRecord.openVotingSession(
-                idGenerator.get(), election, ballotStyle, command.deviceId(), clock.get());
+                idGenerator.get(), election, ballotStyle, command.deviceId(), openedAt, command.votingMethod());
         try {
             VotingSession saved = votingSessionRepository.save(session);
             publishAuditEvent(
@@ -109,6 +119,7 @@ public class VotingSessionService {
                             "electionId", election.getId().toString(),
                             "ballotStyleId", ballotStyle.getId().toString(),
                             "deviceId", saved.getDeviceId(),
+                            "votingMethod", saved.getVotingMethod().name(),
                             "sessionStatus", saved.getSessionStatus().name()),
                     command.actorId(),
                     command.sourceIp());
@@ -176,6 +187,23 @@ public class VotingSessionService {
         }
     }
 
+    private void validateOpeningPolicies(
+            VoterRecord voterRecord,
+            Election election,
+            BallotStyle ballotStyle,
+            OpenSessionCommand command,
+            OffsetDateTime openedAt) {
+        VotingSessionOpeningContext context = new VotingSessionOpeningContext(
+                voterRecord,
+                election,
+                ballotStyle,
+                command.votingMethod(),
+                openedAt,
+                command.homeDistrictCode(),
+                command.pollingStationDistrictCode());
+        openingPolicies.forEach(policy -> policy.validate(context));
+    }
+
     private VotingSession findSession(UUID sessionId) {
         return votingSessionRepository
                 .findById(sessionId)
@@ -209,7 +237,31 @@ public class VotingSessionService {
     }
 
     public record OpenSessionCommand(
-            UUID voterId, UUID electionId, UUID ballotStyleId, String deviceId, String actorId, String sourceIp) {}
+            UUID voterId,
+            UUID electionId,
+            UUID ballotStyleId,
+            String deviceId,
+            String actorId,
+            String sourceIp,
+            VotingMethod votingMethod,
+            String homeDistrictCode,
+            String pollingStationDistrictCode) {
+        public OpenSessionCommand(
+                UUID voterId, UUID electionId, UUID ballotStyleId, String deviceId, String actorId, String sourceIp) {
+            this(voterId, electionId, ballotStyleId, deviceId, actorId, sourceIp, VotingMethod.ELECTION_DAY);
+        }
+
+        public OpenSessionCommand(
+                UUID voterId,
+                UUID electionId,
+                UUID ballotStyleId,
+                String deviceId,
+                String actorId,
+                String sourceIp,
+                VotingMethod votingMethod) {
+            this(voterId, electionId, ballotStyleId, deviceId, actorId, sourceIp, votingMethod, null, null);
+        }
+    }
 
     public record ContestSelection(UUID contestId, List<UUID> selectedCandidateIds) {}
 

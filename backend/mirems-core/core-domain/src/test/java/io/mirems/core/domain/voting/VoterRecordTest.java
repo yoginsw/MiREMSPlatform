@@ -133,7 +133,7 @@ class VoterRecordTest {
     }
 
     @Test
-    void openVotingSessionInitializesFields() {
+    void openVotingSessionInitializesFieldsWithElectionDayDefaultMethod() {
         VoterRecord voter = voterRecord();
         Election election = election();
         BallotStyle ballotStyle = ballotStyle();
@@ -148,8 +148,22 @@ class VoterRecordTest {
         assertEquals(startedAt, session.getStartedAt());
         assertEquals(null, session.getCompletedAt());
         assertEquals(SessionStatus.OPENED, session.getSessionStatus());
+        assertEquals(VotingMethod.ELECTION_DAY, session.getVotingMethod());
         assertEquals("DEVICE-001", session.getDeviceId());
         assertEquals(1, voter.getVotingSessions().size());
+    }
+
+    @Test
+    void openVotingSessionAcceptsExplicitVotingMethod() {
+        VoterRecord voter = voterRecord();
+        Election election = election();
+        BallotStyle ballotStyle = ballotStyle();
+        OffsetDateTime startedAt = OffsetDateTime.parse("2026-05-29T09:00:00Z");
+
+        VotingSession session = voter.openVotingSession(
+                SESSION_ID, election, ballotStyle, "EARLY-SEOUL-001", startedAt, VotingMethod.EARLY_VOTING);
+
+        assertEquals(VotingMethod.EARLY_VOTING, session.getVotingMethod());
     }
 
     @Test
@@ -175,6 +189,8 @@ class VoterRecordTest {
                 SESSION_ID, election(), null, "DEVICE-001", OffsetDateTime.now()));
         assertThrows(IllegalArgumentException.class, () -> voter.openVotingSession(
                 SESSION_ID, election(), ballotStyle(), " ", OffsetDateTime.now()));
+        assertThrows(NullPointerException.class, () -> voter.openVotingSession(
+                SESSION_ID, election(), ballotStyle(), "DEVICE-001", OffsetDateTime.now(), null));
     }
 
     @Test

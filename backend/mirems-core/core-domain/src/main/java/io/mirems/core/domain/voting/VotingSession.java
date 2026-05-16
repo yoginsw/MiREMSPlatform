@@ -48,6 +48,10 @@ public class VotingSession {
     @Column(name = "session_status", nullable = false)
     private SessionStatus sessionStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "voting_method", nullable = false)
+    private VotingMethod votingMethod;
+
     protected VotingSession() {
         // JPA constructor.
     }
@@ -58,7 +62,8 @@ public class VotingSession {
             Election election,
             BallotStyle ballotStyle,
             String deviceId,
-            OffsetDateTime startedAt) {
+            OffsetDateTime startedAt,
+            VotingMethod votingMethod) {
         this.id = Objects.requireNonNull(id, "id is required");
         this.voterRecord = Objects.requireNonNull(voterRecord, "voterRecord is required");
         this.election = Objects.requireNonNull(election, "election is required");
@@ -66,6 +71,7 @@ public class VotingSession {
         this.deviceId = VoterRecord.requireText(deviceId, "deviceId");
         this.startedAt = Objects.requireNonNull(startedAt, "startedAt is required");
         this.sessionStatus = SessionStatus.OPENED;
+        this.votingMethod = Objects.requireNonNull(votingMethod, "votingMethod is required");
     }
 
     static VotingSession open(
@@ -75,7 +81,18 @@ public class VotingSession {
             BallotStyle ballotStyle,
             String deviceId,
             OffsetDateTime startedAt) {
-        return new VotingSession(id, voterRecord, election, ballotStyle, deviceId, startedAt);
+        return open(id, voterRecord, election, ballotStyle, deviceId, startedAt, VotingMethod.ELECTION_DAY);
+    }
+
+    static VotingSession open(
+            UUID id,
+            VoterRecord voterRecord,
+            Election election,
+            BallotStyle ballotStyle,
+            String deviceId,
+            OffsetDateTime startedAt,
+            VotingMethod votingMethod) {
+        return new VotingSession(id, voterRecord, election, ballotStyle, deviceId, startedAt, votingMethod);
     }
 
     public void cast(OffsetDateTime completedAt) {
@@ -120,6 +137,10 @@ public class VotingSession {
 
     public String getDeviceId() {
         return deviceId;
+    }
+
+    public VotingMethod getVotingMethod() {
+        return votingMethod;
     }
 
     boolean isSpoiled() {

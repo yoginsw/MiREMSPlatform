@@ -27,7 +27,7 @@ class FlywayPostgresMigrationTest {
         var result = flyway.migrate();
 
         assertThat(result.success).isTrue();
-        assertThat(result.migrationsExecuted).isEqualTo(7);
-        assertThat(flyway.info().current().getVersion()).isEqualTo(MigrationVersion.fromVersion("7"));
+        assertThat(result.migrationsExecuted).isEqualTo(8);
+        assertThat(flyway.info().current().getVersion()).isEqualTo(MigrationVersion.fromVersion("8"));
     }
 }

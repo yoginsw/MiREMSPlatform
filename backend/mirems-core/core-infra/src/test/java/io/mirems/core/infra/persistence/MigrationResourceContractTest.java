@@ -15,7 +15,8 @@ class MigrationResourceContractTest {
             "db/migration/V4__create_voting_result_tables.sql",
             "db/migration/V5__create_audit_log_table.sql",
             "db/migration/V6__create_tabulation_report_table.sql",
-            "db/migration/V7__add_vote_correction_dual_approval_columns.sql");
+            "db/migration/V7__add_vote_correction_dual_approval_columns.sql",
+            "db/migration/V8__add_voting_method_to_voting_sessions.sql");
 
     @Test
     void requiredFlywayMigrationsArePresent() {
@@ -42,11 +43,15 @@ class MigrationResourceContractTest {
     @Test
     void votingSessionDuplicateVotePartialUniqueIndexIsDeclared() throws IOException {
         String voterMigration = readResource("db/migration/V3__create_voter_tables.sql");
+        String votingMethodMigration = readResource("db/migration/V8__add_voting_method_to_voting_sessions.sql");
 
         assertThat(voterMigration)
-                .contains("uq_voting_sessions_non_spoiled_per_election")
+                .contains("CREATE UNIQUE INDEX uq_voting_sessions_non_spoiled_per_election")
                 .contains("ON voting_sessions (voter_record_id, election_id)")
                 .contains("WHERE session_status <> 'SPOILED'");
+        assertThat(votingMethodMigration)
+                .contains("ALTER TABLE voting_sessions")
+                .contains("ADD COLUMN voting_method VARCHAR(64) NOT NULL DEFAULT 'ELECTION_DAY'");
     }
 
     private static String readResource(String path) {

@@ -1239,7 +1239,7 @@
 ---
 
 ### GOAL P6-063 | KR — 사전투표 (Early Voting) Extension
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P6-062
 
 **Tasks:**
@@ -1249,6 +1249,15 @@
 4. Tests.
 
 **Done Criteria:** Early voting period enforced; cross-district voting tested.
+
+**Implementation Notes:**
+- Added core `VotingMethod` enum with `EARLY_VOTING`, `ELECTION_DAY`, and `ABSENTEE`; `VotingSession` now persists `votingMethod` with default `ELECTION_DAY` through the existing open-session path and supports explicit method selection.
+- Extended `VotingSessionService.OpenSessionCommand` with backward-compatible defaulting, persisted explicit early-voting sessions, included `votingMethod` in vote-session audit payloads, and added a `VotingSessionOpeningPolicy` hook that runs extension validators before session persistence.
+- Added Flyway `V8__add_voting_method_to_voting_sessions.sql` to add `voting_method VARCHAR(64) NOT NULL DEFAULT 'ELECTION_DAY'` without mutating prior migrations; migration contract and Postgres 16.4 migration-count assertions now cover V8.
+- Added KR `KrEarlyVotingPolicy` and validation exception enforcing early voting only on D-5 through D-4, election-day voting only on election day, cross-district polling stations for early voting, and home-district restriction for election-day voting; the policy implements the core opening-policy hook for KR elections so invalid early-voting sessions are rejected before save.
+- Added domain/service/migration/KR-policy tests covering default and explicit methods, audit payload, opening-policy pre-save rejection, early-voting window, cross-district allowance, and invalid input handling.
+- Verification passed: `gradlew.bat :mirems-core:core-domain:test --tests io.mirems.core.domain.voting.VoterRecordTest`, `gradlew.bat :extensions:ext-kr:test --tests io.mirems.extension.kr.earlyvoting.*`, `gradlew.bat :mirems-core:core-infra:test --tests io.mirems.core.infra.service.voting.VotingSessionServiceTest --tests io.mirems.core.infra.persistence.MigrationResourceContractTest`, `gradlew.bat :mirems-core:core-domain:test :mirems-core:core-domain:jacocoTestReport`, `gradlew.bat :mirems-core:core-infra:test :mirems-core:core-infra:jacocoTestReport`, `gradlew.bat :extensions:ext-kr:test :extensions:ext-kr:jacocoTestReport`, and `gradlew.bat build`.
+- Coverage: `io.mirems.core.domain.voting` 86.89% instruction / 90.29% line / 80.00% branch; `io.mirems.core.infra.service.voting` 87.42% instruction / 92.40% line / 50.00% branch; `io.mirems.extension.kr.earlyvoting` 99.26% instruction / 97.14% line / 89.47% branch.
 
 ---
 

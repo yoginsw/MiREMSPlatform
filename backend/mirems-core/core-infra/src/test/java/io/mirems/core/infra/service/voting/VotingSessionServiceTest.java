@@ -21,6 +21,7 @@ import io.mirems.core.domain.voting.SessionStatus;
 import io.mirems.core.domain.voting.VoterRecord;
 import io.mirems.core.domain.voting.VotingSession;
 import io.mirems.core.domain.voting.VotingSessionValidationException;
+import io.mirems.core.domain.voting.VotingMethod;
 import io.mirems.core.domain.voting.encryption.PiiEncryptionService;
 import io.mirems.core.infra.persistence.ballot.SpringDataBallotStyleRepository;
 import io.mirems.core.infra.persistence.contest.SpringDataContestRepository;
@@ -79,6 +80,7 @@ class VotingSessionServiceTest {
                 contestRepository,
                 votingResultRepository,
                 applicationEventPublisher,
+                List.of(),
                 ids,
                 () -> NOW);
     }
@@ -121,12 +123,85 @@ class VotingSessionServiceTest {
 
         assertThat(session.getId()).isEqualTo(SESSION_ID);
         assertThat(session.getSessionStatus()).isEqualTo(SessionStatus.OPENED);
+        assertThat(session.getVotingMethod()).isEqualTo(VotingMethod.ELECTION_DAY);
         verify(votingSessionRepository).save(session);
 
         TransactionalAuditEvent event = captureAuditEvent();
         assertThat(event.eventType()).isEqualTo("VotingSessionOpened");
         assertThat(event.aggregateType()).isEqualTo("VotingSession");
-        assertThat(event.payload()).containsEntry("voterId", VOTER_ID.toString());
+        assertThat(event.payload())
+                .containsEntry("voterId", VOTER_ID.toString())
+                .containsEntry("votingMethod", VotingMethod.ELECTION_DAY.name());
+    }
+
+    @Test
+    void openSessionPersistsExplicitVotingMethod() {
+        VoterRecord voter = voterRecord();
+        Election election = election();
+        BallotStyle ballotStyle = ballotStyle(election);
+        when(votingSessionRepository.existsByVoterRecordIdAndElectionIdAndSessionStatusNot(
+                        VOTER_ID, ELECTION_ID, SessionStatus.SPOILED))
+                .thenReturn(false);
+        when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));
+        when(electionRepository.findById(ELECTION_ID)).thenReturn(Optional.of(election));
+        when(ballotStyleRepository.findById(BALLOT_STYLE_ID)).thenReturn(Optional.of(ballotStyle));
+        when(votingSessionRepository.save(any(VotingSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        VotingSession session = service.openSession(new VotingSessionService.OpenSessionCommand(
+                VOTER_ID,
+                ELECTION_ID,
+                BALLOT_STYLE_ID,
+                "early-kiosk-01",
+                "officer-001",
+                "10.0.2.1",
+                VotingMethod.EARLY_VOTING));
+
+        assertThat(session.getVotingMethod()).isEqualTo(VotingMethod.EARLY_VOTING);
+        assertThat(captureAuditEvent().payload()).containsEntry("votingMethod", VotingMethod.EARLY_VOTING.name());
+    }
+
+    @Test
+    void openSessionRunsConfiguredOpeningPoliciesBeforePersisting() {
+        VoterRecord voter = voterRecord();
+        Election election = election();
+        BallotStyle ballotStyle = ballotStyle(election);
+        when(votingSessionRepository.existsByVoterRecordIdAndElectionIdAndSessionStatusNot(
+                        VOTER_ID, ELECTION_ID, SessionStatus.SPOILED))
+                .thenReturn(false);
+        when(voterRecordRepository.findById(VOTER_ID)).thenReturn(Optional.of(voter));
+        when(electionRepository.findById(ELECTION_ID)).thenReturn(Optional.of(election));
+        when(ballotStyleRepository.findById(BALLOT_STYLE_ID)).thenReturn(Optional.of(ballotStyle));
+
+        VotingSessionService policyBackedService = new VotingSessionService(
+                voterRecordRepository,
+                electionRepository,
+                ballotStyleRepository,
+                votingSessionRepository,
+                contestRepository,
+                votingResultRepository,
+                applicationEventPublisher,
+                List.of(context -> {
+                    assertThat(context.votingMethod()).isEqualTo(VotingMethod.EARLY_VOTING);
+                    assertThat(context.homeDistrictCode()).isEqualTo("SEOUL-JONGNO");
+                    assertThat(context.pollingStationDistrictCode()).isEqualTo("BUSAN-HAEUNDAE");
+                    throw new VotingSessionValidationException("policy rejected session opening");
+                }),
+                new FixedIds(SESSION_ID, RESULT_ID),
+                () -> NOW);
+
+        assertThatThrownBy(() -> policyBackedService.openSession(new VotingSessionService.OpenSessionCommand(
+                        VOTER_ID,
+                        ELECTION_ID,
+                        BALLOT_STYLE_ID,
+                        "early-kiosk-01",
+                        "officer-001",
+                        "10.0.2.1",
+                        VotingMethod.EARLY_VOTING,
+                        "SEOUL-JONGNO",
+                        "BUSAN-HAEUNDAE")))
+                .isInstanceOf(VotingSessionValidationException.class)
+                .hasMessageContaining("policy rejected");
+        verify(votingSessionRepository, never()).save(any(VotingSession.class));
     }
 
     @Test
