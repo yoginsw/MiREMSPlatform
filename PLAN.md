@@ -1284,7 +1284,7 @@
 ---
 
 ### GOAL P6-065 — P6-068 | KR Extension Integration Tests
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P6-064
 
 **Tasks:**
@@ -1294,6 +1294,13 @@
 4. Performance test: 10,000 vote simulation.
 
 **Done Criteria:** All integration tests pass; performance target ≤ 100ms p95 per vote cast.
+
+**Implementation Notes:**
+- Added `KrExtensionIntegrationTest` covering a KR 국회의원선거 scenario with election/contest/candidate/ballot creation, approved district and party-list candidates, KR voter eligibility, D-5 cross-district early voting, cast vote records with hash verification, and D'Hondt proportional seat allocation.
+- Added integration coverage for KR DMN-backed/service rule behavior: underage voter rejection, non-citizen national-election rejection, candidate criminal-record and age constraints, campaign-period boundaries, invalid early-voting dates, and election-day home-district restrictions.
+- Added a 10,000-vote in-memory simulation that validates early-voting policy, opens early-voting sessions, creates hash-signed vote records, casts sessions, and asserts p95 per-vote processing time is ≤ 100 ms.
+- Verification passed: `gradlew.bat :extensions:ext-kr:test --tests io.mirems.extension.kr.integration.KrExtensionIntegrationTest`, `gradlew.bat :extensions:ext-kr:test :extensions:ext-kr:jacocoTestReport`, `gradlew.bat :extensions:ext-kr:build`, and `gradlew.bat build`.
+- Coverage: `io.mirems.extension.kr` 96.68% instruction / 96.85% line / 83.49% branch.
 
 ---
 
