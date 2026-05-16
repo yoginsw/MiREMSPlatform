@@ -1417,10 +1417,29 @@ Covers: risk-limiting audit (RLA) support, statistical sampling for post-electio
 ## Phase 9 — Integration & E2E
 
 ### GOAL P9-089 — P9-096 | Playwright E2E Tests and Load Testing
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-058, P6-065, P7-073
 
 Covers: Playwright E2E for critical paths (election lifecycle, voting, tabulation, certification), load testing with k6 (10k concurrent voters), chaos testing, and full VVSG 2.0 compliance checklist run.
+
+Implementation notes:
+- Added `@mirems/e2e` workspace package with Playwright projects for `election-lifecycle`, `voting`, and `tabulation-certification` critical paths.
+- Added mocked API fixtures for deterministic E2E path definition and Playwright trace/screenshot/video configuration for failure evidence.
+- Added k6 voting load profile with a safe smoke default plus explicit `load:10k` / `MIREMS_LOAD_PROFILE=10k` gate for 10,000 concurrent voters and `mirems_voting_success_rate` thresholds.
+- Added k6 API chaos smoke scenario gated by `MIREMS_CHAOS_ENABLED` and `MIREMS_CHAOS_RATE`.
+- Added `docs/vvsg/VVSG2_E2E_CHECKLIST.md` covering lifecycle, voting, tabulation/certification, audit chain-of-custody, accessibility/usability, security/privacy, and load/resilience evidence.
+- Added frontend root scripts: `e2e:list`, `e2e`, `load:smoke`, `load:10k`, and `chaos:smoke`.
+
+Verification:
+- `pnpm --filter @mirems/e2e test` — PASS.
+- `pnpm --filter @mirems/e2e build` — PASS.
+- `pnpm --filter @mirems/e2e lint` — PASS.
+- `pnpm e2e:list` — PASS, 3 Playwright tests listed.
+- `pnpm lint` — PASS.
+- `pnpm build` — PASS.
+- `pnpm test` — PASS.
+- Windows-native `gradlew.bat build` — PASS.
+- Evidence summary: `docs/verification/P9-089-096.md`.
 
 ---
 

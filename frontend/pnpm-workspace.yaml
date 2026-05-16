@@ -2,3 +2,4 @@ packages:
   - mirems-shell
   - packages/*
   - extensions/*
+  - e2e

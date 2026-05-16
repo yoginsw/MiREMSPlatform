@@ -1,0 +1,22 @@
+{
+  "name": "@mirems/e2e",
+  "version": "0.1.0-SNAPSHOT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest run src",
+    "e2e:list": "playwright test --list",
+    "e2e": "playwright test",
+    "load:smoke": "k6 run load/k6-voting-load.js",
+    "load:10k": "k6 run -e MIREMS_LOAD_PROFILE=10k load/k6-voting-load.js",
+    "chaos:smoke": "k6 run chaos/k6-api-chaos.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.9.0",
+    "vitest": "^2.1.9"
+  }
+}
