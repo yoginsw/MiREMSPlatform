@@ -50,6 +50,9 @@ importers:
       '@mirems/api-client':
         specifier: workspace:*
         version: link:../packages/api-client
+      '@mirems/ext-kr-ui':
+        specifier: workspace:*
+        version: link:../extensions/ext-kr-ui
       '@mirems/i18n':
         specifier: workspace:*
         version: link:../packages/i18n

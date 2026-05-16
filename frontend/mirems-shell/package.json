@@ -13,6 +13,7 @@
   "dependencies": {
     "@mirems/api-client": "workspace:*",
     "@mirems/i18n": "workspace:*",
+    "@mirems/ext-kr-ui": "workspace:*",
     "@mirems/ui-core": "workspace:*",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",

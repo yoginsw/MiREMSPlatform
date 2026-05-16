@@ -329,6 +329,20 @@ h3 { font-size: 1.14rem; }
 .ballot-preview-contest { border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); display: grid; gap: 10px; padding: 16px; }
 .ballot-preview-contest legend { font-weight: 900; padding: 0 6px; }
 .ballot-preview-option { align-items: center; border: 1px solid var(--color-border-default); border-radius: var(--radius-md); display: flex; gap: 12px; min-height: 44px; padding: 10px 12px; }
+.kr-party-list { display: grid; gap: 12px; }
+.kr-party-list-option { align-items: center; border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); display: grid; gap: 12px; grid-template-columns: minmax(72px, max-content) 44px 36px 1fr; min-height: 72px; padding: 12px 16px; }
+.kr-party-list-option:focus-within { border-color: var(--color-blue-700); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25); }
+.kr-party-list-option input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.kr-party-list-option input:checked + .kr-party-list-mark { background: var(--color-navy-900); color: var(--color-bg-surface); }
+.kr-party-list-mark { border: 2px solid var(--color-navy-900); border-radius: 999px; display: inline-grid; font-size: 0.72rem; font-weight: 800; height: 46px; place-items: center; width: 46px; }
+.kr-party-logo, .kr-party-logo-placeholder { background: var(--color-bg-base); border: 1px solid var(--color-border-default); border-radius: var(--radius-sm); height: 36px; object-fit: contain; width: 36px; }
+.kr-party-order { color: var(--color-text-secondary); font-weight: 800; text-align: center; }
+.kr-party-name { font-size: 1.1rem; font-weight: 900; }
+.kr-election-calendar { border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); display: grid; gap: 10px; padding: 16px; }
+.kr-election-calendar h3 { font-size: 1rem; margin: 0; }
+.kr-election-calendar ol { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.kr-election-calendar li { align-items: center; display: flex; justify-content: space-between; }
+.kr-calendar-label { font-weight: 800; }
 .ballot-target { border: 2px solid var(--color-navy-900); border-radius: 50%; display: inline-block; flex: 0 0 18px; height: 18px; width: 18px; }
 .filters-grid { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(180px, 1fr)); margin: 18px 0; padding: 18px; width: 100%; }
 .pagination { align-items: center; color: var(--color-text-secondary); display: flex; justify-content: space-between; margin-top: 16px; }

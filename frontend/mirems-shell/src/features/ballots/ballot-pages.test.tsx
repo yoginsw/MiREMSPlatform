@@ -127,6 +127,45 @@ describe('Ballot style management pages', () => {
     expect(screen.getByText('KR-NEW')).toBeInTheDocument();
   });
 
+  it('renders a KR vertical party-list ballot preview with party logos and an election calendar widget', async () => {
+    server.use(
+      http.get('/miremsplatform/elections/:electionId/ballots/:ballotId/preview', ({ request, params }) => {
+        expectBearerAuth(request);
+        expect(params).toMatchObject({ electionId, ballotId });
+        return HttpResponse.json({
+          ballotId,
+          layout: {
+            variant: 'KR_PARTY_LIST',
+            title: '제22대 국회의원선거 비례대표 투표용지',
+            instructions: '정당명부 중 하나의 정당만 선택하세요.',
+            electionDay: '2028-04-12',
+            parties: [
+              { id: 'party-citizen', displayOrder: 1, name: '시민당', logoUri: '/logos/citizen.svg' },
+              { id: 'party-green', displayOrder: 2, name: '녹색당', logoUri: '/logos/green.svg' },
+            ],
+          },
+        });
+      }),
+    );
+
+    renderWithAuth(<BallotPreviewPage electionId={electionId} ballotId={ballotId} />);
+
+    expect(await screen.findByRole('heading', { name: '제22대 국회의원선거 비례대표 투표용지' })).toBeInTheDocument();
+    expect(screen.getByText('정당명부 중 하나의 정당만 선택하세요.')).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: '비례대표 정당명부' })).toHaveClass('kr-party-list');
+    const citizenParty = screen.getByRole('radio', { name: /시민당/ });
+    expect(citizenParty).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: '시민당 로고' })).toHaveAttribute('src', '/logos/citizen.svg');
+    expect(screen.getAllByText('기표란')).toHaveLength(2);
+    expect(screen.getByRole('region', { name: '대한민국 선거 일정' })).toBeInTheDocument();
+    expect(screen.getByText('사전투표 시작')).toBeInTheDocument();
+    expect(screen.getByText('2028-04-07')).toBeInTheDocument();
+    expect(screen.getByText('사전투표 종료')).toBeInTheDocument();
+    expect(screen.getByText('2028-04-08')).toBeInTheDocument();
+    expect(screen.getByText('선거일')).toBeInTheDocument();
+    expect(screen.getByText('2028-04-12')).toBeInTheDocument();
+  });
+
   it('renders a visual ballot preview from ballot layout JSON', async () => {
     server.use(
       http.get('/miremsplatform/elections/:electionId/ballots/:ballotId/preview', ({ request, params }) => {

@@ -63,5 +63,21 @@
       "title": "페이지를 찾을 수 없습니다",
       "description": "요청한 MiREMS 화면이 존재하지 않거나 권한 범위 밖에 있습니다."
     }
+  },
+  "kr": {
+    "ballot": {
+      "partyListTitle": "비례대표 정당명부 투표용지",
+      "singleSelectionInstruction": "정당명부 중 하나의 정당만 선택하세요.",
+      "partyListGroupLabel": "비례대표 정당명부",
+      "markTarget": "기표란",
+      "logoAltSuffix": "로고"
+    },
+    "calendar": {
+      "title": "대한민국 선거 일정",
+      "earlyVoting": "사전투표 기간",
+      "earlyVotingStart": "사전투표 시작",
+      "earlyVotingEnd": "사전투표 종료",
+      "electionDay": "선거일"
+    }
   }
 }

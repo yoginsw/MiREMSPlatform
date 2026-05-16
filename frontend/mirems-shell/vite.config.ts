@@ -17,6 +17,7 @@ export default defineConfig({
     alias: {
       '@mirems/api-client': fileURLToPath(new URL('../packages/api-client/src', import.meta.url)),
       '@mirems/i18n': fileURLToPath(new URL('../packages/i18n/src', import.meta.url)),
+      '@mirems/ext-kr-ui': fileURLToPath(new URL('../extensions/ext-kr-ui/src', import.meta.url)),
       '@mirems/ui-core': fileURLToPath(new URL('../packages/ui-core/src', import.meta.url)),
     },
   },

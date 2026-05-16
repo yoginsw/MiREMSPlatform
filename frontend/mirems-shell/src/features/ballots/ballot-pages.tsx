@@ -1,6 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, Badge, Button, Card, Input, Select } from '@mirems/ui-core';
+import {
+  buildKrElectionCalendar,
+  buildKrPartyListBallotLayout,
+  krUiTranslations,
+  type KrElectionCalendarMilestone,
+  type KrPartyListBallotLayout,
+  type KrPartyListParty,
+} from '@mirems/ext-kr-ui';
 import type { AccessibilityFeature, BallotPreviewResponse, BallotResponse, BallotStyleRequest, BallotStyleResponse } from '@mirems/api-client';
 import { useAuth } from '../../auth/useAuth';
 import { createBallotStyle, listBallots, listBallotStyles, previewBallot, updateBallotStyle } from './ballot-api';
@@ -18,6 +26,9 @@ type PreviewLayout = {
   title?: string;
   instructions?: string;
   contests?: LayoutContest[];
+  variant?: string;
+  parties?: KrPartyListParty[];
+  electionDay?: string;
 };
 
 const accessibilityOptions: Array<{ value: AccessibilityFeature; label: string }> = [
@@ -225,6 +236,14 @@ function BallotPreviewCanvas({ preview }: { preview: BallotPreviewResponse }) {
   const layout = isPreviewLayout(preview.layout) ? preview.layout : {};
   const title = layout.title ?? `Ballot ${preview.ballotId}`;
   const contests = Array.isArray(layout.contests) ? layout.contests : [];
+  const isKrPartyList = layout.variant === 'KR_PARTY_LIST' && Array.isArray(layout.parties);
+  const krPartyListLayout: KrPartyListBallotLayout | null = isKrPartyList
+    ? buildKrPartyListBallotLayout({
+      title,
+      parties: layout.parties ?? [],
+    })
+    : null;
+  const krElectionCalendar = isKrPartyList && layout.electionDay ? buildKrElectionCalendar(layout.electionDay) : [];
 
   return (
     <article className="ballot-preview" aria-labelledby="ballot-preview-title">
@@ -233,6 +252,8 @@ function BallotPreviewCanvas({ preview }: { preview: BallotPreviewResponse }) {
         <h2 id="ballot-preview-title">{title}</h2>
         {layout.instructions ? <p>{layout.instructions}</p> : null}
       </header>
+      {krPartyListLayout ? <KrPartyListPreview layout={krPartyListLayout} /> : null}
+      {krElectionCalendar.length > 0 ? <KrElectionCalendarWidget milestones={krElectionCalendar} /> : null}
       <div className="ballot-preview-grid">
         {contests.map((contest, index) => {
           const contestTitle = contest.title ?? `경합 ${index + 1}`;
@@ -250,5 +271,41 @@ function BallotPreviewCanvas({ preview }: { preview: BallotPreviewResponse }) {
         })}
       </div>
     </article>
+  );
+}
+
+function KrPartyListPreview({ layout }: { layout: KrPartyListBallotLayout }) {
+  return (
+    <div className="kr-party-list" role="radiogroup" aria-label={krUiTranslations.ko.ballot.partyListGroupLabel}>
+      {layout.parties.map((party) => (
+        <label key={party.id} className="kr-party-list-option">
+          <input type="radio" name="kr-party-list" value={party.id} aria-label={`${party.name} ${krUiTranslations.ko.ballot.markTarget}`} />
+          <span className="kr-party-list-mark" aria-hidden="true">{krUiTranslations.ko.ballot.markTarget}</span>
+          {party.logoUri ? (
+            <img className="kr-party-logo" src={party.logoUri} alt={`${party.name} ${krUiTranslations.ko.ballot.logoAltSuffix}`} />
+          ) : (
+            <span className="kr-party-logo-placeholder" aria-hidden="true" />
+          )}
+          <span className="kr-party-order" aria-hidden="true">{party.displayOrder}</span>
+          <span className="kr-party-name">{party.name}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function KrElectionCalendarWidget({ milestones }: { milestones: KrElectionCalendarMilestone[] }) {
+  return (
+    <section className="kr-election-calendar" role="region" aria-label={krUiTranslations.ko.calendar.title}>
+      <h3>{krUiTranslations.ko.calendar.title}</h3>
+      <ol>
+        {milestones.map((milestone) => (
+          <li key={milestone.code}>
+            <span className="kr-calendar-label">{milestone.label}</span>
+            <time dateTime={milestone.date}>{milestone.date}</time>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }

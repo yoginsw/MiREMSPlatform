@@ -1262,7 +1262,7 @@
 ---
 
 ### GOAL P6-064 | KR UI Extension — Korean Language and Layout
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-056, P6-063
 
 **Tasks:**
@@ -1272,6 +1272,14 @@
 4. Tests.
 
 **Done Criteria:** KR ballot renders correctly; Korean UI strings complete.
+
+**Implementation Notes:**
+- Added `@mirems/ext-kr-ui` KR party-list ballot helpers with vertical single-selection layout metadata, party logo support, deterministic display-order sorting, duplicate/invalid party validation, and D-5/D-4/election-day calendar milestones.
+- Added KR-specific Korean/English i18n resource keys for party-list ballot text, logo/marking labels, and election-calendar terms.
+- Integrated KR party-list preview rendering into `mirems-shell` ballot preview with accessible `radiogroup`/radio controls, visible focus/checked states, visible 기표란 markers, party-logo alt text, and an accessible KR election-calendar widget.
+- Added tests for KR ballot layout validation/sorting, translation parity, election-calendar milestones, i18n resource completeness, and shell KR party-list preview rendering.
+- Verification passed: `pnpm install`, `pnpm --filter @mirems/ext-kr-ui test`, `pnpm --filter @mirems/i18n test`, `pnpm --filter @mirems/mirems-shell test -- src/features/ballots/ballot-pages.test.tsx`, `pnpm --filter @mirems/ext-kr-ui build`, `pnpm --filter @mirems/i18n build`, `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r test`, `pnpm -r build`, `pnpm -r lint`, and `pnpm --filter @mirems/mirems-shell exec vitest run --coverage`.
+- Coverage: `mirems-shell` all files 94.83% statements / 94.83% lines / 79.04% branches / 91.03% functions; `src/features/ballots` 95.42% statements / 95.42% lines / 77.31% branches / 100% functions.
 
 ---
 

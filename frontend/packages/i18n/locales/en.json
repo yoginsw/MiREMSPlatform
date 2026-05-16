@@ -63,5 +63,21 @@
       "title": "Page not found",
       "description": "The requested MiREMS screen does not exist or is outside your authorization scope."
     }
+  },
+  "kr": {
+    "ballot": {
+      "partyListTitle": "Proportional Representation Party-List Ballot",
+      "singleSelectionInstruction": "Select exactly one party from the party list.",
+      "partyListGroupLabel": "Proportional party list",
+      "markTarget": "Mark target",
+      "logoAltSuffix": "logo"
+    },
+    "calendar": {
+      "title": "Korean Election Calendar",
+      "earlyVoting": "Early voting period",
+      "earlyVotingStart": "Early voting starts",
+      "earlyVotingEnd": "Early voting ends",
+      "electionDay": "Election day"
+    }
   }
 }
