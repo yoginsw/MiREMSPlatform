@@ -9,17 +9,17 @@
 
 | Phase | Name | Goals | Est. Duration | Status |
 |---|---|---|---|---|
-| P0 | Foundation & Scaffold | 001–008 | 2 weeks | TODO |
-| P1 | Core Domain Model | 009–018 | 3 weeks | TODO |
-| P2 | BPMN/DMN Process Engine | 019–028 | 3 weeks | TODO |
-| P3 | REST API Layer | 029–038 | 2 weeks | TODO |
-| P4 | Authentication & RBAC | 039–044 | 2 weeks | TODO |
-| P5 | Frontend Shell | 045–058 | 3 weeks | TODO |
-| P6 | Extension Pack — KR | 059–068 | 3 weeks | TODO |
-| P7 | Extension Pack — US | 069–078 | 3 weeks | TODO |
-| P8 | Tabulation & Audit | 079–088 | 2 weeks | TODO |
-| P9 | Integration & E2E | 089–096 | 2 weeks | TODO |
-| P10 | Production Hardening | 097–104 | 2 weeks | TODO |
+| P0 | Foundation & Scaffold | 001–008 | 2 weeks | DONE |
+| P1 | Core Domain Model | 009–018 | 3 weeks | DONE |
+| P2 | BPMN/DMN Process Engine | 019–028 | 3 weeks | DONE |
+| P3 | REST API Layer | 029–038 | 2 weeks | DONE |
+| P4 | Authentication & RBAC | 039–044 | 2 weeks | DONE |
+| P5 | Frontend Shell | 045–058 | 3 weeks | DONE |
+| P6 | Extension Pack — KR | 059–068 | 3 weeks | DONE |
+| P7 | Extension Pack — US | 069–078 | 3 weeks | DONE |
+| P8 | Tabulation & Audit | 079–088 | 2 weeks | DONE |
+| P9 | Integration & E2E | 089–096 | 2 weeks | DONE |
+| P10 | Production Hardening | 097–104 | 2 weeks | DONE |
 
 ---
 
@@ -1434,7 +1434,7 @@ Verification:
 - `pnpm --filter @mirems/e2e test` — PASS.
 - `pnpm --filter @mirems/e2e build` — PASS.
 - `pnpm --filter @mirems/e2e lint` — PASS.
-- `pnpm e2e:list` — PASS, 3 Playwright tests listed.
+- `pnpm e2e:list` — PASS, 4 Playwright tests listed.
 - `pnpm lint` — PASS.
 - `pnpm build` — PASS.
 - `pnpm test` — PASS.
