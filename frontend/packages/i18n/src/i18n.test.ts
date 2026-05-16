@@ -25,5 +25,8 @@ describe('@mirems/i18n translation resources', () => {
     expect(translations.ko.kr.ballot.singleSelectionInstruction).toBe('정당명부 중 하나의 정당만 선택하세요.');
     expect(translations.ko.kr.calendar.earlyVoting).toBe('사전투표 기간');
     expect(translations.ko.kr.calendar.electionDay).toBe('선거일');
+    expect(translations.en.landing.title).toBe('An integrated election management platform for trusted electoral operations');
+    expect(translations.ko.landing.title).toBe('신뢰 가능한 선거 운영을 위한 통합 관리 플랫폼');
+    expect(translations.ko.landing.trust.vvsg.title).toBe('VVSG 2.0 aligned');
   });
 });

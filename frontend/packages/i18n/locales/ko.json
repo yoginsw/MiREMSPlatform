@@ -79,5 +79,86 @@
       "earlyVotingEnd": "사전투표 종료",
       "electionDay": "선거일"
     }
+  },
+  "landing": {
+    "headerLabel": "MiREMS Portal 헤더",
+    "brandAriaLabel": "MiREMS Portal 홈",
+    "navLabel": "MiREMS Portal 섹션 내비게이션",
+    "nav": {
+      "capabilities": "핵심 역량",
+      "advantages": "장점",
+      "trust": "신뢰 기준"
+    },
+    "eyebrow": "VVSG 2.0 ALIGNED ELECTION PLATFORM",
+    "title": "신뢰 가능한 선거 운영을 위한 통합 관리 플랫폼",
+    "description": "MiREMS는 선거 준비, 후보자·선거인 관리, 투표 운영, 개표·결과 공표, 감사 추적까지 전 과정을 하나의 표준화된 흐름으로 연결합니다.",
+    "actions": {
+      "login": "운영자 로그인",
+      "results": "공식 결과 보기"
+    },
+    "heroCard": {
+      "label": "플랫폼 운영 신뢰성 요약",
+      "status": "운영 거버넌스 준비 완료",
+      "title": "감사 가능한 선거 라이프사이클",
+      "description": "역할 기반 접근 제어와 이벤트 중심 감사 추적을 통해 주요 운영 의사결정을 투명하게 기록합니다.",
+      "audit": "감사 범위",
+      "scope": "배포 범위"
+    },
+    "featuresLabel": "핵심 역량",
+    "featuresEyebrow": "CAPABILITIES",
+    "featuresTitle": "선거 운영 전 과정을 연결하는 핵심 기능",
+    "features": {
+      "workflow": {
+        "icon": "01",
+        "title": "전 과정 선거 워크플로",
+        "description": "선거 생성, 후보자 심사, 투표소·투표용지 관리, 투표 세션, 개표와 결과 인증을 통합 흐름으로 관리합니다."
+      },
+      "audit": {
+        "icon": "02",
+        "title": "감사 가능성과 추적성",
+        "description": "운영 상태 변경, 승인, 결과 공표와 같은 주요 행위를 감사 로그와 이벤트 기록으로 추적할 수 있게 설계합니다."
+      },
+      "architecture": {
+        "icon": "03",
+        "title": "글로벌 확장 아키텍처",
+        "description": "국가별 선거 제도, 언어, 화면 확장 요구를 수용할 수 있는 모듈형 프론트엔드와 서비스 구조를 제공합니다."
+      }
+    },
+    "advantagesLabel": "장점",
+    "advantagesEyebrow": "BUSINESS VALUE",
+    "advantagesTitle": "기관 운영에 필요한 신뢰성과 확장성을 동시에 확보합니다",
+    "advantagesDescription": "MiREMS Portal은 공공 선거 운영 환경에서 필요한 표준화, 무결성, 접근성을 중심으로 설계된 비즈니스 플랫폼입니다.",
+    "advantages": {
+      "standardization": {
+        "title": "운영 표준화",
+        "description": "반복 가능한 업무 절차와 역할 기반 화면 구성을 통해 선거 준비부터 공표까지 운영 편차를 줄입니다."
+      },
+      "integrity": {
+        "title": "데이터 무결성 강화",
+        "description": "결과 집계와 감사 추적 흐름을 분리하지 않고 연결하여 데이터 출처와 변경 이력을 확인할 수 있습니다."
+      },
+      "readiness": {
+        "title": "도입 준비성",
+        "description": "다국어, 테마, 접근성, 보안 통제를 초기 포털 경험부터 제공하여 기관별 PoC와 운영 전환을 지원합니다."
+      }
+    },
+    "trustLabel": "신뢰 기준",
+    "trustEyebrow": "TRUST FRAMEWORK",
+    "trustTitle": "표준 준수와 보안 운영을 고려한 포털 경험",
+    "trustDescription": "공식 인증을 과장하지 않고, VVSG 2.0 원칙과 WCAG 접근성 목표에 맞춘 구현 기준을 명확히 제시합니다.",
+    "trust": {
+      "vvsg": {
+        "title": "VVSG 2.0 aligned",
+        "description": "보안, 접근성, 감사 가능성 원칙을 제품 설계 기준으로 반영"
+      },
+      "wcag": {
+        "title": "WCAG AA oriented",
+        "description": "고대비 테마와 명확한 탐색 구조를 포함한 접근성 우선 UI"
+      },
+      "rbac": {
+        "title": "Role-based access",
+        "description": "운영자, 감사자, 시스템 관리자 권한에 따른 안전한 업무 분리"
+      }
+    }
   }
 }

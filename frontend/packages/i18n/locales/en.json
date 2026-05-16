@@ -79,5 +79,86 @@
       "earlyVotingEnd": "Early voting ends",
       "electionDay": "Election day"
     }
+  },
+  "landing": {
+    "headerLabel": "MiREMS Portal header",
+    "brandAriaLabel": "MiREMS Portal home",
+    "navLabel": "MiREMS Portal section navigation",
+    "nav": {
+      "capabilities": "Capabilities",
+      "advantages": "Advantages",
+      "trust": "Trust"
+    },
+    "eyebrow": "VVSG 2.0 ALIGNED ELECTION PLATFORM",
+    "title": "An integrated election management platform for trusted electoral operations",
+    "description": "MiREMS connects election preparation, candidate and voter administration, voting operations, tabulation, result publication, and audit trails into a unified, standards-aligned workflow.",
+    "actions": {
+      "login": "Operator sign in",
+      "results": "View official results"
+    },
+    "heroCard": {
+      "label": "Platform operational trust summary",
+      "status": "Operational governance ready",
+      "title": "Auditable election lifecycle",
+      "description": "Role-based access control and event-driven audit trails make critical operational decisions transparent and reviewable.",
+      "audit": "Audit coverage",
+      "scope": "Deployment scope"
+    },
+    "featuresLabel": "Core capabilities",
+    "featuresEyebrow": "CAPABILITIES",
+    "featuresTitle": "Core capabilities that connect the full election operation",
+    "features": {
+      "workflow": {
+        "icon": "01",
+        "title": "End-to-end election workflow",
+        "description": "Manage election setup, candidate review, polling place and ballot administration, voting sessions, tabulation, and certification in a unified flow."
+      },
+      "audit": {
+        "icon": "02",
+        "title": "Auditability and traceability",
+        "description": "Track operational state changes, approvals, publication actions, and key decisions through audit logs and event records."
+      },
+      "architecture": {
+        "icon": "03",
+        "title": "Global extension architecture",
+        "description": "Support jurisdiction-specific election rules, languages, and UI extensions through modular frontend and service architecture."
+      }
+    },
+    "advantagesLabel": "Advantages",
+    "advantagesEyebrow": "BUSINESS VALUE",
+    "advantagesTitle": "Secure both operational trust and deployment scalability",
+    "advantagesDescription": "MiREMS Portal is a business platform designed around standardization, integrity, and accessibility for public election operations.",
+    "advantages": {
+      "standardization": {
+        "title": "Operational standardization",
+        "description": "Reduce operational variance from preparation to publication with repeatable workflows and role-based screens."
+      },
+      "integrity": {
+        "title": "Stronger data integrity",
+        "description": "Connect result tabulation and audit trails so data origin and change history remain reviewable."
+      },
+      "readiness": {
+        "title": "Deployment readiness",
+        "description": "Provide multilingual, themed, accessible, and security-aware portal experiences from the first point of entry."
+      }
+    },
+    "trustLabel": "Trust framework",
+    "trustEyebrow": "TRUST FRAMEWORK",
+    "trustTitle": "A portal experience designed for standards and secure operations",
+    "trustDescription": "MiREMS communicates implementation alignment clearly without overstating formal certification status.",
+    "trust": {
+      "vvsg": {
+        "title": "VVSG 2.0 aligned",
+        "description": "Security, accessibility, and auditability principles reflected in product design"
+      },
+      "wcag": {
+        "title": "WCAG AA oriented",
+        "description": "Accessibility-first UI with high-contrast theme and clear navigation structure"
+      },
+      "rbac": {
+        "title": "Role-based access",
+        "description": "Safe separation of duties across operators, auditors, and system administrators"
+      }
+    }
   }
 }
