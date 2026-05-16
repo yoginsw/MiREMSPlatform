@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_KrCandidateEligibility"
+             name="KrCandidateEligibility"
+             namespace="https://mirems.io/dmn/kr/candidate-eligibility">
+    <inputData id="Input_candidateAge" name="candidateAge"><variable id="Variable_candidateAge" name="candidateAge" typeRef="number"/></inputData>
+    <inputData id="Input_citizenship" name="citizenship"><variable id="Variable_citizenship" name="citizenship" typeRef="string"/></inputData>
+    <inputData id="Input_hasDisqualifyingCriminalRecord" name="hasDisqualifyingCriminalRecord"><variable id="Variable_hasDisqualifyingCriminalRecord" name="hasDisqualifyingCriminalRecord" typeRef="boolean"/></inputData>
+    <inputData id="Input_electionType" name="electionType"><variable id="Variable_electionType" name="electionType" typeRef="string"/></inputData>
+    <decision id="Decision_KrCandidateEligibility" name="KrCandidateEligibility">
+        <variable id="Variable_result" name="candidateEligibility" typeRef="KrCandidateEligibilityResult"/>
+        <decisionTable id="DecisionTable_KrCandidateEligibility" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_candidateAge"><inputExpression id="InputExpression_candidateAge" typeRef="number"><text>candidateAge</text></inputExpression></input>
+            <input id="InputClause_citizenship"><inputExpression id="InputExpression_citizenship" typeRef="string"><text>citizenship</text></inputExpression></input>
+            <input id="InputClause_hasDisqualifyingCriminalRecord"><inputExpression id="InputExpression_hasDisqualifyingCriminalRecord" typeRef="boolean"><text>hasDisqualifyingCriminalRecord</text></inputExpression></input>
+            <input id="InputClause_electionType"><inputExpression id="InputExpression_electionType" typeRef="string"><text>electionType</text></inputExpression></input>
+            <output id="OutputClause_eligible" label="eligible" name="eligible" typeRef="boolean"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_MustBeCitizen"><inputEntry id="R1_A"><text>-</text></inputEntry><inputEntry id="R1_C"><text>not("CITIZEN")</text></inputEntry><inputEntry id="R1_D"><text>-</text></inputEntry><inputEntry id="R1_T"><text>-</text></inputEntry><outputEntry id="R1_O1"><text>false</text></outputEntry><outputEntry id="R1_O2"><text>"candidate must be a Korean citizen"</text></outputEntry></rule>
+            <rule id="Rule_CriminalDisqualification"><inputEntry id="R2_A"><text>-</text></inputEntry><inputEntry id="R2_C"><text>"CITIZEN"</text></inputEntry><inputEntry id="R2_D"><text>true</text></inputEntry><inputEntry id="R2_T"><text>-</text></inputEntry><outputEntry id="R2_O1"><text>false</text></outputEntry><outputEntry id="R2_O2"><text>"candidate has a disqualifying criminal record"</text></outputEntry></rule>
+            <rule id="Rule_PresidentialAge"><inputEntry id="R3_A"><text>&lt; 40</text></inputEntry><inputEntry id="R3_C"><text>"CITIZEN"</text></inputEntry><inputEntry id="R3_D"><text>false</text></inputEntry><inputEntry id="R3_T"><text>"PRESIDENTIAL_ELECTION"</text></inputEntry><outputEntry id="R3_O1"><text>false</text></outputEntry><outputEntry id="R3_O2"><text>"presidential candidates must be at least 40"</text></outputEntry></rule>
+            <rule id="Rule_NonPresidentialAge"><inputEntry id="R4_A"><text>&lt; 18</text></inputEntry><inputEntry id="R4_C"><text>"CITIZEN"</text></inputEntry><inputEntry id="R4_D"><text>false</text></inputEntry><inputEntry id="R4_T"><text>not("PRESIDENTIAL_ELECTION")</text></inputEntry><outputEntry id="R4_O1"><text>false</text></outputEntry><outputEntry id="R4_O2"><text>"non-presidential candidates must be at least 18"</text></outputEntry></rule>
+            <rule id="Rule_EligibleCitizen"><inputEntry id="R5_A"><text>&gt;= 18</text></inputEntry><inputEntry id="R5_C"><text>"CITIZEN"</text></inputEntry><inputEntry id="R5_D"><text>false</text></inputEntry><inputEntry id="R5_T"><text>-</text></inputEntry><outputEntry id="R5_O1"><text>true</text></outputEntry><outputEntry id="R5_O2"><text>"eligible Korean citizen candidate"</text></outputEntry></rule>
+        </decisionTable>
+    </decision>
+</definitions>

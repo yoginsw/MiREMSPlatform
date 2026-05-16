@@ -1194,7 +1194,7 @@
 ---
 
 ### GOAL P6-061 | KR — 공직선거법 DMN Rules
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P6-060
 **Context files:** `docs/extensions/kr/LEGAL.md`
 
@@ -1205,6 +1205,13 @@
 4. Unit test all DMN decision tables exhaustively.
 
 **Done Criteria:** All DMN rules reflect 공직선거법; 100% row coverage.
+
+**Implementation Notes:**
+- Added missing KR legal reference file `docs/extensions/kr/LEGAL.md` with the explicit legal assumptions and review-needed items used by the DMN snapshot.
+- Added KR DMN resources under `backend/extensions/ext-kr/src/main/resources/decisions/kr/`: `KrCandidateEligibility.dmn`, `KrVoterEligibility.dmn`, and `KrCampaignPeriod.dmn`.
+- Added typed request/result records and Spring decision services for candidate eligibility, voter eligibility, and campaign-period validation.
+- Added exhaustive row-coverage tests for all three DMN tables, including XML contract assertions for inputs, outputs, and rule counts; voter DMN covers all citizen election types plus permanent-resident local/superintendent eligibility and non-citizen denials; campaign DMN uses D-23..D-1 for presidential and D-14..D-1 for standard public elections.
+- Verification passed: `gradlew.bat :extensions:ext-kr:test --tests io.mirems.extension.kr.rules.*`, `gradlew.bat :extensions:ext-kr:test :extensions:ext-kr:jacocoTestReport`, `gradlew.bat :extensions:ext-kr:build`, `gradlew.bat build`. Coverage: `io.mirems.extension.kr.rules` package 100.00% instruction / 100.00% line / 91.67% branch.
 
 ---
 

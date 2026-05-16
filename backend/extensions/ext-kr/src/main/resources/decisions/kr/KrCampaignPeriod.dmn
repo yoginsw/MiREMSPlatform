@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_KrCampaignPeriod"
+             name="KrCampaignPeriod"
+             namespace="https://mirems.io/dmn/kr/campaign-period">
+    <inputData id="Input_electionType" name="electionType"><variable id="Variable_electionType" name="electionType" typeRef="string"/></inputData>
+    <inputData id="Input_daysUntilElection" name="daysUntilElection"><variable id="Variable_daysUntilElection" name="daysUntilElection" typeRef="number"/></inputData>
+    <decision id="Decision_KrCampaignPeriod" name="KrCampaignPeriod">
+        <variable id="Variable_result" name="campaignPeriod" typeRef="KrCampaignPeriodResult"/>
+        <decisionTable id="DecisionTable_KrCampaignPeriod" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+            <input id="InputClause_electionType"><inputExpression id="InputExpression_electionType" typeRef="string"><text>electionType</text></inputExpression></input>
+            <input id="InputClause_daysUntilElection"><inputExpression id="InputExpression_daysUntilElection" typeRef="number"><text>daysUntilElection</text></inputExpression></input>
+            <output id="OutputClause_allowed" label="allowed" name="allowed" typeRef="boolean"/>
+            <output id="OutputClause_reason" label="reason" name="reason" typeRef="string"/>
+            <rule id="Rule_OnOrAfterElection"><inputEntry id="R1_T"><text>-</text></inputEntry><inputEntry id="R1_D"><text>&lt;= 0</text></inputEntry><outputEntry id="R1_O1"><text>false</text></outputEntry><outputEntry id="R1_O2"><text>"campaign activity is prohibited on or after election day"</text></outputEntry></rule>
+            <rule id="Rule_PresidentialActive"><inputEntry id="R2_T"><text>"PRESIDENTIAL_ELECTION"</text></inputEntry><inputEntry id="R2_D"><text>[1..23]</text></inputEntry><outputEntry id="R2_O1"><text>true</text></outputEntry><outputEntry id="R2_O2"><text>"presidential campaign period is active"</text></outputEntry></rule>
+            <rule id="Rule_PresidentialNotStarted"><inputEntry id="R3_T"><text>"PRESIDENTIAL_ELECTION"</text></inputEntry><inputEntry id="R3_D"><text>&gt; 23</text></inputEntry><outputEntry id="R3_O1"><text>false</text></outputEntry><outputEntry id="R3_O2"><text>"presidential campaign period has not started"</text></outputEntry></rule>
+            <rule id="Rule_NationalAssemblyActive"><inputEntry id="R4_T"><text>"NATIONAL_ASSEMBLY_ELECTION"</text></inputEntry><inputEntry id="R4_D"><text>[1..14]</text></inputEntry><outputEntry id="R4_O1"><text>true</text></outputEntry><outputEntry id="R4_O2"><text>"standard public election campaign period is active"</text></outputEntry></rule>
+            <rule id="Rule_LocalActive"><inputEntry id="R5_T"><text>"LOCAL_ELECTION"</text></inputEntry><inputEntry id="R5_D"><text>[1..14]</text></inputEntry><outputEntry id="R5_O1"><text>true</text></outputEntry><outputEntry id="R5_O2"><text>"standard public election campaign period is active"</text></outputEntry></rule>
+            <rule id="Rule_SuperintendentByActive"><inputEntry id="R6_T"><text>"SUPERINTENDENT_ELECTION", "BY_ELECTION"</text></inputEntry><inputEntry id="R6_D"><text>[1..14]</text></inputEntry><outputEntry id="R6_O1"><text>true</text></outputEntry><outputEntry id="R6_O2"><text>"standard public election campaign period is active"</text></outputEntry></rule>
+            <rule id="Rule_StandardNotStarted"><inputEntry id="R7_T"><text>not("PRESIDENTIAL_ELECTION")</text></inputEntry><inputEntry id="R7_D"><text>&gt; 14</text></inputEntry><outputEntry id="R7_O1"><text>false</text></outputEntry><outputEntry id="R7_O2"><text>"standard public election campaign period has not started"</text></outputEntry></rule>
+        </decisionTable>
+    </decision>
+</definitions>
