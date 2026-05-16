@@ -1362,13 +1362,21 @@ Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.ena
 ---
 
 ### GOAL P7-072 | US — Ranked Choice Voting (RCV) Support
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P7-071
 
 **Tasks:**
 1. `RANKED_CHOICE` contest type: allow voter to rank candidates 1–N.
 2. RCV tabulation: instant-runoff algorithm as Kogito DMN/BPMN.
 3. Tests with known RCV election outcomes.
+
+**Implementation Notes:**
+- Core `ContestType.RANKED_CHOICE` already exists; added `ext-us` RCV ballot contract that validates one-to-N unique ranked candidate selections per contest.
+- Added `UsInstantRunoffTabulationService` with deterministic instant-runoff rounds, majority threshold calculation, exhausted-ballot tracking, and deterministic lowest-tally tie-break by descending candidate UUID.
+- Added Kogito-style resource contracts: `UsInstantRunoffTabulation.dmn` captures formal RCV algorithm fragments and references the executable Java decision service; `UsRankedChoiceTabulationProcess.bpmn` defines load/validate/DMN/review/publish flow.
+- Added known-outcome tests proving Carol elimination transfers ballots to Bob, plus exhausted-ballot, duplicate-rank, and tie-break scenarios.
+- Verification passed: targeted RCV tests, `gradlew.bat :extensions:ext-us:test :extensions:ext-us:jacocoTestReport`, `gradlew.bat :extensions:ext-us:build`, and `gradlew.bat build`.
+- Coverage: `io.mirems.extension.us` 96.01% instruction / 95.37% line / 84.92% branch.
 
 ---
 

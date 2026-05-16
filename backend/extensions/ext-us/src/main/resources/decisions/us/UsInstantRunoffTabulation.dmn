@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_UsInstantRunoffTabulation"
+             name="UsInstantRunoffTabulation"
+             namespace="https://mirems.io/decisions/us/rcv">
+    <decision id="Decision_UsInstantRunoffTabulation" name="UsInstantRunoffTabulation">
+        <informationRequirement id="InfoReq_candidateIds"><requiredInput href="#Input_candidateIds"/></informationRequirement>
+        <informationRequirement id="InfoReq_rankedBallots"><requiredInput href="#Input_rankedBallots"/></informationRequirement>
+        <literalExpression id="Literal_UsInstantRunoffAlgorithm" typeRef="context">
+            <text>{
+                contestType: "RANKED_CHOICE",
+                rankValidation: every ballot in rankedBallots satisfies unique ranks and candidateIds containment,
+                javaExecutableService: io.mirems.extension.us.rcv.UsInstantRunoffTabulationService,
+                roundComputation: for roundNumber in 1..count(candidateIds) return {
+                    activeTallies: count first ranked candidate where candidate in activeCandidateIds,
+                    activeBallotCount: sum(values(activeTallies)),
+                    majorityThreshold: floor(activeBallotCount / 2) + 1,
+                    winnerCandidateId: candidate where activeTallies[candidate] &gt;= majorityThreshold,
+                    lowestTallyCandidateIds: candidates where activeTallies[candidate] = min(values(activeTallies)),
+                    eliminatedCandidateId: max(lowestTallyCandidateIds) /* descending UUID tie-break */,
+                    transferRule: next ranked candidate where candidate in activeCandidateIds
+                },
+                exhaustedBallots: count ballots with no ranked candidate in final activeCandidateIds,
+                auditSummary: generic contest/winner/round/exhausted counts only
+            }</text>
+        </literalExpression>
+        <variable id="Variable_UsInstantRunoffTabulation" name="instantRunoffResult" typeRef="context"/>
+    </decision>
+    <inputData id="Input_contestId" name="contestId"><variable id="Variable_contestId" name="contestId" typeRef="string"/></inputData>
+    <inputData id="Input_candidateIds" name="candidateIds"><variable id="Variable_candidateIds" name="candidateIds" typeRef="list"/></inputData>
+    <inputData id="Input_rankedBallots" name="rankedBallots"><variable id="Variable_rankedBallots" name="rankedBallots" typeRef="list"/></inputData>
+    <inputData id="Output_winnerCandidateId" name="winnerCandidateId"><variable id="Variable_winnerCandidateId" name="winnerCandidateId" typeRef="string"/></inputData>
+    <inputData id="Output_rounds" name="rounds"><variable id="Variable_rounds" name="rounds" typeRef="list"/></inputData>
+</definitions>

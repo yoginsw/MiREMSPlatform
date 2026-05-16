@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:drools="http://www.jboss.org/drools"
+                   id="Definitions_UsRankedChoiceTabulation"
+                   targetNamespace="https://mirems.io/bpmn/us/rcv">
+    <bpmn2:process id="us-ranked-choice-tabulation" name="US Ranked Choice Tabulation Process" isExecutable="true">
+        <bpmn2:startEvent id="Start_RankedChoiceClosed" name="RANKED_CHOICE contest closed">
+            <bpmn2:outgoing>Flow_Start_Load</bpmn2:outgoing>
+        </bpmn2:startEvent>
+        <bpmn2:serviceTask id="ServiceTask_LoadRankedChoiceBallots" name="Load ranked choice ballots" drools:taskName="LoadRankedChoiceBallotsWorkItemHandler">
+            <bpmn2:incoming>Flow_Start_Load</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Load_Validate</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:serviceTask id="ServiceTask_ValidateRanks" name="Validate one-to-N unique candidate ranks" drools:taskName="ValidateRankedChoiceBallotsWorkItemHandler">
+            <bpmn2:incoming>Flow_Load_Validate</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Validate_Dmn</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:businessRuleTask id="BusinessRuleTask_RunInstantRunoff" name="Run UsInstantRunoffTabulation DMN" implementation="##unspecified">
+            <bpmn2:incoming>Flow_Validate_Dmn</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Dmn_Review</bpmn2:outgoing>
+        </bpmn2:businessRuleTask>
+        <bpmn2:userTask id="UserTask_TabulationOfficerReview" name="TABULATION_OFFICER reviews RCV rounds">
+            <bpmn2:incoming>Flow_Dmn_Review</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Review_Publish</bpmn2:outgoing>
+        </bpmn2:userTask>
+        <bpmn2:serviceTask id="ServiceTask_PublishRcvWinner" name="Publish RCV winner and round audit summary" drools:taskName="PublishRcvWinnerWorkItemHandler">
+            <bpmn2:incoming>Flow_Review_Publish</bpmn2:incoming>
+            <bpmn2:outgoing>Flow_Publish_End</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:endEvent id="End_RcvTabulationCompleted" name="RCV tabulation completed">
+            <bpmn2:incoming>Flow_Publish_End</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:sequenceFlow id="Flow_Start_Load" sourceRef="Start_RankedChoiceClosed" targetRef="ServiceTask_LoadRankedChoiceBallots"/>
+        <bpmn2:sequenceFlow id="Flow_Load_Validate" sourceRef="ServiceTask_LoadRankedChoiceBallots" targetRef="ServiceTask_ValidateRanks"/>
+        <bpmn2:sequenceFlow id="Flow_Validate_Dmn" sourceRef="ServiceTask_ValidateRanks" targetRef="BusinessRuleTask_RunInstantRunoff"/>
+        <bpmn2:sequenceFlow id="Flow_Dmn_Review" sourceRef="BusinessRuleTask_RunInstantRunoff" targetRef="UserTask_TabulationOfficerReview"/>
+        <bpmn2:sequenceFlow id="Flow_Review_Publish" sourceRef="UserTask_TabulationOfficerReview" targetRef="ServiceTask_PublishRcvWinner"/>
+        <bpmn2:sequenceFlow id="Flow_Publish_End" sourceRef="ServiceTask_PublishRcvWinner" targetRef="End_RcvTabulationCompleted"/>
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_UsRankedChoiceTabulation">
+        <bpmndi:BPMNPlane id="BPMNPlane_UsRankedChoiceTabulation" bpmnElement="us-ranked-choice-tabulation">
+            <bpmndi:BPMNShape id="Shape_Start" bpmnElement="Start_RankedChoiceClosed"><dc:Bounds x="80" y="120" width="36" height="36"/></bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
