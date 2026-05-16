@@ -1014,7 +1014,7 @@
 ---
 
 ### GOAL P5-053 | Results and Tabulation Dashboard
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-052, P3-035
 
 **Tasks:**
@@ -1025,6 +1025,13 @@
 5. Tests.
 
 **Done Criteria:** Charts render correctly; tabulation trigger tested; 75% coverage.
+
+**Implementation Notes:**
+- Implemented generated-client-backed results API wrapper for `getElectionResults`, `tabulateElection`, and process monitoring with runtime bearer token propagation.
+- Added `/elections/$id/results` dashboard with Korean status labels, contest bar/pie summaries, pending-result polling, election-scope fail-closed access control, and client-side official-results PDF download.
+- Added `/elections/$id/results/tabulation` for `TABULATION_OFFICER` users to trigger tabulation and monitor active BPMN tabulation process nodes.
+- Added MSW tests for results polling, chart rendering, PDF download, tabulation trigger/process monitoring, bearer `Authorization` headers, and fail-closed role/scope guards.
+- Verification passed: `pnpm --filter @mirems/mirems-shell test` (20 files / 70 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature coverage 94.67% all statements / 94.71% results statements.
 
 ---
 
