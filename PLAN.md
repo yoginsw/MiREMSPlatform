@@ -1307,10 +1307,18 @@
 ## Phase 7 — Extension Pack: USA (ext-us)
 
 ### GOAL P7-069 | US Extension Pack Scaffold
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-015
 
 Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.enabled=true`.
+
+**Implementation Notes:**
+- Added `extensions/ext-us` Gradle metadata and dependencies for core-domain SPI plus Spring Boot auto-configuration tests.
+- Added `UsElectionExtensionPack` with stable `us` ID, `US` country code, display name, scoped Flyway/process resource locations, and immutable metadata pointing to `docs/extensions/us/LEGAL.md` / `P7`.
+- Added property-gated `UsExtensionAutoConfiguration` with `mirems.extension.us.enabled=true`, plus `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`; missing/false properties do not load the pack.
+- Added scoped migration scaffold `db/migration/ext/us/V100__us_extension_tables.sql` for `us_extension_metadata` and `us_election_type_mappings` with pack/country constraints and indexes.
+- Verification passed: `gradlew.bat :extensions:ext-us:test`, `gradlew.bat :extensions:ext-us:test :extensions:ext-us:jacocoTestReport`, `gradlew.bat :extensions:ext-us:build`, `gradlew.bat :mirems-core:core-domain:test --tests io.mirems.core.domain.extension.ExtensionPackRegistryTest`, and `gradlew.bat build`.
+- Coverage: `io.mirems.extension.us` 100.00% instruction / 100.00% line / 100.00% branch.
 
 ---
 
