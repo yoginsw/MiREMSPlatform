@@ -1323,13 +1323,21 @@ Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.ena
 ---
 
 ### GOAL P7-070 | US — Jurisdiction and Precinct Model
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P7-069
 
 **Tasks:**
 1. US jurisdiction: State → County → Precinct.
 2. Precinct code mapping (FIPS).
 3. Multi-member district support (e.g., state legislature).
+
+**Implementation Notes:**
+- Added `UsJurisdictionLevel` and `UsJurisdiction` for State → County → Precinct hierarchy with FIPS normalization/validation, parent-level enforcement, county FIPS prefix checks, precinct mapping code parsing, and hierarchy path rendering.
+- Added `UsDistrictType` and `UsElectoralDistrict` for single-member state-legislature districts and multi-member local at-large districts with bounded seat counts.
+- Added migration `V101__us_jurisdiction_precinct_district_tables.sql` with `us_jurisdictions`, `us_electoral_districts`, FIPS/precinct constraints, parent-level validation trigger, immutable jurisdiction level/FIPS enforcement, partial unique indexes for state/county/precinct mapping, and lookup indexes.
+- Added PostgreSQL/Testcontainers migration coverage that applies the ext-us Flyway migrations, inserts valid state/county/multiple precinct rows sharing county FIPS, verifies invalid parent/FIPS updates fail, and checks district type/seat-count constraints.
+- Verification passed: targeted US jurisdiction/district/migration tests, `gradlew.bat :extensions:ext-us:test :extensions:ext-us:jacocoTestReport`, `gradlew.bat :extensions:ext-us:build`, and `gradlew.bat build`.
+- Coverage: `io.mirems.extension.us` 93.91% instruction / 93.14% line / 82.00% branch.
 
 ---
 
