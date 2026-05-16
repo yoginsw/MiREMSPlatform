@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     coverage: {
       all: true,
-      include: ['src/features/{elections,candidates,ballots,voters}/**/*.{ts,tsx}'],
+      include: ['src/features/{elections,candidates,ballots,voters,voting}/**/*.{ts,tsx}'],
       provider: 'v8',
       reporter: ['text', 'json-summary'],
       thresholds: {

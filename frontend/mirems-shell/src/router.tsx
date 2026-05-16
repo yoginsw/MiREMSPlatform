@@ -24,6 +24,7 @@ export const routeDefinitions: MiremsRouteDefinition[] = [
   { path: '/voters/register', file: 'routes/voters/register.tsx', protected: false },
   { path: '/voters', file: 'routes/_protected/voters/index.tsx', protected: true },
   { path: '/voters/eligibility', file: 'routes/_protected/voters/eligibility.tsx', protected: true },
+  { path: '/vote/session', file: 'routes/_protected/vote/session.tsx', protected: true },
   { path: '/admin', file: 'routes/_protected/admin.tsx', protected: true },
   { path: '/audit', file: 'routes/_protected/audit.tsx', protected: true },
 ];

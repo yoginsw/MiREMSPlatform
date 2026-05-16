@@ -289,6 +289,22 @@ h3 { font-size: 1.14rem; }
 .eligibility-result { display: grid; gap: 14px; }
 .readonly-summary { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-md); display: grid; gap: 6px; padding: 10px 12px; }
 .readonly-summary span { color: var(--color-text-secondary); font-size: 0.9rem; font-weight: 700; }
+.voting-kiosk { background: var(--color-bg-surface); border-radius: var(--radius-xl); display: grid; gap: 20px; padding: 24px; }
+.voting-kiosk--large { font-size: 1.2rem; }
+.voting-kiosk--contrast { background: #050816; color: #f8fafc; }
+.voting-kiosk--contrast ._card_ede40f, .voting-kiosk--contrast .kiosk-contest-card, .voting-kiosk--contrast .review-panel { color: var(--color-text-primary); }
+.voting-kiosk-header { align-items: flex-start; display: flex; gap: 16px; justify-content: space-between; }
+.accessibility-toolbar { display: flex; flex-wrap: wrap; gap: 10px; }
+.toolbar-toggle { background: #111827; border: 2px solid #facc15; border-radius: var(--radius-md); color: #facc15; cursor: pointer; font-weight: 800; padding: 10px 14px; }
+.toolbar-toggle[aria-pressed="true"] { background: #facc15; color: #111827; }
+.kiosk-ballot-panel, .review-panel { background: var(--color-bg-base); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); display: grid; gap: 18px; padding: 22px; }
+.kiosk-contest-grid { display: grid; gap: 18px; }
+.kiosk-contest-card { border: 2px solid var(--color-border-strong); border-radius: var(--radius-lg); display: grid; gap: 12px; padding: 18px; }
+.kiosk-contest-card legend { font-size: 1.2em; font-weight: 800; padding: 0 8px; }
+.kiosk-option { align-items: center; border: 2px solid var(--color-border-default); border-radius: var(--radius-lg); cursor: pointer; display: flex; gap: 12px; padding: 14px; }
+.kiosk-option:has(input:checked) { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-focus-ring); }
+.kiosk-option input { height: 22px; width: 22px; }
+.spoil-confirmation { background: #fff7ed; border: 2px solid #f97316; border-radius: var(--radius-lg); display: grid; gap: 12px; padding: 16px; }
 .summary-list { display: grid; gap: 8px; margin: 0; padding-left: 20px; }
 .action-panel { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); margin-top: 24px; padding: 20px; }
 

@@ -19,6 +19,7 @@ import { Route as ProtectedAdminRouteImport } from './routes/_protected/admin'
 import { Route as ProtectedVotersIndexRouteImport } from './routes/_protected/voters/index'
 import { Route as ProtectedElectionsIndexRouteImport } from './routes/_protected/elections/index'
 import { Route as ProtectedVotersEligibilityRouteImport } from './routes/_protected/voters/eligibility'
+import { Route as ProtectedVoteSessionRouteImport } from './routes/_protected/vote/session'
 import { Route as ProtectedElectionsNewRouteImport } from './routes/_protected/elections/new'
 import { Route as ProtectedElectionsIdRouteImport } from './routes/_protected/elections/$id'
 import { Route as ProtectedElectionsIdResultsRouteImport } from './routes/_protected/elections/$id/results'
@@ -79,6 +80,11 @@ const ProtectedVotersEligibilityRoute =
     path: '/voters/eligibility',
     getParentRoute: () => ProtectedRoute,
   } as any)
+const ProtectedVoteSessionRoute = ProtectedVoteSessionRouteImport.update({
+  id: '/vote/session',
+  path: '/vote/session',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ProtectedElectionsNewRoute = ProtectedElectionsNewRouteImport.update({
   id: '/elections/new',
   path: '/elections/new',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
+  '/vote/session': typeof ProtectedVoteSessionRoute
   '/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/elections/': typeof ProtectedElectionsIndexRoute
   '/voters/': typeof ProtectedVotersIndexRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
+  '/vote/session': typeof ProtectedVoteSessionRoute
   '/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/elections': typeof ProtectedElectionsIndexRoute
   '/voters': typeof ProtectedVotersIndexRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/voters/register': typeof VotersRegisterRoute
   '/_protected/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/_protected/elections/new': typeof ProtectedElectionsNewRoute
+  '/_protected/vote/session': typeof ProtectedVoteSessionRoute
   '/_protected/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/_protected/elections/': typeof ProtectedElectionsIndexRoute
   '/_protected/voters/': typeof ProtectedVotersIndexRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
+    | '/vote/session'
     | '/voters/eligibility'
     | '/elections/'
     | '/voters/'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
+    | '/vote/session'
     | '/voters/eligibility'
     | '/elections'
     | '/voters'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/voters/register'
     | '/_protected/elections/$id'
     | '/_protected/elections/new'
+    | '/_protected/vote/session'
     | '/_protected/voters/eligibility'
     | '/_protected/elections/'
     | '/_protected/voters/'
@@ -336,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/voters/eligibility'
       fullPath: '/voters/eligibility'
       preLoaderRoute: typeof ProtectedVotersEligibilityRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/vote/session': {
+      id: '/_protected/vote/session'
+      path: '/vote/session'
+      fullPath: '/vote/session'
+      preLoaderRoute: typeof ProtectedVoteSessionRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/_protected/elections/new': {
@@ -462,6 +481,7 @@ interface ProtectedRouteChildren {
   ProtectedAuditRoute: typeof ProtectedAuditRoute
   ProtectedElectionsIdRoute: typeof ProtectedElectionsIdRouteWithChildren
   ProtectedElectionsNewRoute: typeof ProtectedElectionsNewRoute
+  ProtectedVoteSessionRoute: typeof ProtectedVoteSessionRoute
   ProtectedVotersEligibilityRoute: typeof ProtectedVotersEligibilityRoute
   ProtectedElectionsIndexRoute: typeof ProtectedElectionsIndexRoute
   ProtectedVotersIndexRoute: typeof ProtectedVotersIndexRoute
@@ -472,6 +492,7 @@ const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedAuditRoute: ProtectedAuditRoute,
   ProtectedElectionsIdRoute: ProtectedElectionsIdRouteWithChildren,
   ProtectedElectionsNewRoute: ProtectedElectionsNewRoute,
+  ProtectedVoteSessionRoute: ProtectedVoteSessionRoute,
   ProtectedVotersEligibilityRoute: ProtectedVotersEligibilityRoute,
   ProtectedElectionsIndexRoute: ProtectedElectionsIndexRoute,
   ProtectedVotersIndexRoute: ProtectedVotersIndexRoute,

@@ -20,6 +20,7 @@ describe('MiREMS TanStack route definitions', () => {
       '/voters/register',
       '/voters',
       '/voters/eligibility',
+      '/vote/session',
       '/admin',
       '/audit',
     ]);
@@ -36,6 +37,7 @@ describe('MiREMS TanStack route definitions', () => {
       'routes/voters/register.tsx',
       'routes/_protected/voters/index.tsx',
       'routes/_protected/voters/eligibility.tsx',
+      'routes/_protected/vote/session.tsx',
       'routes/_protected/admin.tsx',
       'routes/_protected/audit.tsx',
     ]);
@@ -51,6 +53,7 @@ describe('MiREMS TanStack route definitions', () => {
       '/elections/$id/results',
       '/voters',
       '/voters/eligibility',
+      '/vote/session',
       '/admin',
       '/audit',
     ]);

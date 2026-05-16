@@ -989,7 +989,7 @@
 ---
 
 ### GOAL P5-052 | Voting Session UI (Kiosk Mode)
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-051, P3-034
 **Context files:** `docs/vvsg/VVSG2_MAPPING.md`
 
@@ -1002,6 +1002,14 @@
 6. Tests covering accessibility (axe-core integration).
 
 **Done Criteria:** axe-core reports zero violations; cast and spoil flows tested; 75% coverage.
+
+**Completion Notes — 2026-05-16:**
+- Added generated-client-backed voting session API wrapper for session creation, vote casting, session spoiling, and ballot preview loading with bearer-token propagation.
+- Added protected `/vote/session` kiosk route and route inventory coverage.
+- Implemented `VotingSessionPage` with session start, VVSG-oriented large-text/high-contrast controls, screen-reader labeled regions, keyboard-operable native radio/checkbox/button controls, review-before-submit, receipt hash display, and spoil confirmation.
+- Ballot rendering consumes preview layout contests with single-choice radio and multi-choice checkbox controls; cast payload uses `VoteSelection[]` by contest ID.
+- Added `axe-core` dev dependency and MSW tests covering axe zero violations, cast payload/auth, required contest selections, spoil confirmation/auth, and non-voter API suppression.
+- Verification passed: `pnpm --filter @mirems/mirems-shell test` (19 files / 65 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, targeted feature coverage (all 94.66%; voting statements 91.75%), and `pnpm -r build`.
 
 ---
 
