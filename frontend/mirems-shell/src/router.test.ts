@@ -17,6 +17,9 @@ describe('MiREMS TanStack route definitions', () => {
       '/elections/$id/contests',
       '/elections/$id/ballots',
       '/elections/$id/results',
+      '/voters/register',
+      '/voters',
+      '/voters/eligibility',
       '/admin',
       '/audit',
     ]);
@@ -30,19 +33,24 @@ describe('MiREMS TanStack route definitions', () => {
       'routes/_protected/elections/$id/contests.tsx',
       'routes/_protected/elections/$id/ballots.tsx',
       'routes/_protected/elections/$id/results.tsx',
+      'routes/voters/register.tsx',
+      'routes/_protected/voters/index.tsx',
+      'routes/_protected/voters/eligibility.tsx',
       'routes/_protected/admin.tsx',
       'routes/_protected/audit.tsx',
     ]);
   });
 
-  it('keeps only landing, login, and callback public', () => {
-    expect(publicRouteDefinitions.map((route) => route.path)).toEqual(['/', '/login', '/auth/callback']);
+  it('keeps only landing, login, callback, and public voter registration public', () => {
+    expect(publicRouteDefinitions.map((route) => route.path)).toEqual(['/', '/login', '/auth/callback', '/voters/register']);
     expect(protectedRouteDefinitions.map((route) => route.path)).toEqual([
       '/elections',
       '/elections/$id',
       '/elections/$id/contests',
       '/elections/$id/ballots',
       '/elections/$id/results',
+      '/voters',
+      '/voters/eligibility',
       '/admin',
       '/audit',
     ]);

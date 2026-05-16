@@ -12,10 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VotersRegisterRouteImport } from './routes/voters/register'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as ProtectedAuditRouteImport } from './routes/_protected/audit'
 import { Route as ProtectedAdminRouteImport } from './routes/_protected/admin'
+import { Route as ProtectedVotersIndexRouteImport } from './routes/_protected/voters/index'
 import { Route as ProtectedElectionsIndexRouteImport } from './routes/_protected/elections/index'
+import { Route as ProtectedVotersEligibilityRouteImport } from './routes/_protected/voters/eligibility'
 import { Route as ProtectedElectionsNewRouteImport } from './routes/_protected/elections/new'
 import { Route as ProtectedElectionsIdRouteImport } from './routes/_protected/elections/$id'
 import { Route as ProtectedElectionsIdResultsRouteImport } from './routes/_protected/elections/$id/results'
@@ -40,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VotersRegisterRoute = VotersRegisterRouteImport.update({
+  id: '/voters/register',
+  path: '/voters/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -55,11 +63,22 @@ const ProtectedAdminRoute = ProtectedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedVotersIndexRoute = ProtectedVotersIndexRouteImport.update({
+  id: '/voters/',
+  path: '/voters/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ProtectedElectionsIndexRoute = ProtectedElectionsIndexRouteImport.update({
   id: '/elections/',
   path: '/elections/',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedVotersEligibilityRoute =
+  ProtectedVotersEligibilityRouteImport.update({
+    id: '/voters/eligibility',
+    path: '/voters/eligibility',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 const ProtectedElectionsNewRoute = ProtectedElectionsNewRouteImport.update({
   id: '/elections/new',
   path: '/elections/new',
@@ -119,9 +138,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof ProtectedAdminRoute
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
+  '/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/elections/': typeof ProtectedElectionsIndexRoute
+  '/voters/': typeof ProtectedVotersIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
@@ -136,9 +158,12 @@ export interface FileRoutesByTo {
   '/admin': typeof ProtectedAdminRoute
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
+  '/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/elections': typeof ProtectedElectionsIndexRoute
+  '/voters': typeof ProtectedVotersIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
@@ -155,9 +180,12 @@ export interface FileRoutesById {
   '/_protected/admin': typeof ProtectedAdminRoute
   '/_protected/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/voters/register': typeof VotersRegisterRoute
   '/_protected/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/_protected/elections/new': typeof ProtectedElectionsNewRoute
+  '/_protected/voters/eligibility': typeof ProtectedVotersEligibilityRoute
   '/_protected/elections/': typeof ProtectedElectionsIndexRoute
+  '/_protected/voters/': typeof ProtectedVotersIndexRoute
   '/_protected/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/_protected/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/_protected/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
@@ -174,9 +202,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audit'
     | '/auth/callback'
+    | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
+    | '/voters/eligibility'
     | '/elections/'
+    | '/voters/'
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
@@ -191,9 +222,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audit'
     | '/auth/callback'
+    | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
+    | '/voters/eligibility'
     | '/elections'
+    | '/voters'
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
@@ -209,9 +243,12 @@ export interface FileRouteTypes {
     | '/_protected/admin'
     | '/_protected/audit'
     | '/auth/callback'
+    | '/voters/register'
     | '/_protected/elections/$id'
     | '/_protected/elections/new'
+    | '/_protected/voters/eligibility'
     | '/_protected/elections/'
+    | '/_protected/voters/'
     | '/_protected/elections/$id/ballots'
     | '/_protected/elections/$id/contests'
     | '/_protected/elections/$id/results'
@@ -226,6 +263,7 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   LoginRoute: typeof LoginRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  VotersRegisterRoute: typeof VotersRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/voters/register': {
+      id: '/voters/register'
+      path: '/voters/register'
+      fullPath: '/voters/register'
+      preLoaderRoute: typeof VotersRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
@@ -272,11 +317,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedAdminRouteImport
       parentRoute: typeof ProtectedRoute
     }
+    '/_protected/voters/': {
+      id: '/_protected/voters/'
+      path: '/voters'
+      fullPath: '/voters/'
+      preLoaderRoute: typeof ProtectedVotersIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_protected/elections/': {
       id: '/_protected/elections/'
       path: '/elections'
       fullPath: '/elections/'
       preLoaderRoute: typeof ProtectedElectionsIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/voters/eligibility': {
+      id: '/_protected/voters/eligibility'
+      path: '/voters/eligibility'
+      fullPath: '/voters/eligibility'
+      preLoaderRoute: typeof ProtectedVotersEligibilityRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/_protected/elections/new': {
@@ -403,7 +462,9 @@ interface ProtectedRouteChildren {
   ProtectedAuditRoute: typeof ProtectedAuditRoute
   ProtectedElectionsIdRoute: typeof ProtectedElectionsIdRouteWithChildren
   ProtectedElectionsNewRoute: typeof ProtectedElectionsNewRoute
+  ProtectedVotersEligibilityRoute: typeof ProtectedVotersEligibilityRoute
   ProtectedElectionsIndexRoute: typeof ProtectedElectionsIndexRoute
+  ProtectedVotersIndexRoute: typeof ProtectedVotersIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
@@ -411,7 +472,9 @@ const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedAuditRoute: ProtectedAuditRoute,
   ProtectedElectionsIdRoute: ProtectedElectionsIdRouteWithChildren,
   ProtectedElectionsNewRoute: ProtectedElectionsNewRoute,
+  ProtectedVotersEligibilityRoute: ProtectedVotersEligibilityRoute,
   ProtectedElectionsIndexRoute: ProtectedElectionsIndexRoute,
+  ProtectedVotersIndexRoute: ProtectedVotersIndexRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
@@ -423,6 +486,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   LoginRoute: LoginRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  VotersRegisterRoute: VotersRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

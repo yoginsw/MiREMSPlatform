@@ -966,7 +966,7 @@
 ---
 
 ### GOAL P5-051 | Voter Roll Management Pages
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-050, P3-033
 
 **Tasks:**
@@ -977,6 +977,14 @@
 5. Tests.
 
 **Done Criteria:** PII masking tested; eligibility check tested; 75% coverage.
+
+**Completion Notes — 2026-05-16:**
+- Added generated-client-backed voter API wrapper for registration, masked lookup, and eligibility checks with runtime bearer-token propagation.
+- Added public `/voters/register` route plus protected `/voters` and `/voters/eligibility` routes; updated route inventory tests and generated route tree.
+- Implemented `VoterRegistrationPage`, `VoterEligibilityCheckPage`, and `VoterRollAdminPage` with Korean labels, PII masking guidance, officer-only admin gating, admin-table voter ID masking to last 4 characters, and protected API error handling.
+- P3-033 exposes masked single-voter lookup and eligibility check but not list/update-eligibility endpoints; admin UI therefore performs ID-based search and eligibility check, with an explicit API-scope notice instead of unsupported update calls.
+- Added MSW tests covering registration payload/auth, raw external-reference suppression, eligibility result rendering, admin masked lookup, admin eligibility check, and non-officer API suppression.
+- Verification passed: `pnpm --filter @mirems/mirems-shell test` (18 files / 61 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, targeted feature coverage (all 95.40%; voters statements 94.85%), and `pnpm -r build`.
 
 ---
 
