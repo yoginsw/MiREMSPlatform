@@ -922,7 +922,7 @@
 ---
 
 ### GOAL P5-049 | Candidate Management Pages
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-048, P3-031
 
 **Tasks:**
@@ -933,6 +933,13 @@
 5. Tests.
 
 **Done Criteria:** Registration triggers process; approval updates status; 75% coverage.
+
+**Implementation Notes:**
+- Added generated API client wrappers for candidate registration/listing and process-admin signals with bearer token propagation.
+- Added contest-scoped candidate list, registration, and officer review pages under `/elections/$id/contests/$contestId/candidates` routes.
+- Implemented polling status refresh for candidate lists and role/scope gating for registration and review actions.
+- Added MSW tests for polling updates, registration payload/auth, process signal approval, and non-officer review denial.
+- Expanded feature coverage configuration to include elections and candidates; combined feature coverage exceeds 75% global thresholds.
 
 ---
 

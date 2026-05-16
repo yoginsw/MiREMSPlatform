@@ -21,6 +21,9 @@ import { Route as ProtectedElectionsIdRouteImport } from './routes/_protected/el
 import { Route as ProtectedElectionsIdResultsRouteImport } from './routes/_protected/elections/$id/results'
 import { Route as ProtectedElectionsIdContestsRouteImport } from './routes/_protected/elections/$id/contests'
 import { Route as ProtectedElectionsIdBallotsRouteImport } from './routes/_protected/elections/$id/ballots'
+import { Route as ProtectedElectionsIdContestsContestIdCandidatesIndexRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/index'
+import { Route as ProtectedElectionsIdContestsContestIdCandidatesReviewRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/review'
+import { Route as ProtectedElectionsIdContestsContestIdCandidatesNewRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/new'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -84,6 +87,24 @@ const ProtectedElectionsIdBallotsRoute =
     path: '/ballots',
     getParentRoute: () => ProtectedElectionsIdRoute,
   } as any)
+const ProtectedElectionsIdContestsContestIdCandidatesIndexRoute =
+  ProtectedElectionsIdContestsContestIdCandidatesIndexRouteImport.update({
+    id: '/$contestId/candidates/',
+    path: '/$contestId/candidates/',
+    getParentRoute: () => ProtectedElectionsIdContestsRoute,
+  } as any)
+const ProtectedElectionsIdContestsContestIdCandidatesReviewRoute =
+  ProtectedElectionsIdContestsContestIdCandidatesReviewRouteImport.update({
+    id: '/$contestId/candidates/review',
+    path: '/$contestId/candidates/review',
+    getParentRoute: () => ProtectedElectionsIdContestsRoute,
+  } as any)
+const ProtectedElectionsIdContestsContestIdCandidatesNewRoute =
+  ProtectedElectionsIdContestsContestIdCandidatesNewRouteImport.update({
+    id: '/$contestId/candidates/new',
+    path: '/$contestId/candidates/new',
+    getParentRoute: () => ProtectedElectionsIdContestsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -95,8 +116,11 @@ export interface FileRoutesByFullPath {
   '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections/': typeof ProtectedElectionsIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
-  '/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
+  '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
+  '/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
+  '/elections/$id/contests/$contestId/candidates/': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -108,8 +132,11 @@ export interface FileRoutesByTo {
   '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections': typeof ProtectedElectionsIndexRoute
   '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
-  '/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
+  '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
+  '/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
+  '/elections/$id/contests/$contestId/candidates': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -123,8 +150,11 @@ export interface FileRoutesById {
   '/_protected/elections/new': typeof ProtectedElectionsNewRoute
   '/_protected/elections/': typeof ProtectedElectionsIndexRoute
   '/_protected/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
-  '/_protected/elections/$id/contests': typeof ProtectedElectionsIdContestsRoute
+  '/_protected/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/_protected/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/_protected/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
+  '/_protected/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
+  '/_protected/elections/$id/contests/$contestId/candidates/': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,6 +170,9 @@ export interface FileRouteTypes {
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
+    | '/elections/$id/contests/$contestId/candidates/new'
+    | '/elections/$id/contests/$contestId/candidates/review'
+    | '/elections/$id/contests/$contestId/candidates/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -153,6 +186,9 @@ export interface FileRouteTypes {
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
+    | '/elections/$id/contests/$contestId/candidates/new'
+    | '/elections/$id/contests/$contestId/candidates/review'
+    | '/elections/$id/contests/$contestId/candidates'
   id:
     | '__root__'
     | '/'
@@ -167,6 +203,9 @@ export interface FileRouteTypes {
     | '/_protected/elections/$id/ballots'
     | '/_protected/elections/$id/contests'
     | '/_protected/elections/$id/results'
+    | '/_protected/elections/$id/contests/$contestId/candidates/new'
+    | '/_protected/elections/$id/contests/$contestId/candidates/review'
+    | '/_protected/elections/$id/contests/$contestId/candidates/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,18 +301,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedElectionsIdBallotsRouteImport
       parentRoute: typeof ProtectedElectionsIdRoute
     }
+    '/_protected/elections/$id/contests/$contestId/candidates/': {
+      id: '/_protected/elections/$id/contests/$contestId/candidates/'
+      path: '/$contestId/candidates'
+      fullPath: '/elections/$id/contests/$contestId/candidates/'
+      preLoaderRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRouteImport
+      parentRoute: typeof ProtectedElectionsIdContestsRoute
+    }
+    '/_protected/elections/$id/contests/$contestId/candidates/review': {
+      id: '/_protected/elections/$id/contests/$contestId/candidates/review'
+      path: '/$contestId/candidates/review'
+      fullPath: '/elections/$id/contests/$contestId/candidates/review'
+      preLoaderRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRouteImport
+      parentRoute: typeof ProtectedElectionsIdContestsRoute
+    }
+    '/_protected/elections/$id/contests/$contestId/candidates/new': {
+      id: '/_protected/elections/$id/contests/$contestId/candidates/new'
+      path: '/$contestId/candidates/new'
+      fullPath: '/elections/$id/contests/$contestId/candidates/new'
+      preLoaderRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesNewRouteImport
+      parentRoute: typeof ProtectedElectionsIdContestsRoute
+    }
   }
 }
 
+interface ProtectedElectionsIdContestsRouteChildren {
+  ProtectedElectionsIdContestsContestIdCandidatesNewRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
+  ProtectedElectionsIdContestsContestIdCandidatesReviewRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
+  ProtectedElectionsIdContestsContestIdCandidatesIndexRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
+}
+
+const ProtectedElectionsIdContestsRouteChildren: ProtectedElectionsIdContestsRouteChildren =
+  {
+    ProtectedElectionsIdContestsContestIdCandidatesNewRoute:
+      ProtectedElectionsIdContestsContestIdCandidatesNewRoute,
+    ProtectedElectionsIdContestsContestIdCandidatesReviewRoute:
+      ProtectedElectionsIdContestsContestIdCandidatesReviewRoute,
+    ProtectedElectionsIdContestsContestIdCandidatesIndexRoute:
+      ProtectedElectionsIdContestsContestIdCandidatesIndexRoute,
+  }
+
+const ProtectedElectionsIdContestsRouteWithChildren =
+  ProtectedElectionsIdContestsRoute._addFileChildren(
+    ProtectedElectionsIdContestsRouteChildren,
+  )
+
 interface ProtectedElectionsIdRouteChildren {
   ProtectedElectionsIdBallotsRoute: typeof ProtectedElectionsIdBallotsRoute
-  ProtectedElectionsIdContestsRoute: typeof ProtectedElectionsIdContestsRoute
+  ProtectedElectionsIdContestsRoute: typeof ProtectedElectionsIdContestsRouteWithChildren
   ProtectedElectionsIdResultsRoute: typeof ProtectedElectionsIdResultsRoute
 }
 
 const ProtectedElectionsIdRouteChildren: ProtectedElectionsIdRouteChildren = {
   ProtectedElectionsIdBallotsRoute: ProtectedElectionsIdBallotsRoute,
-  ProtectedElectionsIdContestsRoute: ProtectedElectionsIdContestsRoute,
+  ProtectedElectionsIdContestsRoute:
+    ProtectedElectionsIdContestsRouteWithChildren,
   ProtectedElectionsIdResultsRoute: ProtectedElectionsIdResultsRoute,
 }
 
