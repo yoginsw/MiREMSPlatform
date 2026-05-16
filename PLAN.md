@@ -1381,10 +1381,18 @@ Same pattern as P6-059 but for `ext-us`, conditional on `mirems.extension.us.ena
 ---
 
 ### GOAL P7-073 — P7-078 | US Extension Features and Integration Tests
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P7-072
 
 Covers: provisional ballot workflow, absentee ballot tracking, US UI extension, and end-to-end integration tests. Follow same pattern as KR Phase 6.
+
+**Implementation Notes:**
+- Added `UsProvisionalBallotWorkflowService` with HAVA-driven provisional ballot creation, manual provisional creation, accepted/rejected resolution, double-resolution protection, generic reason-code mapping, and non-PII audit summaries.
+- Added `UsAbsenteeBallotTrackingService` with absentee request validation through the UOCAVA decision service, FWAB fallback records, SENT/RETURNED/ACCEPTED/REJECTED lifecycle transitions, and transition-order guardrails.
+- Added US integration coverage linking voter eligibility, provisional workflow, absentee tracking, RCV validation/tabulation, core voting sessions, and a 10k-ballot performance smoke simulation.
+- Expanded `@mirems/ext-us-ui` with ranked-choice ballot layout helpers, provisional ballot notice helper, absentee tracking timeline, federal election calendar milestones, and complete English/Korean translation namespaces.
+- Verification passed: targeted US provisional/absentee/integration tests, `gradlew.bat :extensions:ext-us:test :extensions:ext-us:jacocoTestReport`, `gradlew.bat :extensions:ext-us:build`, `gradlew.bat build`, `pnpm --filter @mirems/ext-us-ui test`, `pnpm --filter @mirems/ext-us-ui build`, and workspace `pnpm -r test/build/lint`.
+- Coverage: `io.mirems.extension.us` 96.56% instruction / 96.02% line / 82.53% branch.
 
 ---
 
