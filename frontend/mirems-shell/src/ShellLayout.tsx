@@ -70,7 +70,10 @@ export function ShellChrome({
             onClick={() => void (auth.isAuthenticated ? auth.logout() : auth.login(currentPath))}
           >
             <span className="avatar" aria-hidden="true">{auth.isAuthenticated ? '관' : '?'}</span>
-            {auth.isAuthenticated ? auth.user?.profile.preferred_username ?? t('shell.authenticatedUser') : t('shell.login')} ▾
+            <span className="user-menu__label">
+              {auth.isAuthenticated ? auth.user?.profile.preferred_username ?? t('shell.authenticatedUser') : t('shell.login')}
+            </span>
+            <span aria-hidden="true">▾</span>
           </button>
         </div>
       </header>

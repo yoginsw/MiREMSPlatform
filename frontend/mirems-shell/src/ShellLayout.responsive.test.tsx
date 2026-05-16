@@ -69,11 +69,30 @@ describe('ShellChrome responsive layout', () => {
     expect(screen.getByLabelText('모바일 하단 내비게이션')).toHaveAttribute('data-navigation-placement', 'bottom');
   });
 
-  it('keeps the language switcher available in compact responsive CSS', () => {
+  it('keeps compact header controls available instead of hiding login or language controls', () => {
     const cssPath = join(process.cwd(), 'src/styles.css');
     const css = readFileSync(cssPath, 'utf8');
 
     expect(css).not.toMatch(/\.language-switcher\s*\{\s*display:\s*none/i);
     expect(css).not.toMatch(/\.language-switcher[^{}]*\{[^{}]*display:\s*none/i);
+    expect(css).not.toMatch(/\.user-menu[^{}]*display:\s*none/i);
+    expect(css).toContain('.user-menu__label');
+  });
+
+  it('defines phone-sized responsive rules for dense forms, grids, tables, and action bars', () => {
+    const cssPath = join(process.cwd(), 'src/styles.css');
+    const css = readFileSync(cssPath, 'utf8');
+
+    expect(css).toContain('@media (max-width: 480px)');
+    expect(css).toContain('.topbar-actions { flex-wrap: wrap; justify-content: flex-start; width: 100%; }');
+    expect(css).toContain('.user-menu__label { display: none; }');
+    expect(css).toContain('@media (max-width: 640px)');
+    expect(css).toContain('.form-grid,');
+    expect(css).toContain('.filters-grid,');
+    expect(css).toContain('.ballot-preview-grid');
+    expect(css).toContain('.wizard-actions,');
+    expect(css).toContain('.page-actions,');
+    expect(css).toContain('grid-template-columns: minmax(0, 1fr);');
+    expect(css).toContain('min-width: 520px;');
   });
 });
