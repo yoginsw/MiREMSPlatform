@@ -9,6 +9,7 @@ import { LanguageSwitcher } from './i18n/LanguageSwitcher';
 import { platformHref, type NavigationItem, visibleNavigationItems } from './navigation';
 import { visibleTaskNotifications } from './role-ui';
 import { ThemeSwitcher, useResponsiveLayoutMode, useShellTheme } from './theme/shell-theme';
+import { AppErrorBoundary } from './errors/ErrorPages';
 
 export function ProtectedShellLayout() {
   const auth = useAuth();
@@ -16,9 +17,11 @@ export function ProtectedShellLayout() {
 
   return (
     <ShellChrome auth={auth} currentPath={currentPath}>
-      <ProtectedRoute isAuthenticated={auth.isAuthenticated} isLoading={auth.isLoading} currentPath={currentPath}>
-        <Outlet />
-      </ProtectedRoute>
+      <AppErrorBoundary path={currentPath}>
+        <ProtectedRoute isAuthenticated={auth.isAuthenticated} isLoading={auth.isLoading} currentPath={currentPath}>
+          <Outlet />
+        </ProtectedRoute>
+      </AppErrorBoundary>
     </ShellChrome>
   );
 }

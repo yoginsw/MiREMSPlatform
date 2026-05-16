@@ -1125,7 +1125,7 @@
 ---
 
 ### GOAL P5-058 | Frontend Error Boundary and 404 Handling
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-045
 
 **Tasks:**
@@ -1136,6 +1136,14 @@
 5. Tests.
 
 **Done Criteria:** Error boundary catches render errors; 404 renders correctly.
+
+**Implementation Notes:**
+- Added `AppErrorBoundary`, `RouteErrorPage`, and `NotFoundPage` with Korean recovery actions for retry, home navigation, and support reporting.
+- Wired root route `errorComponent`/`notFoundComponent` and protected shell route content through the MiREMS error boundary.
+- Added sanitized frontend error-report creation and bearer-token POST reporting to `/miremsplatform/audit/frontend-errors`; reporting failures are swallowed so recovery UI is never blocked.
+- Extended i18n resources with error/404 labels while preserving locale key parity.
+- Added tests for render-error capture, retry reset, route-level error page actions, 404 rendering, authorization-bearing audit reporting, no-token no-op reporting, and sanitization/redaction of component trace file paths, URL query/hash data, tokens, email addresses, and file paths.
+- Verification passed: `pnpm --filter @mirems/i18n test`, `pnpm --filter @mirems/i18n build`, `pnpm --filter @mirems/mirems-shell test` (28 files / 93 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature+i18n+theme+errors coverage 94.78% all statements / 95.45% errors statements.
 
 ---
 

@@ -46,5 +46,22 @@
   },
   "layout": {
     "mobileNavigationLabel": "Mobile bottom navigation"
+  },
+  "errors": {
+    "actions": {
+      "retry": "Retry",
+      "home": "Go home",
+      "report": "Report error"
+    },
+    "boundary": {
+      "title": "A problem occurred while displaying this screen",
+      "description": "MiREMS is designed to preserve your work. Retry, go home, or report this error to an administrator.",
+      "errorCodeLabel": "Error code",
+      "pathLabel": "Screen path"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The requested MiREMS screen does not exist or is outside your authorization scope."
+    }
   }
 }

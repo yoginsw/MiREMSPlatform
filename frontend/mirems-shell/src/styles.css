@@ -241,7 +241,8 @@ a:focus-visible {
 .bottom-nav .nav-item { flex: 0 0 auto; font-size: 0.8rem; min-width: max-content; }
 
 .main-content { flex: 1; padding: 32px 48px 64px; }
-.hero-panel {
+.hero-panel,
+.error-panel {
   background:
     radial-gradient(circle at 18% 20%, rgba(74, 120, 196, 0.34), transparent 28%),
     linear-gradient(135deg, var(--color-navy-900), var(--color-navy-950));
@@ -256,7 +257,8 @@ a:focus-visible {
   padding: 44px;
   position: relative;
 }
-.hero-panel::after {
+.hero-panel::after,
+.error-panel::after {
   background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
   background-size: 32px 32px;
   content: '';
@@ -264,10 +266,17 @@ a:focus-visible {
   pointer-events: none;
   position: absolute;
 }
-.hero-panel > * { position: relative; z-index: 1; }
+.hero-panel > *,
+.error-panel > * { position: relative; z-index: 1; }
 .eyebrow { color: var(--color-amber-500); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; margin: 0 0 10px; text-transform: uppercase; }
-.hero-panel h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.08; margin: 0 0 18px; max-width: 880px; }
-.hero-panel p:not(.eyebrow) { color: var(--color-navy-100); font-size: 1.18rem; line-height: 1.7; margin: 0; max-width: 760px; }
+.hero-panel h1,
+.error-panel h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.08; margin: 0 0 18px; max-width: 880px; }
+.hero-panel p:not(.eyebrow),
+.error-panel p:not(.eyebrow) { color: var(--color-navy-100); font-size: 1.18rem; line-height: 1.7; margin: 0; max-width: 760px; }
+.error-details { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-lg); color: var(--color-navy-100); display: grid; gap: 10px; margin: 24px 0 0; max-width: 720px; padding: 16px; }
+.error-details div { display: grid; gap: 4px; }
+.error-details dt { color: var(--color-neutral-300); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; }
+.error-details dd { font-family: var(--font-mono); margin: 0; overflow-wrap: anywhere; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .trust-card { align-content: center; display: grid; gap: 12px; }
 .trust-card span { border: 1px solid rgba(255,255,255,0.22); border-radius: var(--radius-full); padding: 10px 14px; text-align: center; }

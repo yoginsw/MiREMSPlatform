@@ -46,5 +46,22 @@
   },
   "layout": {
     "mobileNavigationLabel": "모바일 하단 내비게이션"
+  },
+  "errors": {
+    "actions": {
+      "retry": "다시 시도",
+      "home": "홈으로 이동",
+      "report": "오류 신고"
+    },
+    "boundary": {
+      "title": "화면을 표시하는 중 문제가 발생했습니다",
+      "description": "작업 내용은 보존되도록 설계되어 있습니다. 다시 시도하거나 홈으로 이동한 뒤 관리자에게 오류를 신고해 주세요.",
+      "errorCodeLabel": "오류 코드",
+      "pathLabel": "발생 화면"
+    },
+    "notFound": {
+      "title": "페이지를 찾을 수 없습니다",
+      "description": "요청한 MiREMS 화면이 존재하지 않거나 권한 범위 밖에 있습니다."
+    }
   }
 }
