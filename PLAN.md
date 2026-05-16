@@ -1150,7 +1150,7 @@
 ## Phase 6 — Extension Pack: Korea (ext-kr)
 
 ### GOAL P6-059 | KR Extension Pack Scaffold
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P1-015
 
 **Tasks:**
@@ -1160,6 +1160,14 @@
 4. Register in `core-domain`'s `ExtensionPackRegistry`.
 
 **Done Criteria:** KR pack loads when property enabled; ignored when disabled.
+
+**Implementation Notes:**
+- Added core-domain extension SPI (`ElectionExtensionPack`) and immutable `ExtensionPackRegistry` with duplicate/blank ID validation and deterministic enabled-pack ordering.
+- Added reusable `ext-template` Spring Boot auto-configuration scaffold and KR extension module build wiring.
+- Implemented `KrElectionExtensionPack` and `KrExtensionAutoConfiguration`, activated only by `mirems.extension.kr.enabled=true`, with Spring Boot auto-configuration imports.
+- Added KR extension Flyway migration resource `db/migration/ext/kr/V100__kr_extension_tables.sql` with KR metadata and election-type mapping scaffold tables/indexes.
+- Added tests proving registry lookup/validation, KR metadata/resource locations, conditional enabled/disabled loading, registry bean registration, and migration resource presence.
+- Verification passed: `gradlew.bat :mirems-core:core-domain:test --tests io.mirems.core.domain.extension.ExtensionPackRegistryTest`, `gradlew.bat :extensions:ext-kr:test --tests io.mirems.extension.kr.*`, `gradlew.bat :mirems-core:core-domain:test :extensions:ext-kr:test :extensions:ext-template:build`, `gradlew.bat :extensions:ext-kr:jacocoTestReport :mirems-core:core-domain:jacocoTestReport`, `gradlew.bat build`. Coverage: ext-kr 100.00% instruction/line/branch; core-domain 89.45% instruction / 88.03% line / 76.54% branch.
 
 ---
 

@@ -1,0 +1,1 @@
+-- Template extension migration placeholder. Copy this file to db/migration/ext/{code}/V100__{code}_extension_tables.sql.
