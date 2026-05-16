@@ -21,6 +21,7 @@ import { Route as ProtectedElectionsIdRouteImport } from './routes/_protected/el
 import { Route as ProtectedElectionsIdResultsRouteImport } from './routes/_protected/elections/$id/results'
 import { Route as ProtectedElectionsIdContestsRouteImport } from './routes/_protected/elections/$id/contests'
 import { Route as ProtectedElectionsIdBallotsRouteImport } from './routes/_protected/elections/$id/ballots'
+import { Route as ProtectedElectionsIdBallotsBallotIdPreviewRouteImport } from './routes/_protected/elections/$id/ballots/$ballotId/preview'
 import { Route as ProtectedElectionsIdContestsContestIdCandidatesIndexRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/index'
 import { Route as ProtectedElectionsIdContestsContestIdCandidatesReviewRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/review'
 import { Route as ProtectedElectionsIdContestsContestIdCandidatesNewRouteImport } from './routes/_protected/elections/$id/contests/$contestId/candidates/new'
@@ -87,6 +88,12 @@ const ProtectedElectionsIdBallotsRoute =
     path: '/ballots',
     getParentRoute: () => ProtectedElectionsIdRoute,
   } as any)
+const ProtectedElectionsIdBallotsBallotIdPreviewRoute =
+  ProtectedElectionsIdBallotsBallotIdPreviewRouteImport.update({
+    id: '/$ballotId/preview',
+    path: '/$ballotId/preview',
+    getParentRoute: () => ProtectedElectionsIdBallotsRoute,
+  } as any)
 const ProtectedElectionsIdContestsContestIdCandidatesIndexRoute =
   ProtectedElectionsIdContestsContestIdCandidatesIndexRouteImport.update({
     id: '/$contestId/candidates/',
@@ -115,9 +122,10 @@ export interface FileRoutesByFullPath {
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections/': typeof ProtectedElectionsIndexRoute
-  '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
+  '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/elections/$id/ballots/$ballotId/preview': typeof ProtectedElectionsIdBallotsBallotIdPreviewRoute
   '/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
   '/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
   '/elections/$id/contests/$contestId/candidates/': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
@@ -131,9 +139,10 @@ export interface FileRoutesByTo {
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
   '/elections': typeof ProtectedElectionsIndexRoute
-  '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
+  '/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/elections/$id/ballots/$ballotId/preview': typeof ProtectedElectionsIdBallotsBallotIdPreviewRoute
   '/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
   '/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
   '/elections/$id/contests/$contestId/candidates': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
@@ -149,9 +158,10 @@ export interface FileRoutesById {
   '/_protected/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/_protected/elections/new': typeof ProtectedElectionsNewRoute
   '/_protected/elections/': typeof ProtectedElectionsIndexRoute
-  '/_protected/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRoute
+  '/_protected/elections/$id/ballots': typeof ProtectedElectionsIdBallotsRouteWithChildren
   '/_protected/elections/$id/contests': typeof ProtectedElectionsIdContestsRouteWithChildren
   '/_protected/elections/$id/results': typeof ProtectedElectionsIdResultsRoute
+  '/_protected/elections/$id/ballots/$ballotId/preview': typeof ProtectedElectionsIdBallotsBallotIdPreviewRoute
   '/_protected/elections/$id/contests/$contestId/candidates/new': typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
   '/_protected/elections/$id/contests/$contestId/candidates/review': typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
   '/_protected/elections/$id/contests/$contestId/candidates/': typeof ProtectedElectionsIdContestsContestIdCandidatesIndexRoute
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
+    | '/elections/$id/ballots/$ballotId/preview'
     | '/elections/$id/contests/$contestId/candidates/new'
     | '/elections/$id/contests/$contestId/candidates/review'
     | '/elections/$id/contests/$contestId/candidates/'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/elections/$id/ballots'
     | '/elections/$id/contests'
     | '/elections/$id/results'
+    | '/elections/$id/ballots/$ballotId/preview'
     | '/elections/$id/contests/$contestId/candidates/new'
     | '/elections/$id/contests/$contestId/candidates/review'
     | '/elections/$id/contests/$contestId/candidates'
@@ -203,6 +215,7 @@ export interface FileRouteTypes {
     | '/_protected/elections/$id/ballots'
     | '/_protected/elections/$id/contests'
     | '/_protected/elections/$id/results'
+    | '/_protected/elections/$id/ballots/$ballotId/preview'
     | '/_protected/elections/$id/contests/$contestId/candidates/new'
     | '/_protected/elections/$id/contests/$contestId/candidates/review'
     | '/_protected/elections/$id/contests/$contestId/candidates/'
@@ -301,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedElectionsIdBallotsRouteImport
       parentRoute: typeof ProtectedElectionsIdRoute
     }
+    '/_protected/elections/$id/ballots/$ballotId/preview': {
+      id: '/_protected/elections/$id/ballots/$ballotId/preview'
+      path: '/$ballotId/preview'
+      fullPath: '/elections/$id/ballots/$ballotId/preview'
+      preLoaderRoute: typeof ProtectedElectionsIdBallotsBallotIdPreviewRouteImport
+      parentRoute: typeof ProtectedElectionsIdBallotsRoute
+    }
     '/_protected/elections/$id/contests/$contestId/candidates/': {
       id: '/_protected/elections/$id/contests/$contestId/candidates/'
       path: '/$contestId/candidates'
@@ -325,6 +345,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ProtectedElectionsIdBallotsRouteChildren {
+  ProtectedElectionsIdBallotsBallotIdPreviewRoute: typeof ProtectedElectionsIdBallotsBallotIdPreviewRoute
+}
+
+const ProtectedElectionsIdBallotsRouteChildren: ProtectedElectionsIdBallotsRouteChildren =
+  {
+    ProtectedElectionsIdBallotsBallotIdPreviewRoute:
+      ProtectedElectionsIdBallotsBallotIdPreviewRoute,
+  }
+
+const ProtectedElectionsIdBallotsRouteWithChildren =
+  ProtectedElectionsIdBallotsRoute._addFileChildren(
+    ProtectedElectionsIdBallotsRouteChildren,
+  )
+
 interface ProtectedElectionsIdContestsRouteChildren {
   ProtectedElectionsIdContestsContestIdCandidatesNewRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesNewRoute
   ProtectedElectionsIdContestsContestIdCandidatesReviewRoute: typeof ProtectedElectionsIdContestsContestIdCandidatesReviewRoute
@@ -347,13 +382,14 @@ const ProtectedElectionsIdContestsRouteWithChildren =
   )
 
 interface ProtectedElectionsIdRouteChildren {
-  ProtectedElectionsIdBallotsRoute: typeof ProtectedElectionsIdBallotsRoute
+  ProtectedElectionsIdBallotsRoute: typeof ProtectedElectionsIdBallotsRouteWithChildren
   ProtectedElectionsIdContestsRoute: typeof ProtectedElectionsIdContestsRouteWithChildren
   ProtectedElectionsIdResultsRoute: typeof ProtectedElectionsIdResultsRoute
 }
 
 const ProtectedElectionsIdRouteChildren: ProtectedElectionsIdRouteChildren = {
-  ProtectedElectionsIdBallotsRoute: ProtectedElectionsIdBallotsRoute,
+  ProtectedElectionsIdBallotsRoute:
+    ProtectedElectionsIdBallotsRouteWithChildren,
   ProtectedElectionsIdContestsRoute:
     ProtectedElectionsIdContestsRouteWithChildren,
   ProtectedElectionsIdResultsRoute: ProtectedElectionsIdResultsRoute,

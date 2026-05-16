@@ -263,6 +263,18 @@ h3 { font-size: 1.14rem; }
 .wizard-panel { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); display: grid; gap: 16px; padding: 20px; }
 .form-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(180px, 1fr)); }
 .wizard-actions { align-items: center; display: flex; gap: 10px; justify-content: flex-end; }
+.checkbox-grid { border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); display: flex; flex-wrap: wrap; gap: 12px; margin: 0; padding: 14px; }
+.checkbox-grid legend { color: var(--color-text-secondary); font-weight: 800; padding: 0 6px; }
+.checkbox-label { align-items: center; display: inline-flex; gap: 8px; }
+.ballot-style-groups { display: grid; gap: 18px; width: 100%; }
+.ballot-preview { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); display: grid; gap: 20px; padding: 28px; }
+.ballot-preview header { border-bottom: 2px solid var(--color-navy-900); display: grid; gap: 10px; padding-bottom: 16px; text-align: center; }
+.ballot-preview header p { color: var(--color-text-secondary); margin: 0; }
+.ballot-preview-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+.ballot-preview-contest { border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); display: grid; gap: 10px; padding: 16px; }
+.ballot-preview-contest legend { font-weight: 900; padding: 0 6px; }
+.ballot-preview-option { align-items: center; border: 1px solid var(--color-border-default); border-radius: var(--radius-md); display: flex; gap: 12px; min-height: 44px; padding: 10px 12px; }
+.ballot-target { border: 2px solid var(--color-navy-900); border-radius: 50%; display: inline-block; flex: 0 0 18px; height: 18px; width: 18px; }
 .filters-grid { background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(180px, 1fr)); margin: 18px 0; padding: 18px; width: 100%; }
 .pagination { align-items: center; color: var(--color-text-secondary); display: flex; justify-content: space-between; margin-top: 16px; }
 .pagination-actions { display: flex; gap: 8px; }

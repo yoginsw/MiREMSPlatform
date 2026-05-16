@@ -944,7 +944,7 @@
 ---
 
 ### GOAL P5-050 | Ballot Preview and BallotStyle Management
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-049, P3-032
 
 **Tasks:**
@@ -954,6 +954,14 @@
 4. Tests.
 
 **Done Criteria:** Preview renders correctly; CRUD operations tested; 75% coverage.
+
+**Implementation Notes:**
+- Added generated `BallotsApi` wrapper for ballot list, ballot-style list/create/update, and preview calls with bearer token propagation.
+- Replaced election ballots route with `BallotStyleManagementPage` and added nested preview route `/elections/$id/ballots/$ballotId/preview` with parent `<Outlet />` rendering.
+- Implemented BallotStyle table grouped by ballot version plus create/edit form with accessibility feature checkboxes and election admin/scope gating.
+- Applied election admin/scope gating to both BallotStyle management and ballot preview.
+- Implemented ballot preview canvas from backend layout JSON, rendering title, instructions, contests, and selectable options.
+- Added MSW tests for grouped listing, create/update payloads/auth, preview rendering, and scope denial; expanded feature coverage include to ballots.
 
 ---
 
