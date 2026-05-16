@@ -1078,7 +1078,7 @@
 ---
 
 ### GOAL P5-056 | Internationalization (i18n)
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-045
 
 **Tasks:**
@@ -1090,6 +1090,14 @@
 6. Tests: verify key count matches between locale files.
 
 **Done Criteria:** English and Korean work; missing key test passes; 75% coverage.
+
+**Implementation Notes:**
+- Added `react-i18next`/`i18next` shell integration with `I18nProvider`, in-memory language switching, and default Korean / English fallback configuration.
+- Expanded `@mirems/i18n` locale resources for shell/navigation/language selector keys and added exact key-parity tests for `en` and `ko` resources.
+- Wired the protected shell header/sidebar navigation to translation keys and added the navbar `LanguageSwitcher`.
+- Added Vite/Vitest workspace aliases so shell tests and builds resolve live workspace package sources consistently before package dist artifacts are generated.
+- Added tests for locale metadata/key parity, stable navigation translation keys, and Korean-to-English language switching.
+- Verification passed: `pnpm --filter @mirems/i18n test`, `pnpm --filter @mirems/i18n build`, `pnpm --filter @mirems/mirems-shell test` (24 files / 80 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature+i18n coverage 94.99% all statements / 100% i18n statements.
 
 ---
 

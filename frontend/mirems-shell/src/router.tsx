@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@mirems/ui-core';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthProvider } from './auth/AuthProvider';
+import { I18nProvider } from './i18n/I18nProvider';
 import { PLATFORM_BASE_PATH } from './navigation';
 import { routeTree } from './routeTree.gen';
 
@@ -48,9 +49,11 @@ declare module '@tanstack/react-router' {
 export function AppRouter() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </I18nProvider>
     </ThemeProvider>
   );
 }

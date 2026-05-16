@@ -1,13 +1,16 @@
 import React from 'react';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { designSystemName } from '@mirems/ui-core';
+import { useTranslation } from 'react-i18next';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { useAuth } from './auth/useAuth';
+import { LanguageSwitcher } from './i18n/LanguageSwitcher';
 import { platformHref, visibleNavigationItems } from './navigation';
 import { visibleTaskNotifications } from './role-ui';
 
 export function ProtectedShellLayout() {
   const auth = useAuth();
+  const { t } = useTranslation();
   const currentPath = useRouterState({ select: (state) => state.location.href });
   const navItems = visibleNavigationItems(auth.roles);
   const visibleTaskCount = visibleTaskNotifications(auth.roles).length;
@@ -15,52 +18,53 @@ export function ProtectedShellLayout() {
   return (
     <div className="app-shell" data-theme="light">
       <a className="skip-link" href="#main-content">
-        본문으로 바로가기
+        {t('shell.skipToContent')}
       </a>
-      <header className="topbar" aria-label="MiREMS 전역 헤더">
-        <div className="brand-block" aria-label="MiREMS Platform">
+      <header className="topbar" aria-label={t('shell.globalHeaderLabel')}>
+        <div className="brand-block" aria-label={t('app.name')}>
           <span className="brand-logo">MiREMS</span>
-          <span className="brand-subtitle">Miru Election Management Solution</span>
+          <span className="brand-subtitle">{t('shell.brandSubtitle')}</span>
         </div>
-        <button className="scope-selector" type="button" aria-label="현재 선거 범위 선택">
-          📋 제22대 국회의원 선거 ▾
+        <button className="scope-selector" type="button" aria-label={t('shell.scopeSelectorLabel')}>
+          📋 {t('shell.currentElectionScope')} ▾
         </button>
         <div className="topbar-actions">
           <span className="extension-badge">KR</span>
           <span className="extension-badge extension-badge--muted">US</span>
-          <button className="notification-button" type="button" aria-label={`미완료 태스크 ${visibleTaskCount}건`}>
+          <LanguageSwitcher />
+          <button className="notification-button" type="button" aria-label={t('shell.incompleteTasks', { count: visibleTaskCount })}>
             🔔<span className="notification-count">{visibleTaskCount}</span>
           </button>
           <button
             className="user-menu"
             type="button"
-            aria-label="사용자 메뉴 열기"
+            aria-label={t('shell.userMenuLabel')}
             onClick={() => void (auth.isAuthenticated ? auth.logout() : auth.login(currentPath))}
           >
             <span className="avatar" aria-hidden="true">{auth.isAuthenticated ? '관' : '?'}</span>
-            {auth.isAuthenticated ? auth.user?.profile.preferred_username ?? '인증 사용자' : '로그인'} ▾
+            {auth.isAuthenticated ? auth.user?.profile.preferred_username ?? t('shell.authenticatedUser') : t('shell.login')} ▾
           </button>
         </div>
       </header>
 
       <div className="workspace">
-        <aside className="sidebar" aria-label="주요 내비게이션">
+        <aside className="sidebar" aria-label={t('shell.primaryNavigationLabel')}>
           <nav>
             {navItems.map((item, index) => (
               <React.Fragment key={item.href}>
                 {index > 0 && item.section !== navItems[index - 1]?.section ? (
-                  <div className="nav-section-label">{sectionLabel(item.section)}</div>
+                  <div className="nav-section-label">{sectionLabel(item.section, t)}</div>
                 ) : null}
                 <a className={item.href === platformHref('/') ? 'nav-item nav-item--active' : 'nav-item'} href={item.href}>
                   <span aria-hidden="true">{item.icon}</span>
-                  <span>{item.label}</span>
+                  <span>{t(item.labelKey)}</span>
                 </a>
               </React.Fragment>
             ))}
           </nav>
           <div className="sidebar-footer">
             <span>{designSystemName}</span>
-            <strong>VVSG 2.0 · WCAG AA</strong>
+            <strong>{t('shell.footerCompliance')}</strong>
           </div>
         </aside>
 
@@ -74,16 +78,15 @@ export function ProtectedShellLayout() {
   );
 }
 
-
-function sectionLabel(section?: string) {
+function sectionLabel(section: string | undefined, t: (key: string) => string) {
   switch (section) {
     case 'operations':
-      return 'OPERATIONS';
+      return t('navigation.sections.operations');
     case 'audit':
-      return 'AUDIT';
+      return t('navigation.sections.audit');
     case 'system':
-      return 'SYSTEM';
+      return t('navigation.sections.system');
     default:
-      return 'MAIN';
+      return t('navigation.sections.main');
   }
 }

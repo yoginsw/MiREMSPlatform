@@ -1,3 +1,41 @@
 {
-  "app.name": "MiREMS Platform"
+  "app": {
+    "name": "MiREMS Platform"
+  },
+  "shell": {
+    "skipToContent": "Skip to main content",
+    "globalHeaderLabel": "MiREMS global header",
+    "brandSubtitle": "Miru Election Management Solution",
+    "scopeSelectorLabel": "Select current election scope",
+    "currentElectionScope": "22nd National Assembly Election",
+    "incompleteTasks": "{{count}} pending tasks",
+    "userMenuLabel": "Open user menu",
+    "authenticatedUser": "Authenticated user",
+    "login": "Log in",
+    "primaryNavigationLabel": "Primary navigation",
+    "footerCompliance": "VVSG 2.0 · WCAG AA"
+  },
+  "navigation": {
+    "sections": {
+      "main": "MAIN",
+      "operations": "OPERATIONS",
+      "audit": "AUDIT",
+      "system": "SYSTEM"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "elections": "Election Management",
+      "candidates": "Candidate Management",
+      "ballots": "Polling Place Management",
+      "voters": "Voter Roll",
+      "results": "Tabulation Results",
+      "auditLogs": "Audit Logs",
+      "systemAdmin": "System Administration"
+    }
+  },
+  "language": {
+    "selectorLabel": "Language selection",
+    "ko": "Korean",
+    "en": "English"
+  }
 }
