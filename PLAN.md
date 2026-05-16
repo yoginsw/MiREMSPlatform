@@ -1057,7 +1057,7 @@
 ---
 
 ### GOAL P5-055 | Admin Dashboard and System Health
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P5-054, P2-028
 
 **Tasks:**
@@ -1067,6 +1067,13 @@
 4. Tests.
 
 **Done Criteria:** Health data displayed; process signal tested; 75% coverage.
+
+**Implementation Notes:**
+- Implemented admin dashboard API wrapper for `/actuator/health`, generated `ProcessAdminApi.listProcessInstances`, and `signalProcessInstance` with runtime bearer token propagation.
+- Added protected `/admin` dashboard for `SYSTEM_ADMIN` with fail-closed role gating before health/process API calls.
+- Added DB/Kafka/Kogito health cards, active BPMN process table with sensitive variable redaction, manual signal JSON validation/submission, and loaded extension pack status cards for KR/US UI packs.
+- Added MSW tests for Authorization header propagation, health cards, active process rendering, signal payload submission, invalid/non-object JSON suppression, sensitive variable redaction, and denied-role API suppression.
+- Verification passed: `pnpm --filter @mirems/mirems-shell test` (22 files / 78 tests), `pnpm --filter @mirems/mirems-shell lint`, `pnpm --filter @mirems/mirems-shell build`, `pnpm -r build`, targeted feature coverage 94.89% all statements / 95.43% admin statements.
 
 ---
 
