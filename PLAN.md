@@ -1399,10 +1399,18 @@ Covers: provisional ballot workflow, absentee ballot tracking, US UI extension, 
 ## Phase 8 — Tabulation & Audit (Advanced)
 
 ### GOAL P8-079 — P8-088 | Advanced Tabulation, Audit Reports, and Statistical Sampling
-**State:** `TODO`
+**State:** `DONE`
 **Depends on:** P2-024, P2-027
 
 Covers: risk-limiting audit (RLA) support, statistical sampling for post-election audits, chain-of-custody reporting, external audit export (JSON/XML), and VVSG 2.0 audit trail completeness verification.
+
+**Implementation Notes:**
+- Added `AdvancedAuditProcessService` with trusted `AdvancedAuditAuthorizer` enforcement, RLA sample-size recommendation, seed-based deterministic statistical ballot sampling, chain-of-custody event ordering, VVSG audit trail completeness verification, and JSON/XML external exports.
+- Added immutable audit DTOs for advanced audit requests/reports, RLA plans, statistical samples, chain-of-custody entries/reports, VVSG verification, and external export payloads with defensive byte-array copying.
+- Audit exports include non-PII event metadata and payload keys only; sensitive key names such as name/address/SSN/email/phone/DOB/birth/voter ID/IP/token/secret are filtered from chain-of-custody export metadata.
+- Added tests for RLA recommendation, seed-sensitive full-size deterministic sampling, chronological custody reports, JSON/XML export content types and file names, VVSG missing-event detection, authorizer rejection, invalid RLA parameters, and empty ballot population validation.
+- Verification passed: targeted `AdvancedAuditProcessServiceTest`, `gradlew.bat :mirems-core:core-bpmn:test :mirems-core:core-bpmn:jacocoTestReport`, `gradlew.bat :mirems-core:core-bpmn:build`, and root `gradlew.bat build`.
+- Coverage: `io.mirems.core.bpmn.audit` 93.49% instruction / 93.77% line / 62.00% branch.
 
 ---
 
