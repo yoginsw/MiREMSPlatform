@@ -1,0 +1,6 @@
+party_id,name,type
+PH-PARTY-001,Sample Democratic Coalition,POLITICAL_PARTY
+PH-PARTY-002,Sample National Alliance,POLITICAL_PARTY
+PH-PARTY-003,Sample Reform Movement,POLITICAL_PARTY
+PH-PL-001,Sample Teachers Party-List,PARTY_LIST
+PH-PL-002,Sample Health Workers Party-List,PARTY_LIST

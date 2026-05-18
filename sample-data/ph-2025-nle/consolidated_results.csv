@@ -1,0 +1,4 @@
+canvass_id,election_id,canvass_level,expected_precincts,received_precincts,registered_voters,ballots_cast,valid_ballots,status
+CANV-CM-001,PH-2025-NLE,CITY_MUNICIPAL,24,24,600,409,385,COMPLETE_SAMPLE
+CANV-PROV-001,PH-2025-NLE,PROVINCIAL,24,24,600,409,385,COMPLETE_SAMPLE
+CANV-NATL-001,PH-2025-NLE,NATIONAL,24,24,600,409,385,COMPLETE_SAMPLE

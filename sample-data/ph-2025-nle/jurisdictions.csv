@@ -1,0 +1,24 @@
+jurisdiction_id,election_id,level,name,parent_id,region_id,is_synthetic
+PH-R01,PH-2025-NLE,REGION,National Capital Sample Region,,PH-R01,true
+PH-R01-P01,PH-2025-NLE,PROVINCE,Metro Sample Province,PH-R01,PH-R01,true
+PH-R01-P01-C01,PH-2025-NLE,CITY,San Isidro Sample City,PH-R01-P01,PH-R01,true
+PH-R01-P01-C01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - San Isidro Sample City,PH-R01-P01-C01,PH-R01,true
+PH-R01-P01-C01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - San Isidro Sample City,PH-R01-P01-C01,PH-R01,true
+PH-R01-P01-M01,PH-2025-NLE,MUNICIPALITY,Santa Maria Sample Municipality,PH-R01-P01,PH-R01,true
+PH-R01-P01-M01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - Santa Maria Sample Municipality,PH-R01-P01-M01,PH-R01,true
+PH-R01-P01-M01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - Santa Maria Sample Municipality,PH-R01-P01-M01,PH-R01,true
+PH-R01-P02,PH-2025-NLE,PROVINCE,Laguna Sample Province,PH-R01,PH-R01,true
+PH-R01-P02-C01,PH-2025-NLE,CITY,Bayani Sample City,PH-R01-P02,PH-R01,true
+PH-R01-P02-C01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - Bayani Sample City,PH-R01-P02-C01,PH-R01,true
+PH-R01-P02-C01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - Bayani Sample City,PH-R01-P02-C01,PH-R01,true
+PH-R01-P02-M01,PH-2025-NLE,MUNICIPALITY,Malaya Sample Municipality,PH-R01-P02,PH-R01,true
+PH-R01-P02-M01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - Malaya Sample Municipality,PH-R01-P02-M01,PH-R01,true
+PH-R01-P02-M01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - Malaya Sample Municipality,PH-R01-P02-M01,PH-R01,true
+PH-R02,PH-2025-NLE,REGION,Visayas Sample Region,,PH-R02,true
+PH-R02-P01,PH-2025-NLE,PROVINCE,Cebu Sample Province,PH-R02,PH-R02,true
+PH-R02-P01-C01,PH-2025-NLE,CITY,Lapu-Lapu Sample City,PH-R02-P01,PH-R02,true
+PH-R02-P01-C01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - Lapu-Lapu Sample City,PH-R02-P01-C01,PH-R02,true
+PH-R02-P01-C01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - Lapu-Lapu Sample City,PH-R02-P01-C01,PH-R02,true
+PH-R02-P01-M01,PH-2025-NLE,MUNICIPALITY,Danao Sample Municipality,PH-R02-P01,PH-R02,true
+PH-R02-P01-M01-B01,PH-2025-NLE,BARANGAY,Barangay Sample 01 - Danao Sample Municipality,PH-R02-P01-M01,PH-R02,true
+PH-R02-P01-M01-B02,PH-2025-NLE,BARANGAY,Barangay Sample 02 - Danao Sample Municipality,PH-R02-P01-M01,PH-R02,true

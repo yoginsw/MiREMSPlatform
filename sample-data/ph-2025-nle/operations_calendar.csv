@@ -1,0 +1,11 @@
+election_id,milestone_code,name,start_date,end_date
+PH-2025-NLE,TEC_CERTIFICATION,TEC Certification,2024-08-01,2025-02-28
+PH-2025-NLE,SOURCE_CODE_REVIEW,Source Code Review,2024-08-01,2024-09-30
+PH-2025-NLE,FIELD_TEST,Field Test,2024-10-01,2024-10-31
+PH-2025-NLE,MOCK_ELECTIONS,Mock Elections,2024-11-01,2024-11-30
+PH-2025-NLE,EMS_DATA_LOADING,EMS installation and election data loading,2024-12-01,2024-12-31
+PH-2025-NLE,BALLOT_FACE_CREATION,ACM/CCS configuration and ballot face creation,2025-01-01,2025-04-30
+PH-2025-NLE,DEPLOYMENT,AES equipment deployment,2025-02-01,2025-04-30
+PH-2025-NLE,FINAL_TESTING_SEALING,Final testing and sealing,2025-05-01,2025-05-08
+PH-2025-NLE,ELECTION_DAY,Election Day with repair/maintenance assistance,2025-05-09,2025-05-09
+PH-2025-NLE,POST_ELECTION,Post-election activities,2025-06-01,2025-12-31

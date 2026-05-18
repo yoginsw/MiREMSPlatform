@@ -1,0 +1,48 @@
+{
+  "source_document": "AES_TOR_2025NLE_final.pdf",
+  "source_document_title": "2025 National and Local Elections Automation Project (OMR/OpScan/DRE with EMS and CCS) Terms of Reference",
+  "sample_data_notice": "Synthetic sample data generated from TOR structure only; not actual COMELEC voter, candidate, precinct, or Annex J data.",
+  "election": {
+    "code": "PH-2025-NLE",
+    "name": "2025 National and Local Elections",
+    "country": "PH",
+    "authority": "COMELEC",
+    "type": "NATIONAL_LOCAL",
+    "date": "2025-05-09"
+  },
+  "systems": [
+    "EMS",
+    "ACM",
+    "CCS"
+  ],
+  "jurisdiction_hierarchy": [
+    "REGION",
+    "PROVINCE",
+    "CITY",
+    "MUNICIPALITY",
+    "BARANGAY",
+    "PRECINCT"
+  ],
+  "canvassing_hierarchy": [
+    "ACM",
+    "CITY_MUNICIPAL_CCS",
+    "PROVINCIAL_CCS",
+    "NATIONAL_CCS",
+    "CENTRAL_SERVER"
+  ],
+  "quantity_reference": {
+    "automated_counting_machines": 110000,
+    "ccs_equipment": 2200,
+    "ballot_boxes": 104345,
+    "external_batteries": 104345
+  },
+  "tor_annex_references": [
+    "Election Statistics",
+    "Districting",
+    "Number of Seats per Elective Position",
+    "Jurisdictions",
+    "Sample Data Files in MySQL and CSV",
+    "Sample Reports and Statistics for EMS, ACM, and CCS"
+  ],
+  "generator_profile": "small"
+}

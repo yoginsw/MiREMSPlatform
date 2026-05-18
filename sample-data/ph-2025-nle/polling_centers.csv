@@ -1,0 +1,13 @@
+polling_center_id,name,barangay_id,address,is_synthetic
+PC-PH-R01-P01-C01-B01,Barangay Sample 01 - San Isidro Sample City Elementary School,PH-R01-P01-C01-B01,Synthetic address for Barangay Sample 01 - San Isidro Sample City,true
+PC-PH-R01-P01-C01-B02,Barangay Sample 02 - San Isidro Sample City Elementary School,PH-R01-P01-C01-B02,Synthetic address for Barangay Sample 02 - San Isidro Sample City,true
+PC-PH-R01-P01-M01-B01,Barangay Sample 01 - Santa Maria Sample Municipality Elementary School,PH-R01-P01-M01-B01,Synthetic address for Barangay Sample 01 - Santa Maria Sample Municipality,true
+PC-PH-R01-P01-M01-B02,Barangay Sample 02 - Santa Maria Sample Municipality Elementary School,PH-R01-P01-M01-B02,Synthetic address for Barangay Sample 02 - Santa Maria Sample Municipality,true
+PC-PH-R01-P02-C01-B01,Barangay Sample 01 - Bayani Sample City Elementary School,PH-R01-P02-C01-B01,Synthetic address for Barangay Sample 01 - Bayani Sample City,true
+PC-PH-R01-P02-C01-B02,Barangay Sample 02 - Bayani Sample City Elementary School,PH-R01-P02-C01-B02,Synthetic address for Barangay Sample 02 - Bayani Sample City,true
+PC-PH-R01-P02-M01-B01,Barangay Sample 01 - Malaya Sample Municipality Elementary School,PH-R01-P02-M01-B01,Synthetic address for Barangay Sample 01 - Malaya Sample Municipality,true
+PC-PH-R01-P02-M01-B02,Barangay Sample 02 - Malaya Sample Municipality Elementary School,PH-R01-P02-M01-B02,Synthetic address for Barangay Sample 02 - Malaya Sample Municipality,true
+PC-PH-R02-P01-C01-B01,Barangay Sample 01 - Lapu-Lapu Sample City Elementary School,PH-R02-P01-C01-B01,Synthetic address for Barangay Sample 01 - Lapu-Lapu Sample City,true
+PC-PH-R02-P01-C01-B02,Barangay Sample 02 - Lapu-Lapu Sample City Elementary School,PH-R02-P01-C01-B02,Synthetic address for Barangay Sample 02 - Lapu-Lapu Sample City,true
+PC-PH-R02-P01-M01-B01,Barangay Sample 01 - Danao Sample Municipality Elementary School,PH-R02-P01-M01-B01,Synthetic address for Barangay Sample 01 - Danao Sample Municipality,true
+PC-PH-R02-P01-M01-B02,Barangay Sample 02 - Danao Sample Municipality Elementary School,PH-R02-P01-M01-B02,Synthetic address for Barangay Sample 02 - Danao Sample Municipality,true

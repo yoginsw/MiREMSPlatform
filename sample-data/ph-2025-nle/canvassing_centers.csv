@@ -1,0 +1,11 @@
+canvassing_center_id,name,canvass_level,jurisdiction_id,parent_canvassing_center_id
+CC-NATIONAL-001,National Board of Canvassers Sample Center,NATIONAL,PH,
+CC-PH-R01-P01,Metro Sample Province Board of Canvassers,PROVINCIAL,PH-R01-P01,CC-NATIONAL-001
+CC-PH-R01-P01-C01,San Isidro Sample City Board of Canvassers,CITY_MUNICIPAL,PH-R01-P01-C01,CC-PH-R01-P01
+CC-PH-R01-P01-M01,Santa Maria Sample Municipality Board of Canvassers,CITY_MUNICIPAL,PH-R01-P01-M01,CC-PH-R01-P01
+CC-PH-R01-P02,Laguna Sample Province Board of Canvassers,PROVINCIAL,PH-R01-P02,CC-NATIONAL-001
+CC-PH-R01-P02-C01,Bayani Sample City Board of Canvassers,CITY_MUNICIPAL,PH-R01-P02-C01,CC-PH-R01-P02
+CC-PH-R01-P02-M01,Malaya Sample Municipality Board of Canvassers,CITY_MUNICIPAL,PH-R01-P02-M01,CC-PH-R01-P02
+CC-PH-R02-P01,Cebu Sample Province Board of Canvassers,PROVINCIAL,PH-R02-P01,CC-NATIONAL-001
+CC-PH-R02-P01-C01,Lapu-Lapu Sample City Board of Canvassers,CITY_MUNICIPAL,PH-R02-P01-C01,CC-PH-R02-P01
+CC-PH-R02-P01-M01,Danao Sample Municipality Board of Canvassers,CITY_MUNICIPAL,PH-R02-P01-M01,CC-PH-R02-P01
