@@ -1,4 +1,5 @@
 jurisdiction_id,election_id,level,name,parent_id,region_id,is_synthetic
+PH,PH-2025-NLE,COUNTRY,Philippines,,,true
 PH-R01,PH-2025-NLE,REGION,National Capital Sample Region,,PH-R01,true
 PH-R01-P01,PH-2025-NLE,PROVINCE,Metro Sample Province,PH-R01,PH-R01,true
 PH-R01-P01-C01,PH-2025-NLE,CITY,San Isidro Sample City,PH-R01-P01,PH-R01,true

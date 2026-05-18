@@ -1,0 +1,175 @@
+{
+  "bundle_id": "PH-2025-NLE-SYNTHETIC-SMALL",
+  "target_system": "MiREMS Platform",
+  "source_profile": "philippines-2025-nle-profile.json",
+  "load_order": [
+    "elections.csv",
+    "jurisdictions.csv",
+    "offices.csv",
+    "parties.csv",
+    "candidates.csv",
+    "polling_centers.csv",
+    "canvassing_centers.csv",
+    "ballot_styles.csv",
+    "ballot_contests.csv",
+    "precincts.csv",
+    "acm_units.csv",
+    "ccs_units.csv",
+    "voters.csv",
+    "precinct_results.csv",
+    "consolidated_results.csv",
+    "transmission_events.csv",
+    "operations_calendar.csv"
+  ],
+  "record_counts": {
+    "elections.csv": 1,
+    "jurisdictions.csv": 24,
+    "offices.csv": 11,
+    "parties.csv": 5,
+    "candidates.csv": 71,
+    "polling_centers.csv": 12,
+    "canvassing_centers.csv": 10,
+    "ballot_styles.csv": 6,
+    "ballot_contests.csv": 66,
+    "precincts.csv": 24,
+    "acm_units.csv": 24,
+    "ccs_units.csv": 10,
+    "voters.csv": 600,
+    "precinct_results.csv": 24,
+    "consolidated_results.csv": 3,
+    "transmission_events.csv": 24,
+    "operations_calendar.csv": 10
+  },
+  "resources": {
+    "elections.csv": {
+      "target_domain": "Election",
+      "target_table": "elections",
+      "privacy_classification": "PUBLIC"
+    },
+    "jurisdictions.csv": {
+      "target_domain": "Jurisdiction import staging",
+      "target_table": "sample_jurisdictions",
+      "privacy_classification": "PUBLIC"
+    },
+    "offices.csv": {
+      "target_domain": "Contest office taxonomy",
+      "target_table": "sample_offices",
+      "privacy_classification": "PUBLIC"
+    },
+    "parties.csv": {
+      "target_domain": "Party import staging",
+      "target_table": "sample_parties",
+      "privacy_classification": "PUBLIC"
+    },
+    "candidates.csv": {
+      "target_domain": "Candidate",
+      "target_table": "candidates",
+      "privacy_classification": "PUBLIC_SYNTHETIC"
+    },
+    "polling_centers.csv": {
+      "target_domain": "Polling center import staging",
+      "target_table": "sample_polling_centers",
+      "privacy_classification": "PUBLIC"
+    },
+    "canvassing_centers.csv": {
+      "target_domain": "Canvassing center import staging",
+      "target_table": "sample_canvassing_centers",
+      "privacy_classification": "PUBLIC"
+    },
+    "ballot_styles.csv": {
+      "target_domain": "BallotStyle",
+      "target_table": "ballot_styles",
+      "privacy_classification": "PUBLIC"
+    },
+    "ballot_contests.csv": {
+      "target_domain": "BallotContest",
+      "target_table": "ballot_contests",
+      "privacy_classification": "PUBLIC"
+    },
+    "precincts.csv": {
+      "target_domain": "Clustered precinct import staging",
+      "target_table": "sample_precincts",
+      "privacy_classification": "PUBLIC"
+    },
+    "acm_units.csv": {
+      "target_domain": "ACM equipment import staging",
+      "target_table": "sample_acm_units",
+      "privacy_classification": "PUBLIC"
+    },
+    "ccs_units.csv": {
+      "target_domain": "CCS equipment import staging",
+      "target_table": "sample_ccs_units",
+      "privacy_classification": "PUBLIC"
+    },
+    "voters.csv": {
+      "target_domain": "VoterRecord import staging",
+      "target_table": "voter_records",
+      "privacy_classification": "SYNTHETIC_PII"
+    },
+    "precinct_results.csv": {
+      "target_domain": "VotingResult import staging",
+      "target_table": "voting_results",
+      "privacy_classification": "PUBLIC_AGGREGATE"
+    },
+    "consolidated_results.csv": {
+      "target_domain": "TabulationReport import staging",
+      "target_table": "tabulation_reports",
+      "privacy_classification": "PUBLIC_AGGREGATE"
+    },
+    "transmission_events.csv": {
+      "target_domain": "AuditLog import staging",
+      "target_table": "audit_logs",
+      "privacy_classification": "SYSTEM_OPERATIONAL"
+    },
+    "operations_calendar.csv": {
+      "target_domain": "Election operations calendar",
+      "target_table": "sample_operations_calendar",
+      "privacy_classification": "PUBLIC"
+    }
+  },
+  "foreign_keys": {
+    "jurisdictions.csv": {
+      "parent_id": "jurisdictions.csv.jurisdiction_id"
+    },
+    "polling_centers.csv": {
+      "barangay_id": "jurisdictions.csv.jurisdiction_id"
+    },
+    "canvassing_centers.csv": {
+      "jurisdiction_id": "jurisdictions.csv.jurisdiction_id"
+    },
+    "precincts.csv": {
+      "barangay_id": "jurisdictions.csv.jurisdiction_id",
+      "polling_center_id": "polling_centers.csv.polling_center_id",
+      "ballot_style_id": "ballot_styles.csv.ballot_style_id"
+    },
+    "acm_units.csv": {
+      "precinct_id": "precincts.csv.precinct_id"
+    },
+    "ccs_units.csv": {
+      "canvassing_center_id": "canvassing_centers.csv.canvassing_center_id"
+    },
+    "ballot_contests.csv": {
+      "ballot_style_id": "ballot_styles.csv.ballot_style_id",
+      "office_code": "offices.csv.office_code"
+    },
+    "candidates.csv": {
+      "office_code": "offices.csv.office_code",
+      "party_id": "parties.csv.party_id"
+    },
+    "voters.csv": {
+      "precinct_id": "precincts.csv.precinct_id"
+    },
+    "precinct_results.csv": {
+      "precinct_id": "precincts.csv.precinct_id"
+    },
+    "transmission_events.csv": {
+      "precinct_id": "precincts.csv.precinct_id"
+    }
+  },
+  "validation_rules": [
+    "All generated voters must be synthetic.",
+    "No ballots_cast value may exceed registered_voters.",
+    "Every precinct must have one ACM assignment.",
+    "Every ballot contest must reference an existing ballot style."
+  ]
+}

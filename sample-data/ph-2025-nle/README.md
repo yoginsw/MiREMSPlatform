@@ -33,5 +33,30 @@ python3 scripts/generate_ph_2025_nle_sample_data.py \
 ## Verify
 
 ```bash
-python3 -m pytest scripts/test_generate_ph_2025_nle_sample_data.py -q
+python3 -m pytest \
+  scripts/test_generate_ph_2025_nle_sample_data.py \
+  scripts/test_validate_sample_import_bundle.py \
+  -q
 ```
+
+## Import manifest and dry-run validation
+
+`mirems_import_manifest.json` defines the intended MiREMS load order, target
+domain/table mapping, record counts, foreign-key contracts, and privacy
+classification for each CSV.
+
+Run the side-effect-free validator before using the bundle in a seed/import
+pipeline:
+
+```bash
+python3 scripts/validate_sample_import_bundle.py sample-data/ph-2025-nle
+```
+
+The validator checks:
+
+- all manifest resources exist
+- manifest record counts match CSV rows
+- declared foreign-key references resolve
+- every voter row is marked synthetic
+- every precinct has exactly one ACM assignment
+- precinct ballots cast never exceed registered voters

@@ -47,8 +47,17 @@ def test_build_dataset_uses_tor_profile_and_generates_consistent_relationships()
         "consolidated_results.csv",
         "transmission_events.csv",
         "operations_calendar.csv",
+        "mirems_import_manifest.json",
     }
     assert set(dataset.tables) == expected_files
+
+    manifest = dataset.tables["mirems_import_manifest.json"]
+    assert manifest["bundle_id"] == "PH-2025-NLE-SYNTHETIC-SMALL"
+    assert manifest["target_system"] == "MiREMS Platform"
+    assert manifest["load_order"][:4] == ["elections.csv", "jurisdictions.csv", "offices.csv", "parties.csv"]
+    assert manifest["resources"]["elections.csv"]["target_domain"] == "Election"
+    assert manifest["resources"]["voters.csv"]["privacy_classification"] == "SYNTHETIC_PII"
+    assert manifest["foreign_keys"]["precincts.csv"]["barangay_id"] == "jurisdictions.csv.jurisdiction_id"
 
     jurisdictions = dataset.tables["jurisdictions.csv"]
     assert {row["level"] for row in jurisdictions} >= {"REGION", "PROVINCE", "CITY", "MUNICIPALITY", "BARANGAY"}
@@ -84,6 +93,17 @@ def test_write_dataset_outputs_csv_files_and_profile_json(tmp_path: Path) -> Non
     profile = json.loads((tmp_path / "philippines-2025-nle-profile.json").read_text(encoding="utf-8"))
     assert profile["election"]["name"] == "2025 National and Local Elections"
     assert profile["sample_data_notice"].startswith("Synthetic")
+
+    manifest = json.loads((tmp_path / "mirems_import_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["record_counts"]["voters.csv"] == 60
+    assert manifest["load_order"][-1] == "operations_calendar.csv"
+    assert manifest["resources"]["precinct_results.csv"]["target_domain"] == "VotingResult import staging"
+    assert manifest["validation_rules"] == [
+        "All generated voters must be synthetic.",
+        "No ballots_cast value may exceed registered_voters.",
+        "Every precinct must have one ACM assignment.",
+        "Every ballot contest must reference an existing ballot style.",
+    ]
 
     elections = rows(tmp_path / "elections.csv")
     assert elections == [

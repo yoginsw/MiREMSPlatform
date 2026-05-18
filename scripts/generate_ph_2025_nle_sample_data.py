@@ -13,7 +13,7 @@ import csv
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -30,7 +30,7 @@ class SampleDataset:
     """In-memory sample dataset containing profile metadata and CSV rows."""
 
     profile: dict[str, object]
-    tables: dict[str, list[dict[str, object]]]
+    tables: dict[str, Any]
 
 
 PH_2025_NLE_PROFILE: dict[str, object] = {
@@ -148,6 +148,7 @@ def build_dataset(config: GenerationConfig | None = None) -> SampleDataset:
     tables["consolidated_results.csv"] = _build_consolidated_results(tables["precinct_results.csv"])
     tables["transmission_events.csv"] = _build_transmission_events(tables["precincts.csv"])
     tables["operations_calendar.csv"] = [{"election_id": "PH-2025-NLE", **row} for row in OPERATIONS_CALENDAR]
+    tables["mirems_import_manifest.json"] = _build_import_manifest(config, tables)
 
     return SampleDataset(profile=profile, tables=tables)
 
@@ -161,11 +162,88 @@ def write_dataset(dataset: SampleDataset, output_dir: Path) -> None:
         encoding="utf-8",
     )
     for filename, rows in dataset.tables.items():
+        if filename.endswith(".json"):
+            (output_dir / filename).write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            continue
         _write_csv(output_dir / filename, rows)
 
 
+def _build_import_manifest(config: GenerationConfig, tables: dict[str, Any]) -> dict[str, object]:
+    """Build a MiREMS import manifest with load order, mappings, and FK contracts."""
+
+    load_order = [
+        "elections.csv",
+        "jurisdictions.csv",
+        "offices.csv",
+        "parties.csv",
+        "candidates.csv",
+        "polling_centers.csv",
+        "canvassing_centers.csv",
+        "ballot_styles.csv",
+        "ballot_contests.csv",
+        "precincts.csv",
+        "acm_units.csv",
+        "ccs_units.csv",
+        "voters.csv",
+        "precinct_results.csv",
+        "consolidated_results.csv",
+        "transmission_events.csv",
+        "operations_calendar.csv",
+    ]
+    resources = {
+        "elections.csv": {"target_domain": "Election", "target_table": "elections", "privacy_classification": "PUBLIC"},
+        "jurisdictions.csv": {"target_domain": "Jurisdiction import staging", "target_table": "sample_jurisdictions", "privacy_classification": "PUBLIC"},
+        "offices.csv": {"target_domain": "Contest office taxonomy", "target_table": "sample_offices", "privacy_classification": "PUBLIC"},
+        "parties.csv": {"target_domain": "Party import staging", "target_table": "sample_parties", "privacy_classification": "PUBLIC"},
+        "candidates.csv": {"target_domain": "Candidate", "target_table": "candidates", "privacy_classification": "PUBLIC_SYNTHETIC"},
+        "polling_centers.csv": {"target_domain": "Polling center import staging", "target_table": "sample_polling_centers", "privacy_classification": "PUBLIC"},
+        "canvassing_centers.csv": {"target_domain": "Canvassing center import staging", "target_table": "sample_canvassing_centers", "privacy_classification": "PUBLIC"},
+        "ballot_styles.csv": {"target_domain": "BallotStyle", "target_table": "ballot_styles", "privacy_classification": "PUBLIC"},
+        "ballot_contests.csv": {"target_domain": "BallotContest", "target_table": "ballot_contests", "privacy_classification": "PUBLIC"},
+        "precincts.csv": {"target_domain": "Clustered precinct import staging", "target_table": "sample_precincts", "privacy_classification": "PUBLIC"},
+        "acm_units.csv": {"target_domain": "ACM equipment import staging", "target_table": "sample_acm_units", "privacy_classification": "PUBLIC"},
+        "ccs_units.csv": {"target_domain": "CCS equipment import staging", "target_table": "sample_ccs_units", "privacy_classification": "PUBLIC"},
+        "voters.csv": {"target_domain": "VoterRecord import staging", "target_table": "voter_records", "privacy_classification": "SYNTHETIC_PII"},
+        "precinct_results.csv": {"target_domain": "VotingResult import staging", "target_table": "voting_results", "privacy_classification": "PUBLIC_AGGREGATE"},
+        "consolidated_results.csv": {"target_domain": "TabulationReport import staging", "target_table": "tabulation_reports", "privacy_classification": "PUBLIC_AGGREGATE"},
+        "transmission_events.csv": {"target_domain": "AuditLog import staging", "target_table": "audit_logs", "privacy_classification": "SYSTEM_OPERATIONAL"},
+        "operations_calendar.csv": {"target_domain": "Election operations calendar", "target_table": "sample_operations_calendar", "privacy_classification": "PUBLIC"},
+    }
+    return {
+        "bundle_id": f"PH-2025-NLE-SYNTHETIC-{config.profile.upper()}",
+        "target_system": "MiREMS Platform",
+        "source_profile": "philippines-2025-nle-profile.json",
+        "load_order": load_order,
+        "record_counts": {filename: len(tables[filename]) for filename in load_order},
+        "resources": resources,
+        "foreign_keys": {
+            "jurisdictions.csv": {"parent_id": "jurisdictions.csv.jurisdiction_id"},
+            "polling_centers.csv": {"barangay_id": "jurisdictions.csv.jurisdiction_id"},
+            "canvassing_centers.csv": {"jurisdiction_id": "jurisdictions.csv.jurisdiction_id"},
+            "precincts.csv": {
+                "barangay_id": "jurisdictions.csv.jurisdiction_id",
+                "polling_center_id": "polling_centers.csv.polling_center_id",
+                "ballot_style_id": "ballot_styles.csv.ballot_style_id",
+            },
+            "acm_units.csv": {"precinct_id": "precincts.csv.precinct_id"},
+            "ccs_units.csv": {"canvassing_center_id": "canvassing_centers.csv.canvassing_center_id"},
+            "ballot_contests.csv": {"ballot_style_id": "ballot_styles.csv.ballot_style_id", "office_code": "offices.csv.office_code"},
+            "candidates.csv": {"office_code": "offices.csv.office_code", "party_id": "parties.csv.party_id"},
+            "voters.csv": {"precinct_id": "precincts.csv.precinct_id"},
+            "precinct_results.csv": {"precinct_id": "precincts.csv.precinct_id"},
+            "transmission_events.csv": {"precinct_id": "precincts.csv.precinct_id"},
+        },
+        "validation_rules": [
+            "All generated voters must be synthetic.",
+            "No ballots_cast value may exceed registered_voters.",
+            "Every precinct must have one ACM assignment.",
+            "Every ballot contest must reference an existing ballot style.",
+        ],
+    }
+
+
 def _build_jurisdictions() -> list[dict[str, object]]:
-    rows: list[dict[str, object]] = []
+    rows: list[dict[str, object]] = [_jurisdiction("PH", "COUNTRY", "Philippines", "", "")]
     regions = [
         ("PH-R01", "National Capital Sample Region", [
             ("PH-R01-P01", "Metro Sample Province", [
