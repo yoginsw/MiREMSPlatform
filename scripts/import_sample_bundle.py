@@ -13,8 +13,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shlex
 import subprocess
-import tempfile
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -114,12 +114,12 @@ def build_sql_script(bundle_dir: Path) -> str:
     return "\n".join(statement for statement in statements if statement)
 
 
-def execute_sql_script(database_url: str, sql_script: str) -> None:
-    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".sql", delete=False) as sql_file:
-        sql_file.write(sql_script)
-        sql_path = sql_file.name
+def execute_sql_script(database_url: str, sql_script: str, psql_command: str = "psql") -> None:
+    command = [*shlex.split(psql_command), database_url, "--set", "ON_ERROR_STOP=1"]
     subprocess.run(
-        ["psql", database_url, "--set", "ON_ERROR_STOP=1", "--file", sql_path],
+        command,
+        input=sql_script,
+        text=True,
         check=True,
     )
 
@@ -502,13 +502,18 @@ def main() -> None:
     parser.add_argument("bundle_dir", type=Path, nargs="?", default=Path("sample-data/ph-2025-nle"))
     parser.add_argument("--emit-sql", action="store_true", help="Print the generated SQL and do not execute it.")
     parser.add_argument("--database-url", help="PostgreSQL URL passed to psql for execution.")
+    parser.add_argument(
+        "--psql-command",
+        default="psql",
+        help="Command used to invoke psql; for Docker use e.g. 'docker exec -i mirems-postgres psql'.",
+    )
     args = parser.parse_args()
 
     sql_script = build_sql_script(args.bundle_dir)
     if args.emit_sql or not args.database_url:
         print(sql_script)
         return
-    execute_sql_script(args.database_url, sql_script)
+    execute_sql_script(args.database_url, sql_script, psql_command=args.psql_command)
 
 
 if __name__ == "__main__":

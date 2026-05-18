@@ -82,7 +82,17 @@ Execute through `psql` when a local MiREMS PostgreSQL database is available:
 ```bash
 python3 scripts/import_sample_bundle.py \
   sample-data/ph-2025-nle \
-  --database-url postgresql://mirems:mirems@localhost:5432/mirems
+  --database-url postgresql://mirems:***@localhost:15432/mirems
+```
+
+If PostgreSQL is running in the local Docker Compose container but `psql` is not
+installed on the host, stream the generated SQL through the containerized client:
+
+```bash
+python3 scripts/import_sample_bundle.py \
+  sample-data/ph-2025-nle \
+  --database-url postgresql://mirems:***@localhost:5432/mirems \
+  --psql-command "docker.exe exec -i mirems-postgres psql"
 ```
 
 The importer maps:

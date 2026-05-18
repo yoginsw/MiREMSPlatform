@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from import_sample_bundle import build_import_plan, build_sql_script, deterministic_uuid
+from import_sample_bundle import build_import_plan, build_sql_script, deterministic_uuid, execute_sql_script
 from validate_sample_import_bundle import validate_bundle
 
 
@@ -59,6 +59,46 @@ def test_build_sql_script_scopes_reimport_cleanup_to_sample_identifiers():
     assert "DELETE FROM voter_records;" not in sql
     assert "WHERE id IN" in sql
     assert "WHERE import_batch_id =" in sql
+
+
+def test_execute_sql_script_streams_sql_to_configurable_psql_command(monkeypatch):
+    calls = []
+
+    def fake_run(command, *, input, text, check):
+        calls.append(
+            {
+                "command": command,
+                "input": input,
+                "text": text,
+                "check": check,
+            }
+        )
+
+    monkeypatch.setattr("import_sample_bundle.subprocess.run", fake_run)
+
+    execute_sql_script(
+        "postgresql://mirems:***@localhost:5432/mirems",
+        "BEGIN;\nCOMMIT;\n",
+        psql_command="docker exec -i mirems-postgres psql",
+    )
+
+    assert calls == [
+        {
+            "command": [
+                "docker",
+                "exec",
+                "-i",
+                "mirems-postgres",
+                "psql",
+                "postgresql://mirems:***@localhost:5432/mirems",
+                "--set",
+                "ON_ERROR_STOP=1",
+            ],
+            "input": "BEGIN;\nCOMMIT;\n",
+            "text": True,
+            "check": True,
+        }
+    ]
 
 
 def test_build_sql_script_refuses_invalid_bundle(tmp_path):
