@@ -1,6 +1,7 @@
 import { PLATFORM_BASE_PATH, platformHref } from '../navigation';
 
-const fallbackReturnUrl = platformHref('/');
+export const defaultAuthenticatedReturnUrl = platformHref('/elections');
+const fallbackReturnUrl = defaultAuthenticatedReturnUrl;
 
 export function sanitizeReturnUrl(value: string | null | undefined, origin = window.location.origin): string {
   if (!value) {

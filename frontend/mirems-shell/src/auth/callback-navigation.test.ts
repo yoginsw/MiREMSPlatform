@@ -39,8 +39,8 @@ describe('completeCallbackNavigation', () => {
   it('sanitizes callback return paths before updating browser state', () => {
     const { replaceState } = installWindowStub();
 
-    expect(completeCallbackNavigation('https://evil.example/phish')).toBe('/miremsplatform');
-    expect(replaceState).toHaveBeenCalledWith(null, '', '/miremsplatform');
+    expect(completeCallbackNavigation('https://evil.example/phish')).toBe('/miremsplatform/elections');
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/miremsplatform/elections');
 
     vi.unstubAllGlobals();
   });

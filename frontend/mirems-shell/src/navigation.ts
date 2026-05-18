@@ -25,7 +25,12 @@ export interface NavigationItem {
   href: string;
   minimumRoles: Role[];
   section?: 'main' | 'operations' | 'audit' | 'system';
+  disabledReasonKey?: string;
 }
+
+export type NavigationTarget =
+  | { disabled: false; to: string }
+  | { disabled: true; reasonKey: string };
 
 const roleHierarchy: Record<Role, Role[]> = {
   SYSTEM_ADMIN: ['ELECTION_ADMIN', 'ELECTION_OFFICER', 'TABULATION_OFFICER', 'AUDITOR', 'OBSERVER'],
@@ -37,6 +42,8 @@ const roleHierarchy: Record<Role, Role[]> = {
   VOTER: [],
 };
 
+const currentElectionPlaceholderDisabledKey = 'navigation.disabled.selectElectionFirst';
+
 export const navigationItems: NavigationItem[] = [
   { icon: '🏠', labelKey: 'navigation.items.dashboard', label: '대시보드', href: platformHref('/'), minimumRoles: ['OBSERVER', 'VOTER'], section: 'main' },
   { icon: '📋', labelKey: 'navigation.items.elections', label: '선거 관리', href: platformHref('/elections'), minimumRoles: ['OBSERVER'], section: 'main' },
@@ -44,9 +51,10 @@ export const navigationItems: NavigationItem[] = [
     icon: '👤',
     labelKey: 'navigation.items.candidates',
     label: '후보자 관리',
-    href: platformHref('/elections/current/candidates'),
+    href: platformHref('/elections/current/contests'),
     minimumRoles: ['ELECTION_OFFICER'],
     section: 'operations',
+    disabledReasonKey: currentElectionPlaceholderDisabledKey,
   },
   {
     icon: '🗳',
@@ -55,6 +63,7 @@ export const navigationItems: NavigationItem[] = [
     href: platformHref('/elections/current/ballots'),
     minimumRoles: ['ELECTION_OFFICER'],
     section: 'operations',
+    disabledReasonKey: currentElectionPlaceholderDisabledKey,
   },
   { icon: '👥', labelKey: 'navigation.items.voters', label: '선거인 명부', href: platformHref('/voters'), minimumRoles: ['ELECTION_OFFICER'], section: 'operations' },
   {
@@ -64,6 +73,7 @@ export const navigationItems: NavigationItem[] = [
     href: platformHref('/elections/current/results'),
     minimumRoles: ['OBSERVER', 'VOTER'],
     section: 'operations',
+    disabledReasonKey: currentElectionPlaceholderDisabledKey,
   },
   { icon: '📁', labelKey: 'navigation.items.auditLogs', label: '감사 로그', href: platformHref('/audit'), minimumRoles: ['AUDITOR', 'SYSTEM_ADMIN'], section: 'audit' },
   { icon: '⚙️', labelKey: 'navigation.items.systemAdmin', label: '시스템 관리', href: platformHref('/admin'), minimumRoles: ['SYSTEM_ADMIN'], section: 'system' },
@@ -89,4 +99,24 @@ export function expandRoles(userRoles: Role[]): Set<Role> {
 
 export function getNavigationItemTranslationKey(href: string): string | undefined {
   return navigationItems.find((item) => item.href === href)?.labelKey;
+}
+
+export function routerPathFromPlatformHref(href: string): string {
+  if (href === PLATFORM_BASE_PATH) {
+    return '/';
+  }
+
+  if (href.startsWith(`${PLATFORM_BASE_PATH}/`)) {
+    return href.slice(PLATFORM_BASE_PATH.length) || '/';
+  }
+
+  return href;
+}
+
+export function getNavigationTarget(item: NavigationItem): NavigationTarget {
+  if (item.disabledReasonKey) {
+    return { disabled: true, reasonKey: item.disabledReasonKey };
+  }
+
+  return { disabled: false, to: routerPathFromPlatformHref(item.href) };
 }

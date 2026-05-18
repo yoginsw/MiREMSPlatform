@@ -5,10 +5,11 @@ import {
   type VoterMaskedResponse,
   type VoterRegistrationRequest,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createVoterApi(accessToken?: string) {
   return new VotersApi(new Configuration({
-    basePath: '/miremsplatform',
+    basePath: resolveApiBasePath(),
     accessToken: accessToken ? () => accessToken : undefined,
   }));
 }

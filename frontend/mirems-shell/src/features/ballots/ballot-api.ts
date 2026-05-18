@@ -6,10 +6,11 @@ import {
   type BallotStyleRequest,
   type BallotStyleResponse,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createBallotApi(accessToken?: string) {
   return new BallotsApi(new Configuration({
-    basePath: '/miremsplatform',
+    basePath: resolveApiBasePath(),
     accessToken: accessToken ? () => accessToken : undefined,
   }));
 }

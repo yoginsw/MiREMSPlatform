@@ -1,12 +1,12 @@
 import React from 'react';
-import { Outlet, useRouterState } from '@tanstack/react-router';
+import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { designSystemName } from '@mirems/ui-core';
 import { useTranslation } from 'react-i18next';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { useAuth } from './auth/useAuth';
 import type { AuthContextValue } from './auth/AuthProvider';
 import { LanguageSwitcher } from './i18n/LanguageSwitcher';
-import { platformHref, type NavigationItem, visibleNavigationItems } from './navigation';
+import { getNavigationTarget, type NavigationItem, visibleNavigationItems } from './navigation';
 import { visibleTaskNotifications } from './role-ui';
 import { ThemeSwitcher, useResponsiveLayoutMode, useShellTheme } from './theme/shell-theme';
 import { AppErrorBoundary } from './errors/ErrorPages';
@@ -107,10 +107,7 @@ function ShellNavigation({ items, placement }: { items: NavigationItem[]; placem
             {!isBottom && index > 0 && item.section !== items[index - 1]?.section ? (
               <div className="nav-section-label">{sectionLabel(item.section, t)}</div>
             ) : null}
-            <a className={item.href === platformHref('/') ? 'nav-item nav-item--active' : 'nav-item'} href={item.href}>
-              <span aria-hidden="true">{item.icon}</span>
-              <span>{t(item.labelKey)}</span>
-            </a>
+            <NavigationEntry item={item} />
           </React.Fragment>
         ))}
       </nav>
@@ -121,6 +118,35 @@ function ShellNavigation({ items, placement }: { items: NavigationItem[]; placem
         </div>
       ) : null}
     </aside>
+  );
+}
+
+function NavigationEntry({ item }: { item: NavigationItem }) {
+  const { t } = useTranslation();
+  const target = getNavigationTarget(item);
+  const label = t(item.labelKey);
+
+  if (target.disabled) {
+    return (
+      <button
+        className="nav-item nav-item--disabled"
+        type="button"
+        aria-disabled="true"
+        title={t(target.reasonKey)}
+        onClick={(event) => event.preventDefault()}
+      >
+        <span aria-hidden="true">{item.icon}</span>
+        <span>{label}</span>
+        <span className="sr-only">{t(target.reasonKey)}</span>
+      </button>
+    );
+  }
+
+  return (
+    <Link className="nav-item" activeProps={{ className: 'nav-item nav-item--active' }} to={target.to}>
+      <span aria-hidden="true">{item.icon}</span>
+      <span>{label}</span>
+    </Link>
   );
 }
 

@@ -1,4 +1,5 @@
 import type { ErrorInfo } from 'react';
+import { resolveApiUrl } from '../api-runtime';
 
 export interface FrontendErrorReportInput {
   error: unknown;
@@ -41,7 +42,7 @@ export async function reportFrontendError(report: FrontendErrorReport, accessTok
   }
 
   try {
-    const response = await fetch('/miremsplatform/audit/frontend-errors', {
+    const response = await fetch(resolveApiUrl('/audit/frontend-errors'), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,

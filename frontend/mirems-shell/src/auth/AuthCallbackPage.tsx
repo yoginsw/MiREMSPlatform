@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { completeSigninRedirect } from './auth-callback';
 import { completeCallbackNavigation } from './callback-navigation';
 
 export function AuthCallbackPage() {
   const [message, setMessage] = useState('로그인 응답을 확인하고 있습니다…');
+  const callbackHandledRef = useRef(false);
 
   useEffect(() => {
+    if (callbackHandledRef.current) {
+      return;
+    }
+
+    callbackHandledRef.current = true;
     completeSigninRedirect()
       .then((returnPath) => {
         completeCallbackNavigation(returnPath);

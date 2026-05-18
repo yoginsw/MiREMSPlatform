@@ -17,7 +17,7 @@ export function LoginPage() {
           <h1 id="login-title">이미 로그인되어 있습니다</h1>
           <p>{user?.profile.preferred_username ?? user?.profile.sub ?? '인증된 사용자'} 계정으로 MiREMS에 접속 중입니다.</p>
           <div className="login-actions">
-            <a className="button button--primary" href={returnUrl}>원래 화면으로 이동</a>
+            <a className="button button--primary" href={returnUrl}>운영 화면으로 이동</a>
             <button className="button button--secondary" type="button" onClick={() => void logout()}>로그아웃</button>
           </div>
         </section>

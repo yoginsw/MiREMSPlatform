@@ -5,13 +5,14 @@ import {
   type ProcessStatus,
   type TabulationResultResponse,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createTabulationApi(accessToken?: string) {
-  return new TabulationApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new TabulationApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 function createProcessAdminApi(accessToken?: string) {
-  return new ProcessAdminApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new ProcessAdminApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 export async function getElectionResults(electionId: string, accessToken?: string): Promise<TabulationResultResponse> {

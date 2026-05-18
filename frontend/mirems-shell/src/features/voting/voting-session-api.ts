@@ -8,13 +8,14 @@ import {
   type VotingSessionRequest,
   type VotingSessionResponse,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createVotingApi(accessToken?: string) {
-  return new VotingSessionsApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new VotingSessionsApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 function createBallotApi(accessToken?: string) {
-  return new BallotsApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new BallotsApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 export async function createVotingSession(request: VotingSessionRequest, accessToken?: string): Promise<VotingSessionResponse> {

@@ -229,15 +229,24 @@ a:focus-visible {
 }
 .nav-item {
   align-items: center;
+  background: transparent;
+  border: 0;
   border-left: 3px solid transparent;
   border-radius: var(--radius-md);
+  color: inherit;
   display: flex;
+  font: inherit;
   gap: 10px;
   min-height: 44px;
   padding: 0 12px;
+  text-align: left;
+  width: 100%;
 }
 .nav-item:hover { background: rgba(255, 255, 255, 0.06); color: var(--color-neutral-0); }
 .nav-item--active { background: rgba(46, 88, 153, 0.30); border-left-color: var(--color-navy-400); color: var(--color-navy-200); }
+.nav-item--disabled { color: var(--color-neutral-500); cursor: not-allowed; opacity: 0.72; }
+.nav-item--disabled:hover { background: transparent; color: var(--color-neutral-500); }
+.sr-only { clip: rect(0, 0, 0, 0); border: 0; height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
 .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: grid; gap: 4px; font-size: 0.78rem; margin-top: 24px; padding: 16px 8px 0; }
 .sidebar-footer strong { color: var(--color-navy-200); }
 .bottom-nav { background: var(--color-neutral-900); border-top: 1px solid rgba(255, 255, 255, 0.10); bottom: 0; color: var(--color-neutral-300); left: 0; overflow-x: auto; padding: 8px; position: fixed; right: 0; z-index: 300; }

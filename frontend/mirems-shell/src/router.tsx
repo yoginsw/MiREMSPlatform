@@ -18,6 +18,7 @@ export const routeDefinitions: MiremsRouteDefinition[] = [
   { path: '/', file: 'routes/index.tsx', protected: false },
   { path: '/login', file: 'routes/login.tsx', protected: false },
   { path: '/auth/callback', file: 'routes/auth/callback.tsx', protected: false },
+  { path: '/auth/silent-renew', file: 'routes/auth/silent-renew.tsx', protected: false },
   { path: '/elections', file: 'routes/_protected/elections/index.tsx', protected: true },
   { path: '/elections/$id', file: 'routes/_protected/elections/$id.tsx', protected: true },
   { path: '/elections/$id/contests', file: 'routes/_protected/elections/$id/contests.tsx', protected: true },

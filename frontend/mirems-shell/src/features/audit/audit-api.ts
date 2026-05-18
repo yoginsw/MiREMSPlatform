@@ -1,4 +1,5 @@
 import { AuditApi, Configuration, type AuditLogPageResponse } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 export type AuditSearchParams = {
   aggregateId?: string;
@@ -10,7 +11,7 @@ export type AuditSearchParams = {
 };
 
 function createAuditApi(accessToken?: string) {
-  return new AuditApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new AuditApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 export async function searchAuditEvents(params: AuditSearchParams, accessToken?: string): Promise<AuditLogPageResponse> {

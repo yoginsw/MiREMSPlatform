@@ -12,6 +12,7 @@ describe('MiREMS TanStack route definitions', () => {
       '/',
       '/login',
       '/auth/callback',
+      '/auth/silent-renew',
       '/elections',
       '/elections/$id',
       '/elections/$id/contests',
@@ -30,6 +31,7 @@ describe('MiREMS TanStack route definitions', () => {
       'routes/index.tsx',
       'routes/login.tsx',
       'routes/auth/callback.tsx',
+      'routes/auth/silent-renew.tsx',
       'routes/_protected/elections/index.tsx',
       'routes/_protected/elections/$id.tsx',
       'routes/_protected/elections/$id/contests.tsx',
@@ -46,7 +48,7 @@ describe('MiREMS TanStack route definitions', () => {
   });
 
   it('keeps only landing, login, callback, and public voter registration public', () => {
-    expect(publicRouteDefinitions.map((route) => route.path)).toEqual(['/', '/login', '/auth/callback', '/voters/register']);
+    expect(publicRouteDefinitions.map((route) => route.path)).toEqual(['/', '/login', '/auth/callback', '/auth/silent-renew', '/voters/register']);
     expect(protectedRouteDefinitions.map((route) => route.path)).toEqual([
       '/elections',
       '/elections/$id',

@@ -1,7 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../auth/useAuth';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
-import { platformHref } from '../navigation';
+import { platformHref, routerPathFromPlatformHref } from '../navigation';
 import { ThemeSwitcher, useShellTheme } from '../theme/shell-theme';
 
 export const Route = createFileRoute('/')({
@@ -15,17 +16,23 @@ const trustKeys = ['vvsg', 'wcag', 'rbac'] as const;
 export function LandingPage() {
   const { t } = useTranslation();
   const { theme } = useShellTheme();
+  const { isAuthenticated, user } = useAuth();
+  const operatorConsoleHref = platformHref('/elections');
+  const primaryActionHref = isAuthenticated ? operatorConsoleHref : platformHref('/login');
+  const primaryActionTo = routerPathFromPlatformHref(primaryActionHref);
+  const primaryActionLabel = isAuthenticated ? t('landing.actions.console') : t('landing.actions.login');
+  const username = user?.profile.preferred_username ?? user?.profile.sub ?? t('landing.authenticatedFallbackUser');
 
   return (
     <main id="main-content" className="landing-page" data-theme={theme} data-testid="landing-page">
       <header className="landing-header" aria-label={t('landing.headerLabel')}>
-        <a className="landing-brand" href={platformHref('/')} aria-label={t('landing.brandAriaLabel')}>
+        <Link className="landing-brand" to="/" aria-label={t('landing.brandAriaLabel')}>
           <span className="landing-brand__mark">M</span>
           <span>
             <strong>MiREMS Portal</strong>
             <small>{t('shell.brandSubtitle')}</small>
           </span>
-        </a>
+        </Link>
         <nav className="landing-nav" aria-label={t('landing.navLabel')}>
           <a href="#capabilities">{t('landing.nav.capabilities')}</a>
           <a href="#advantages">{t('landing.nav.advantages')}</a>
@@ -34,9 +41,9 @@ export function LandingPage() {
         <div className="landing-header__controls">
           <LanguageSwitcher />
           <ThemeSwitcher />
-          <a className="button button--primary landing-header__login" href={platformHref('/login')}>
-            {t('landing.actions.login')}
-          </a>
+          <Link className="button button--primary landing-header__login" to={primaryActionTo}>
+            {primaryActionLabel}
+          </Link>
         </div>
       </header>
 
@@ -45,13 +52,14 @@ export function LandingPage() {
           <p className="eyebrow">{t('landing.eyebrow')}</p>
           <h1 id="landing-title">{t('landing.title')}</h1>
           <p>{t('landing.description')}</p>
+          {isAuthenticated ? <p className="landing-auth-status">{t('landing.authenticatedStatus', { username })}</p> : null}
           <div className="hero-actions">
-            <a className="button landing-button--primary" href={platformHref('/login')}>
-              {t('landing.actions.login')}
-            </a>
-            <a className="button landing-button--secondary" href={platformHref('/elections/current/results')}>
+            <Link className="button landing-button--primary" to={primaryActionTo}>
+              {primaryActionLabel}
+            </Link>
+            <Link className="button landing-button--secondary" to="/elections/$id/results" params={{ id: 'current' }}>
               {t('landing.actions.results')}
-            </a>
+            </Link>
           </div>
         </div>
         <aside className="landing-hero-card" aria-label={t('landing.heroCard.label')}>

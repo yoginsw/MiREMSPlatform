@@ -1,4 +1,5 @@
 import { Configuration, ProcessAdminApi, type ProcessSignalRequest, type ProcessStatus } from '@mirems/api-client';
+import { resolveApiBasePath, resolveApiUrl } from '../../api-runtime';
 
 export type ComponentHealth = {
   status: string;
@@ -24,11 +25,11 @@ export const loadedExtensionPacks: ExtensionPackStatus[] = [
 ];
 
 function createProcessAdminApi(accessToken?: string) {
-  return new ProcessAdminApi(new Configuration({ accessToken: () => accessToken ?? '' }));
+  return new ProcessAdminApi(new Configuration({ basePath: resolveApiBasePath(), accessToken: () => accessToken ?? '' }));
 }
 
 export async function getSystemHealth(accessToken?: string): Promise<SystemHealthResponse> {
-  const response = await fetch('/miremsplatform/actuator/health', {
+  const response = await fetch(resolveApiUrl('/actuator/health'), {
     headers: {
       Authorization: `Bearer ${accessToken ?? ''}`,
       Accept: 'application/json',

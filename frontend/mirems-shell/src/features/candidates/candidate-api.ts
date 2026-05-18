@@ -7,10 +7,11 @@ import {
   type ProcessSignalRequest,
   type ProcessStatus,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createApiConfiguration(accessToken?: string) {
   return new Configuration({
-    basePath: '/miremsplatform',
+    basePath: resolveApiBasePath(),
     accessToken: accessToken ? () => accessToken : undefined,
   });
 }

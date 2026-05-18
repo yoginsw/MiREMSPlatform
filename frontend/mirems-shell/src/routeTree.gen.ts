@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VotersRegisterRouteImport } from './routes/voters/register'
+import { Route as AuthSilentRenewRouteImport } from './routes/auth/silent-renew'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as ProtectedAuditRouteImport } from './routes/_protected/audit'
 import { Route as ProtectedAdminRouteImport } from './routes/_protected/admin'
@@ -48,6 +49,11 @@ const IndexRoute = IndexRouteImport.update({
 const VotersRegisterRoute = VotersRegisterRouteImport.update({
   id: '/voters/register',
   path: '/voters/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSilentRenewRoute = AuthSilentRenewRouteImport.update({
+  id: '/auth/silent-renew',
+  path: '/auth/silent-renew',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof ProtectedAdminRoute
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/silent-renew': typeof AuthSilentRenewRoute
   '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/admin': typeof ProtectedAdminRoute
   '/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/silent-renew': typeof AuthSilentRenewRoute
   '/voters/register': typeof VotersRegisterRoute
   '/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/elections/new': typeof ProtectedElectionsNewRoute
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/_protected/admin': typeof ProtectedAdminRoute
   '/_protected/audit': typeof ProtectedAuditRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/silent-renew': typeof AuthSilentRenewRoute
   '/voters/register': typeof VotersRegisterRoute
   '/_protected/elections/$id': typeof ProtectedElectionsIdRouteWithChildren
   '/_protected/elections/new': typeof ProtectedElectionsNewRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audit'
     | '/auth/callback'
+    | '/auth/silent-renew'
     | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audit'
     | '/auth/callback'
+    | '/auth/silent-renew'
     | '/voters/register'
     | '/elections/$id'
     | '/elections/new'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/_protected/admin'
     | '/_protected/audit'
     | '/auth/callback'
+    | '/auth/silent-renew'
     | '/voters/register'
     | '/_protected/elections/$id'
     | '/_protected/elections/new'
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   LoginRoute: typeof LoginRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthSilentRenewRoute: typeof AuthSilentRenewRoute
   VotersRegisterRoute: typeof VotersRegisterRoute
 }
 
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/voters/register'
       fullPath: '/voters/register'
       preLoaderRoute: typeof VotersRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/silent-renew': {
+      id: '/auth/silent-renew'
+      path: '/auth/silent-renew'
+      fullPath: '/auth/silent-renew'
+      preLoaderRoute: typeof AuthSilentRenewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
@@ -543,6 +563,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   LoginRoute: LoginRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  AuthSilentRenewRoute: AuthSilentRenewRoute,
   VotersRegisterRoute: VotersRegisterRoute,
 }
 export const routeTree = rootRouteImport

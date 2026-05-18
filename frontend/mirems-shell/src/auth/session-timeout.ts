@@ -1,7 +1,7 @@
 import type { User } from 'oidc-client-ts';
 
-export const SESSION_WARNING_LEAD_MS = 5 * 60 * 1_000;
-export const SESSION_REFRESH_LEAD_MS = 60 * 1_000;
+export const SESSION_WARNING_LEAD_MS = 60 * 1_000;
+export const SESSION_REFRESH_LEAD_MS = 30 * 1_000;
 
 export interface SessionTimeoutState {
   expiresAtMs: number | null;

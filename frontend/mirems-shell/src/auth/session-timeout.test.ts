@@ -13,7 +13,7 @@ function userExpiringAt(expiresAtSeconds: number): User {
 }
 
 describe('session timeout and silent refresh scheduling', () => {
-  it('shows the timeout warning during the final five minutes before token expiry', () => {
+  it('shows the timeout warning during the configured final warning window before token expiry', () => {
     const now = 1_000_000;
     const user = userExpiringAt(Math.floor((now + SESSION_WARNING_LEAD_MS - 1_000) / 1_000));
 
@@ -29,6 +29,16 @@ describe('session timeout and silent refresh scheduling', () => {
 
     expect(getRefreshDelayMs(user, now)).toBe(10 * 60_000 - SESSION_REFRESH_LEAD_MS);
   });
+  it('does not warn immediately for a freshly issued five-minute local Keycloak access token', () => {
+    const now = 1_000_000;
+    const user = userExpiringAt(Math.floor((now + 5 * 60_000) / 1_000));
+
+    expect(getSessionTimeoutState(user, now)).toMatchObject({
+      showWarning: false,
+      isExpired: false,
+    });
+  });
+
 
   it('refreshes the user silently when the refresh timer fires', async () => {
     const now = 1_000_000;

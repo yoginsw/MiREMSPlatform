@@ -3,6 +3,18 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@tanstack/react-router', async () => {
+  const actual = await vi.importActual('@tanstack/react-router');
+  const ReactModule = await import('react');
+
+  return {
+    ...actual,
+    Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) =>
+      ReactModule.createElement('a', { className, href: to, 'data-router-link': 'true' }, children),
+  };
+});
+
 import { I18nProvider } from './i18n/I18nProvider';
 import { resetShellLanguageForTests } from './i18n/i18n';
 import { ShellThemeProvider } from './theme/shell-theme';
@@ -51,6 +63,8 @@ describe('ShellChrome responsive layout', () => {
     expect(container.querySelector('.app-shell')).toHaveAttribute('data-layout', 'desktop');
     expect(screen.getByLabelText('주요 내비게이션')).toHaveAttribute('data-navigation-placement', 'sidebar');
     expect(screen.queryByLabelText('모바일 하단 내비게이션')).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /선거 관리/ })).toHaveAttribute('href', '/elections');
+    expect(screen.getByRole('link', { name: /선거 관리/ })).toHaveAttribute('data-router-link', 'true');
   });
 
   it('renders mobile layout with bottom navigation at narrow breakpoints', () => {
@@ -67,6 +81,17 @@ describe('ShellChrome responsive layout', () => {
 
     expect(container.querySelector('.app-shell')).toHaveAttribute('data-layout', 'tablet');
     expect(screen.getByLabelText('모바일 하단 내비게이션')).toHaveAttribute('data-navigation-placement', 'bottom');
+  });
+
+  it('renders current-election placeholder navigation items as disabled controls', () => {
+    renderShellChrome(1280);
+
+    const candidates = screen.getByRole('button', { name: /후보자 관리/ });
+
+    expect(candidates).toHaveClass('nav-item--disabled');
+    expect(candidates).toHaveAttribute('aria-disabled', 'true');
+    expect(candidates).toHaveAttribute('title', '먼저 선거 관리 화면에서 선거를 선택해 주세요.');
+    expect(screen.queryByRole('link', { name: /후보자 관리/ })).not.toBeInTheDocument();
   });
 
   it('keeps compact header controls available instead of hiding login or language controls', () => {

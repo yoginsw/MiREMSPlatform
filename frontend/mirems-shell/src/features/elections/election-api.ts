@@ -8,9 +8,11 @@ import {
   type ElectionRequest,
   type ElectionResponse,
 } from '@mirems/api-client';
+import { resolveApiBasePath } from '../../api-runtime';
 
 function createApiConfiguration(accessToken: string | undefined) {
   return new Configuration({
+    basePath: resolveApiBasePath(),
     accessToken: accessToken ? () => accessToken : undefined,
   });
 }

@@ -31,6 +31,9 @@
       "results": "Tabulation Results",
       "auditLogs": "Audit Logs",
       "systemAdmin": "System Administration"
+    },
+    "disabled": {
+      "selectElectionFirst": "Select an election from Election Management first."
     }
   },
   "language": {
@@ -94,8 +97,11 @@
     "description": "MiREMS connects election preparation, candidate and voter administration, voting operations, tabulation, result publication, and audit trails into a unified, standards-aligned workflow.",
     "actions": {
       "login": "Operator sign in",
+      "console": "Go to operations console",
       "results": "View official results"
     },
+    "authenticatedStatus": "Signed in as {{username}}.",
+    "authenticatedFallbackUser": "authenticated user",
     "heroCard": {
       "label": "Platform operational trust summary",
       "status": "Operational governance ready",
