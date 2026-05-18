@@ -1474,6 +1474,27 @@ Operational follow-up:
 
 ---
 
+### GOAL P10-105 | Sample Data Import Pipeline
+**State:** `DONE`
+**Depends on:** P10-104
+
+Covers: PostgreSQL staging schema for the Philippines 2025 NLE synthetic bundle, manifest-based import command, deterministic mapping into compatible MiREMS core persistence tables, and dry-run SQL generation.
+
+Implementation notes:
+- Added Flyway `V9__create_sample_import_staging_tables.sql` with `sample_import_batches` plus staging tables for jurisdictions, offices, parties, polling centers, canvassing centers, precincts, ACM/CCS units, precinct aggregate results, and operations calendar milestones.
+- Added `scripts/import_sample_bundle.py`, which validates `mirems_import_manifest.json`, emits idempotent PostgreSQL SQL, scopes re-import cleanup to deterministic sample UUIDs/import-batch IDs, and can execute through `psql` when `--database-url` is provided.
+- Added deterministic UUIDv5 mapping from sample identifiers into core domain tables: elections, contests, candidates, ballots, ballot styles, ballot contests, synthetic voter records, tabulation reports, and transmission audit events.
+- Updated the manifest/generator so precinct aggregate results target `sample_precinct_results` staging instead of per-session `voting_results`, avoiding an invalid mapping to the immutable ballot-result model.
+- Added README import instructions and tests for manifest load order, SQL generation, scoped cleanup, domain UUID mapping, invalid bundle rejection, and migration resource contracts.
+
+Verification:
+- `python3 -m pytest scripts/test_generate_ph_2025_nle_sample_data.py scripts/test_validate_sample_import_bundle.py scripts/test_import_sample_bundle.py -q` — PASS, 10 tests.
+- Windows-native `gradlew.bat :mirems-core:core-infra:test --tests io.mirems.core.infra.persistence.MigrationResourceContractTest --tests io.mirems.core.infra.persistence.FlywayPostgresMigrationTest --no-daemon` — PASS.
+- Windows-native `gradlew.bat :mirems-core:core-infra:test --no-daemon` — PASS.
+- Direct Docker/PostgreSQL execution of the emitted SQL could not be completed in WSL because the Docker daemon socket was unavailable (`/var/run/docker.sock` missing); run the generated `/tmp/mirems_sample_import.sql` or `--database-url` path against a live local/staging PostgreSQL instance for DB-write smoke evidence.
+
+---
+
 ## Goal Dependency Graph (Summary)
 
 ```

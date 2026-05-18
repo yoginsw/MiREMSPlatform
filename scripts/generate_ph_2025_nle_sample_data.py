@@ -204,7 +204,7 @@ def _build_import_manifest(config: GenerationConfig, tables: dict[str, Any]) -> 
         "acm_units.csv": {"target_domain": "ACM equipment import staging", "target_table": "sample_acm_units", "privacy_classification": "PUBLIC"},
         "ccs_units.csv": {"target_domain": "CCS equipment import staging", "target_table": "sample_ccs_units", "privacy_classification": "PUBLIC"},
         "voters.csv": {"target_domain": "VoterRecord import staging", "target_table": "voter_records", "privacy_classification": "SYNTHETIC_PII"},
-        "precinct_results.csv": {"target_domain": "VotingResult import staging", "target_table": "voting_results", "privacy_classification": "PUBLIC_AGGREGATE"},
+        "precinct_results.csv": {"target_domain": "Precinct result import staging", "target_table": "sample_precinct_results", "privacy_classification": "PUBLIC_AGGREGATE"},
         "consolidated_results.csv": {"target_domain": "TabulationReport import staging", "target_table": "tabulation_reports", "privacy_classification": "PUBLIC_AGGREGATE"},
         "transmission_events.csv": {"target_domain": "AuditLog import staging", "target_table": "audit_logs", "privacy_classification": "SYSTEM_OPERATIONAL"},
         "operations_calendar.csv": {"target_domain": "Election operations calendar", "target_table": "sample_operations_calendar", "privacy_classification": "PUBLIC"},

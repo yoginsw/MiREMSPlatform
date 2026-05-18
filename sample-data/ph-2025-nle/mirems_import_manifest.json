@@ -107,8 +107,8 @@
       "privacy_classification": "SYNTHETIC_PII"
     },
     "precinct_results.csv": {
-      "target_domain": "VotingResult import staging",
-      "target_table": "voting_results",
+      "target_domain": "Precinct result import staging",
+      "target_table": "sample_precinct_results",
       "privacy_classification": "PUBLIC_AGGREGATE"
     },
     "consolidated_results.csv": {

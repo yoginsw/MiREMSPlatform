@@ -97,7 +97,8 @@ def test_write_dataset_outputs_csv_files_and_profile_json(tmp_path: Path) -> Non
     manifest = json.loads((tmp_path / "mirems_import_manifest.json").read_text(encoding="utf-8"))
     assert manifest["record_counts"]["voters.csv"] == 60
     assert manifest["load_order"][-1] == "operations_calendar.csv"
-    assert manifest["resources"]["precinct_results.csv"]["target_domain"] == "VotingResult import staging"
+    assert manifest["resources"]["precinct_results.csv"]["target_domain"] == "Precinct result import staging"
+    assert manifest["resources"]["precinct_results.csv"]["target_table"] == "sample_precinct_results"
     assert manifest["validation_rules"] == [
         "All generated voters must be synthetic.",
         "No ballots_cast value may exceed registered_voters.",
